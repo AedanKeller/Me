@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aedan Keller - Manufacturing Scheduling Specialist</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        :root {
+            --primary-navy: #1a365d;
+            --accent-blue: #3182ce;
+            --text-dark: #2d3748;
+            --text-light: #718096;
+            --background: #ffffff;
+            --section-bg: #f7fafc;
+            --border: #e2e8f0;
+            --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --success-green: #38a169;
+            --warning-orange: #ed8936;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-navy);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-blue);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+            padding: 0 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="%23cbd5e0" stroke-width="1.5"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grid)"/></svg>') repeat;
+            opacity: 0.8;
+        }
+
+        .hero-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 2rem;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-content {
+            padding-right: 1rem;
+        }
+
+        .hero-content h1 {
+            font-size: clamp(2.2rem, 4.5vw, 3.5rem);
+            font-weight: 700;
+            color: var(--primary-navy);
+            margin-bottom: 1rem;
+            line-height: 1.1;
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: var(--text-light);
+            margin-bottom: 2rem;
+            font-weight: 400;
+            line-height: 1.4;
+        }
+
+        .hero-description {
+            font-size: 1.125rem;
+            color: var(--text-dark);
+            margin-bottom: 3rem;
+            line-height: 1.7;
+        }
+
+        .pricing-highlight {
+            background: var(--success-green);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 2rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: var(--accent-blue);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-navy);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(49, 130, 206, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--primary-navy);
+            border: 2px solid var(--primary-navy);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-navy);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .hero-image {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero-photo {
+            width: 420px;
+            height: 420px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 8px solid white;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .hero-photo:hover {
+            transform: scale(1.05);
+        }
+
+        /* Proven Results Section */
+        .proven-results {
+            background: white;
+            padding: 6rem 2rem;
+            margin-top: -2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .results-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .results-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-navy);
+            margin-bottom: 4rem;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3rem;
+        }
+
+        .result-card {
+            background: var(--section-bg);
+            padding: 2.5rem;
+            border-radius: 16px;
+            text-align: center;
+            border-left: 6px solid var(--success-green);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
+
+        .result-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .result-metric {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--accent-blue);
+            margin-bottom: 1rem;
+        }
+
+        .result-description {
+            color: var(--text-dark);
+            font-weight: 500;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .chart-container {
+            height: 200px;
+            position: relative;
+            margin-top: 1.5rem;
+        }
+
+        /* Value Proposition Section */
+        .value-prop {
+            padding: 6rem 2rem;
+            background: var(--section-bg);
+        }
+
+        .value-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-navy);
+            margin-bottom: 3rem;
+            line-height: 1.2;
+        }
+
+        .value-content h2 {
+            margin-bottom: 2rem;
+        }
+
+        .value-list {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .value-item {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border-left: 5px solid var(--accent-blue);
+            transition: transform 0.3s ease;
+        }
+
+        .value-item:hover {
+            transform: translateX(5px);
+        }
+
+        .value-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary-navy);
+            margin-bottom: 0.8rem;
+        }
+
+        .value-description {
+            color: var(--text-dark);
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+
+        .large-image {
+            width: 100%;
+            height: 600px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .large-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        .large-image .placeholder-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 1.4rem;
+            font-weight: 500;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 2rem;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            display: none;
+        }
+
+        /* Manufacturing Crisis Section */
+        .crisis-section {
+            padding: 6rem 2rem;
+            background: white;
+        }
+
+        .crisis-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .crisis-intro {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 4rem auto;
+        }
+
+        .crisis-intro-text {
+            font-size: 1.2rem;
+            color: var(--text-dark);
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .crisis-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .crisis-stat {
+            text-align: center;
+            padding: 2.5rem;
+            background: linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%);
+            border-radius: 16px;
+            border-top: 6px solid var(--warning-orange);
+            transition: transform 0.3s ease;
+        }
+
+        .crisis-stat:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--warning-orange);
+            margin-bottom: 1rem;
+        }
+
+        .stat-description {
+            color: var(--text-dark);
+            font-weight: 500;
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+
+        .solution-callout {
+            background: linear-gradient(135deg, #f0fff4 0%, #c6f6d5 100%);
+            border: 3px solid var(--success-green);
+            border-radius: 16px;
+            padding: 3rem;
+            margin-top: 4rem;
+            text-align: center;
+        }
+
+        .callout-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-navy);
+            margin-bottom: 1.5rem;
+        }
+
+        .callout-text {
+            font-size: 1.2rem;
+            color: var(--text-dark);
+            line-height: 1.7;
+        }
+
+        /* Perfect For Section */
+        .perfect-for {
+            padding: 6rem 2rem;
+            background: var(--section-bg);
+        }
+
+        .perfect-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .perfect-content h2 {
+            margin-bottom: 2rem;
+        }
+
+        .perfect-list {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .perfect-item {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            border-left: 5px solid var(--success-green);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease;
+        }
+
+        .perfect-item:hover {
+            transform: translateX(5px);
+        }
+
+        .perfect-text {
+            color: var(--text-dark);
+            font-weight: 500;
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+
+        /* Contact Section */
+        .contact {
+            padding: 6rem 2rem;
+            background: var(--primary-navy);
+            color: white;
+        }
+
+        .contact-container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .contact h2 {
+            color: white;
+            margin-bottom: 2rem;
+            font-size: 2.5rem;
+        }
+
+        .contact-description {
+            font-size: 1.3rem;
+            margin-bottom: 3rem;
+            color: #cbd5e0;
+        }
+
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            color: #cbd5e0;
+            font-size: 1.1rem;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--text-dark);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero-container,
+            .value-container,
+            .perfect-container {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 2rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .hero-photo {
+                width: 300px;
+                height: 300px;
+            }
+
+            .cta-buttons {
+                justify-content: center;
+            }
+
+            .contact-info {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .large-image {
+                height: 400px;
+            }
+
+            .large-image .placeholder-text {
+                font-size: 1.2rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#home" class="logo">Aedan Keller</a>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <a href="cases.html">Portfolio</a></li>
+                <a href="aboutme.html">About Me</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-container">
+            <div class="hero-content animate-fade-in">
+                <h1>AEDAN KELLER</h1>
+                <div class="hero-subtitle">Manufacturing Scheduling Specialist</div>
+                <div class="pricing-highlight">University Pricing with Professional Results</div>
+                <p class="hero-description">
+                    I turn 4-hour scheduling nightmares into 10-minute solutions. Custom automation built specifically for your equipment and workflow.
+                </p>
+                <div class="cta-buttons">
+                    <a href="#contact" class="btn btn-primary">Get Free Assessment</a>
+                    <a href="cases.html" class="btn btn-secondary">Case Studies</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div style="width: 420px; height: 420px; border-radius: 50%; border: 8px solid white; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1); overflow: hidden;">
+                    <img src="Headshot.png" alt="Aedan Keller" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Proven Results Section -->
+    <section id="results" class="proven-results">
+        <div class="results-container">
+            <h2 class="results-title">MY PROVEN RESULTS</h2>
+            <div class="results-grid">
+                <div class="result-card">
+                    <div class="result-metric">From 4 Hours to Minutes</div>
+                    <div class="result-description">Aerospace manufacturer's daily scheduling transformed</div>
+                    <div class="chart-container">
+                        <canvas id="timeChart"></canvas>
+                    </div>
+                </div>
+                <div class="result-card">
+                    <div class="result-metric">6-Week Delivery</div>
+                    <div class="result-description">Complete custom solution designed and deployed</div>
+                    <div class="chart-container">
+                        <canvas id="timelineChart"></canvas>
+                    </div>
+                </div>
+                <div class="result-card">
+                    <div class="result-metric">$10000s Saved</div> <br>
+                    <div class="result-description">Reliable ROI Driven by Streamlined Labor Costs and Boosted Efficiency</div>
+                    <div class="chart-container">
+                        <canvas id="savingsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Value Proposition Section -->
+    <section id="approach" class="value-prop">
+        <div class="value-container">
+            <div class="large-image">
+                <img src="AdobeStock_794471863.jpeg" alt="Manufacturing Equipment & Facility">
+            </div>
+            <div class="value-content">
+                <h2 class="section-title">What Makes My Approach Different</h2>
+                <div class="value-list">
+                    <div class="value-item">
+                        <h3 class="value-title">I study YOUR specific equipment</h3>
+                        <p class="value-description">Every solution starts with understanding your unique production flow and current challenges</p>
+                    </div>
+                    <div class="value-item">
+                        <h3 class="value-title">I design automation that fits YOUR processes</h3>
+                        <p class="value-description">Custom solutions that integrate seamlessly with how you already operate</p>
+                    </div>
+                    <div class="value-item">
+                        <h3 class="value-title">I create tools YOUR team actually wants to use</h3>
+                        <p class="value-description">User-friendly interfaces designed around your workflow, with training included</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Manufacturing Crisis Section -->
+    <section id="crisis" class="crisis-section">
+        <div class="crisis-container">
+            <div class="crisis-intro">
+                <h2 class="section-title">The Manufacturing Workforce Crisis</h2>
+                <p class="crisis-intro-text">
+                    Manufacturing faces an unprecedented challenge. While demand grows, the industry struggles with a critical shortage of skilled workers - forcing teams to spend countless hours on manual processes that could be automated.
+                </p>
+            </div>
+            
+            <div class="crisis-stats">
+                <div class="crisis-stat">
+                    <div class="stat-number">750,000</div>
+                    <div class="stat-description">Manufacturing jobs currently unfilled in the US</div>
+                </div>
+                <div class="crisis-stat">
+                    <div class="stat-number">75%</div>
+                    <div class="stat-description">Of manufacturers say workforce is their #1 challenge</div>
+                </div>
+                <div class="crisis-stat">
+                    <div class="stat-number">2.1 Million</div>
+                    <div class="stat-description">Jobs predicted to remain unfilled by 2030</div>
+                </div>
+                <div class="crisis-stat">
+                    <div class="stat-number">10+ Hours</div>
+                    <div class="stat-description">Average weekly time spent on manual scheduling</div>
+                </div>
+            </div>
+
+            <div class="solution-callout">
+                <h3 class="callout-title">The Solution: Amplify Your Existing Workforce</h3>
+                <p class="callout-text">
+                    Smart manufacturers use automation to free skilled teams from manual tasks. When I eliminated 4 hours of daily scheduling work, those employees could focus on high-value production activities.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Perfect For Section -->
+    <section id="perfect-for" class="perfect-for">
+        <div class="perfect-container">
+            <div class="perfect-content">
+                <h2 class="section-title">Perfect for Manufacturers Who...</h2>
+                <div class="perfect-list">
+                    <div class="perfect-item">
+                        <p class="perfect-text">Spend 10+ hours per week on manual scheduling and miss delivery promises</p>
+                    </div>
+                    <div class="perfect-item">
+                        <p class="perfect-text">Have 20-100 employees and operate multiple production cells that need coordination</p>
+                    </div>
+                    <div class="perfect-item">
+                        <p class="perfect-text">Pay overtime costs due to poor resource planning and can't assess capacity quickly</p>
+                    </div>
+                    <div class="perfect-item">
+                        <p class="perfect-text">Need custom automation but can't afford enterprise software solutions</p>
+                    </div>
+                </div>
+            </div>
+            <div class="large-image">
+                <img src="pexels-tiger-lily-4481259.jpg" alt="Manufacturing Team Photo">
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="contact-container">
+            <h2>Ready to Transform Your Scheduling?</h2>
+            <p class="contact-description">
+                Let's discuss how I can eliminate your scheduling headaches and save thousands annually.
+            </p>
+            
+            <div class="contact-info">
+                <div class="contact-item">
+                    <span>📧</span>
+                    <span>aedan@example.com</span>
+                </div>
+                <div class="contact-item">
+                    <span>📱</span>
+                    <span>(555) 123-4567</span>
+                </div>
+                <div class="contact-item">
+                    <span>💼</span>
+                    <span>LinkedIn Profile</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2025 Aedan Keller. Manufacturing Scheduling Solutions.</p>
+    </footer>
+
+    <script>
+        // Initialize charts when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Time Reduction Chart
+            const timeCtx = document.getElementById('timeChart').getContext('2d');
+            new Chart(timeCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Before', 'After'],
+                    datasets: [{
+                        label: 'Time (hours)',
+                        data: [4, 0.17], // 10 minutes = 0.17 hours
+                        backgroundColor: ['#ed8936', '#38a169'],
+                        borderColor: ['#dd6b20', '#2f855a'],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 5,
+                            ticks: {
+                                callback: function(value) {
+                                    if (value === 0.17) return '10 min';
+                                    return value + 'h';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Project Timeline Chart
+            const timelineCtx = document.getElementById('timelineChart').getContext('2d');
+            new Chart(timelineCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Analysis', 'Build', 'Deploy'],
+                    datasets: [{
+                        data: [2, 3, 1],
+                        backgroundColor: ['#38a169', '#3182ce', '#1a365d'],
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 15
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Cost Savings Chart
+            const savingsCtx = document.getElementById('savingsChart').getContext('2d');
+            new Chart(savingsCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Month 1', 'Month 2', 'Month 3', 'Month 4', 'Month 5', 'Month 6'],
+                    datasets: [{
+                        label: 'Efficiency Gains',
+                        data: [10, 25, 45, 65, 80, 95],
+                        borderColor: '#3182ce',
+                        backgroundColor: 'rgba(49, 130, 206, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 3
+                    }, {
+                        label: 'Labor Savings',
+                        data: [5, 20, 40, 60, 75, 90],
+                        borderColor: '#38a169',
+                        backgroundColor: 'rgba(56, 161, 105, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 15
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add scroll effect to navbar
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 100) {
+                navbar.style.background = 'rgba(255, 255, 255, 0.98)';
+                navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
+            } else {
+                navbar.style.background = 'rgba(255, 255, 255, 0.95)';
+                navbar.style.boxShadow = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

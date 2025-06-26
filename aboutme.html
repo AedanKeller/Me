@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - Aedan Keller</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-navy: #1a365d;
+            --accent-blue: #3182ce;
+            --text-dark: #2d3748;
+            --text-light: #718096;
+            --background: #ffffff;
+            --section-bg: #f7fafc;
+            --border: #e2e8f0;
+            --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --success-green: #38a169;
+            --highlight-blue: #2b6cb0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.7;
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 0;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-navy);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-blue);
+        }
+
+        /* Header Section */
+        .header {
+            padding: 8rem 2rem 4rem 2rem;
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="%23cbd5e0" stroke-width="1.5"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grid)"/></svg>') repeat;
+            opacity: 0.3;
+        }
+
+        .header-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            font-weight: 700;
+            color: var(--primary-navy);
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .header-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-light);
+            margin-bottom: 2rem;
+            font-weight: 400;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--accent-blue);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .back-link:hover {
+            color: var(--primary-navy);
+        }
+
+        /* Main Content */
+        .about-content {
+            padding: 4rem 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .intro-section {
+            background: white;
+            padding: 3rem;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 3rem;
+            border-left: 4px solid var(--success-green);
+        }
+
+        .intro-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-dark);
+            margin-bottom: 2rem;
+        }
+
+        .intro-text:last-child {
+            margin-bottom: 0;
+        }
+
+        .pricing-highlight {
+            background: var(--success-green);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 1.5rem;
+        }
+
+        .expertise-section {
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-navy);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .expertise-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .expertise-card {
+            background: var(--section-bg);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-top: 3px solid var(--success-green);
+        }
+
+        .expertise-title {
+            font-weight: 700;
+            color: var(--primary-navy);
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .expertise-description {
+            color: var(--text-dark);
+            line-height: 1.7;
+            margin-bottom: 1rem;
+        }
+
+        .expertise-highlight {
+            color: var(--accent-blue);
+            font-size: 0.9rem;
+            font-weight: 600;
+            font-style: italic;
+        }
+
+        .credentials-section {
+            background: white;
+            padding: 3rem;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 3rem;
+        }
+
+        .credentials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .credential-item {
+            padding: 1rem;
+            background: var(--section-bg);
+            border-radius: 6px;
+            border-left: 3px solid var(--accent-blue);
+        }
+
+        .credential-title {
+            font-weight: 600;
+            color: var(--primary-navy);
+            margin-bottom: 0.5rem;
+        }
+
+        .credential-org {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .credential-description {
+            color: var(--text-dark);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .approach-section {
+            background: white;
+            padding: 3rem;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 3rem;
+        }
+
+        .approach-text {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: var(--text-dark);
+            margin-bottom: 1.5rem;
+        }
+
+        .approach-principles {
+            list-style: none;
+            margin-top: 1.5rem;
+        }
+
+        .approach-principles li {
+            padding: 0.75rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            color: var(--text-dark);
+            line-height: 1.7;
+        }
+
+        .approach-principles li::before {
+            content: '▪';
+            position: absolute;
+            left: 0;
+            color: var(--accent-blue);
+            font-weight: bold;
+        }
+
+        .value-proposition {
+            background: linear-gradient(135deg, #f0fff4 0%, #e6fffa 100%);
+            border: 2px solid var(--success-green);
+            border-radius: 12px;
+            padding: 3rem;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .value-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-navy);
+            margin-bottom: 1rem;
+        }
+
+        .value-text {
+            font-size: 1.1rem;
+            color: var(--text-dark);
+            line-height: 1.8;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: var(--primary-navy);
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+
+        .cta-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .cta-description {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            color: #cbd5e0;
+            line-height: 1.7;
+        }
+
+        .btn {
+            padding: 1rem 2.5rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            margin: 0 0.75rem;
+        }
+
+        .btn-primary {
+            background: var(--accent-blue);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: white;
+            color: var(--primary-navy);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            color: var(--primary-navy);
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--text-dark);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .header {
+                padding: 6rem 1rem 3rem 1rem;
+            }
+
+            .about-content {
+                padding: 3rem 1rem;
+            }
+
+            .intro-section,
+            .credentials-section,
+            .approach-section {
+                padding: 2rem 1.5rem;
+            }
+
+            .btn {
+                display: block;
+                margin: 0.75rem 0;
+            }
+        }
+
+        /* Simple Page Load Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        body {
+            animation: fadeInUp 0.6s ease-out both;
+        }
+
+        .header-content h1 {
+            animation: fadeInUp 0.6s ease-out 0.1s both;
+        }
+
+        .header-subtitle {
+            animation: fadeInUp 0.6s ease-out 0.2s both;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#home" class="logo">Aedan Keller</a>
+            <ul class="nav-links">
+                <a href="index.html">Home</a></li>
+                <a href="cases.html">Portfolio</a></li>
+                <a href="aboutme.html">About Me</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <section class="header">
+        <div class="header-content">
+            <h1>ABOUT AEDAN KELLER</h1>
+            <p class="header-subtitle">
+                Manufacturing Scheduling Specialist helping small manufacturers eliminate daily scheduling chaos
+            </p>
+            
+            <a href="index.html" class="back-link">← Return to Home</a>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <div class="about-content">
+        <!-- Introduction -->
+        <div class="intro-section">
+            <div class="pricing-highlight">University Pricing with Professional Results</div>
+            <p class="intro-text">
+                I specialize in building custom scheduling automation systems that eliminate the daily chaos small manufacturers face. My focus is simple: turn your 4-hour scheduling headaches into automated, optimized processes that take minutes.
+            </p>
+            <p class="intro-text">
+                My breakthrough project with an aerospace manufacturer perfectly demonstrates this approach. I took their team from spending 4+ hours daily on manual scheduling to having the entire process automated - freeing up skilled workers to focus on production instead of paperwork.
+            </p>
+            <p class="intro-text">
+                I combine cutting-edge optimization techniques learned at BYU's Marriott School of Business with real-world manufacturing experience. This unique combination allows me to deliver enterprise-level automation solutions at university rates, making custom scheduling systems accessible to small manufacturers who need them most.
+            </p>
+        </div>
+
+        <!-- Core Expertise -->
+        <section class="expertise-section">
+            <h2 class="section-title">What I Specialize In</h2>
+            <div class="expertise-grid">
+                <div class="expertise-card">
+                    <div class="expertise-title">Manufacturing Scheduling Automation</div>
+                    <div class="expertise-description">
+                        Custom systems that eliminate manual cell assignments, optimize equipment utilization, and resolve scheduling conflicts automatically.
+                    </div>
+                    <div class="expertise-highlight">Recent: Aerospace client went from 4 hours daily to minutes</div>
+                </div>
+                <div class="expertise-card">
+                    <div class="expertise-title">Production Efficiency Optimization</div>
+                    <div class="expertise-description">
+                        Resource allocation systems that maximize your existing equipment and workforce without requiring major capital investments.
+                    </div>
+                    <div class="expertise-highlight">Focus on working with what you already have</div>
+                </div>
+                <div class="expertise-card">
+                    <div class="expertise-title">Custom Automation Development</div>
+                    <div class="expertise-description">
+                        Tailored solutions built specifically for your equipment setup, workflow, and business rules - not generic off-the-shelf software.
+                    </div>
+                    <div class="expertise-highlight">Every solution designed from scratch for your operation</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Value Proposition -->
+        <section class="value-proposition">
+            <h3 class="value-title">Why Small Manufacturers Choose Me</h3>
+            <p class="value-text">
+                Traditional automation consultants charge enterprise prices that put custom solutions out of reach for most small manufacturers. I offer the same level of expertise and results at university rates - typically 50-70% less than traditional consulting. This makes professional-grade scheduling automation accessible to manufacturers with 20-100 employees who need it most.
+            </p>
+        </section>
+
+        <!-- Professional Credentials -->
+        <section class="credentials-section">
+            <h2 class="section-title">Background & Training</h2>
+            <div class="credentials-grid">
+                <div class="credential-item">
+                    <div class="credential-title">Global Supply Chain Management</div>
+                    <div class="credential-org">BYU Marriott School of Business</div>
+                    <div class="credential-description">Advanced training in optimization, logistics, and operational strategy with focus on manufacturing systems</div>
+                </div>
+                <div class="credential-item">
+                    <div class="credential-title">Lean Manufacturing Methodologies</div>
+                    <div class="credential-org">Process Optimization</div>
+                    <div class="credential-description">Hands-on experience implementing lean principles to eliminate waste and streamline manufacturing workflows</div>
+                </div>
+                <div class="credential-item">
+                    <div class="credential-title">Business Research & Analysis</div>
+                    <div class="credential-org">Healthcare Leadership Research Team</div>
+                    <div class="credential-description">Experience analyzing complex operational challenges and developing systematic solutions</div>
+                </div>
+                <div class="credential-item">
+                    <div class="credential-title">Team Leadership Experience</div>
+                    <div class="credential-org">Multi-Team Coordination</div>
+                    <div class="credential-description">Managed 20-person teams and understand the challenges of coordinating people and resources</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Approach -->
+        <section class="approach-section">
+            <h2 class="section-title">How I Work with Manufacturing Teams</h2>
+            <p class="approach-text">
+                Every project starts with understanding your specific equipment, workflow, and daily challenges. I don't believe in one-size-fits-all solutions. Instead, I spend time learning how your team currently handles scheduling, what frustrates them most, and what would make their day easier.
+            </p>
+            <p class="approach-text">
+                Then I build automation that works the way your team thinks - not the way a generic software package thinks. The goal is always to amplify your existing workforce, not replace them.
+            </p>
+            <ul class="approach-principles">
+                <li>On-site analysis to understand your specific equipment setup and current scheduling process</li>
+                <li>Custom automation designed around your existing workflow and business rules</li>
+                <li>University pricing that makes professional automation accessible to small manufacturers</li>
+                <li>Complete training and support to ensure your team feels confident using the new system</li>
+                <li>Quick deployment - most projects completed in 6-8 weeks from start to finish</li>
+            </ul>
+        </section>
+
+        <!-- CTA -->
+        <section class="cta-section">
+            <h2 class="cta-title">Ready to Eliminate Scheduling Chaos?</h2>
+            <p class="cta-description">
+                If you're spending hours daily on manual scheduling, let's discuss how a custom automation system could transform your operation at university rates.
+            </p>
+            <a href="index.html#contact" class="btn btn-primary">Schedule Free Assessment</a>
+            <a href="cases.html" class="btn btn-secondary">View Manufacturing Case Studies</a>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2024 Aedan Keller - Manufacturing Scheduling Specialist</p>
+    </footer>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Simple scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe sections for animation
+        document.querySelectorAll('.intro-section, .expertise-card, .credentials-section, .approach-section').forEach(section => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(20px)';
+            section.style.transition = 'all 0.6s ease-out';
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>

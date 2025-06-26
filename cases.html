@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Case Studies - Aedan Keller</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-navy: #1a365d;
+            --accent-blue: #3182ce;
+            --text-dark: #2d3748;
+            --text-light: #718096;
+            --background: #ffffff;
+            --section-bg: #f7fafc;
+            --border: #e2e8f0;
+            --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --success-green: #38a169;
+            --highlight-blue: #2b6cb0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.7;
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 0;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-navy);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-blue);
+        }
+
+        /* Header Section */
+        .header {
+            padding: 8rem 2rem 4rem 2rem;
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="%23cbd5e0" stroke-width="1.5"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grid)"/></svg>') repeat;
+            opacity: 0.3;
+        }
+
+        .header-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            font-weight: 700;
+            color: var(--primary-navy);
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .header-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-light);
+            margin-bottom: 2rem;
+            font-weight: 400;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .disclaimer {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem auto;
+            max-width: 800px;
+            text-align: left;
+            font-size: 0.9rem;
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        .disclaimer-title {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--accent-blue);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .back-link:hover {
+            color: var(--primary-navy);
+        }
+
+        /* Case Study Sections */
+        .case-study {
+            padding: 5rem 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .case-study:nth-child(even) {
+            background: var(--section-bg);
+        }
+
+        .case-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .case-header {
+            text-align: center;
+            margin-bottom: 4rem;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 2rem;
+        }
+
+        .case-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--primary-navy);
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .case-subtitle {
+            font-size: 1.2rem;
+            color: var(--accent-blue);
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+        }
+
+        .case-meta {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            background: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            border: 1px solid var(--border);
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .case-content {
+            display: grid;
+            gap: 3rem;
+        }
+
+        .case-section {
+            background: white;
+            padding: 3rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid var(--accent-blue);
+        }
+
+        .case-section.summary {
+            border-left: 4px solid var(--success-green);
+            background: linear-gradient(135deg, #f0fff4 0%, #e6fffa 100%);
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary-navy);
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .section-content {
+            color: var(--text-dark);
+            font-size: 1rem;
+            line-height: 1.8;
+        }
+
+        .situation-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .approach-grid {
+            display: grid;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .approach-item {
+            padding: 1.5rem;
+            background: var(--section-bg);
+            border-radius: 6px;
+            border-left: 3px solid var(--success-green);
+        }
+
+        .approach-title {
+            font-weight: 600;
+            color: var(--primary-navy);
+            margin-bottom: 0.5rem;
+        }
+
+        .approach-description {
+            color: var(--text-dark);
+            line-height: 1.7;
+        }
+
+        .results-section {
+            margin-top: 2rem;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .result-item {
+            background: var(--section-bg);
+            padding: 2rem 1.5rem;
+            border-radius: 6px;
+            text-align: center;
+            border-top: 3px solid var(--success-green);
+        }
+
+        .result-metric {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--primary-navy);
+            margin-bottom: 0.75rem;
+            line-height: 1.2;
+        }
+
+        .result-description {
+            color: var(--text-dark);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .technical-details {
+            margin-top: 2rem;
+            padding: 2rem;
+            background: var(--section-bg);
+            border-radius: 6px;
+        }
+
+        .tech-title {
+            font-weight: 600;
+            color: var(--primary-navy);
+            margin-bottom: 1rem;
+        }
+
+        .tech-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .tech-tag {
+            background: white;
+            color: var(--text-dark);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border: 1px solid var(--border);
+        }
+
+        .project-timeline {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: var(--highlight-blue);
+            color: white;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .timeline-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-duration {
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        /* Summary Box */
+        .summary-box {
+            background: linear-gradient(135deg, #f0fff4 0%, #e6fffa 100%);
+            border: 2px solid var(--success-green);
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .summary-title {
+            font-weight: 700;
+            color: var(--primary-navy);
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .summary-text {
+            color: var(--text-dark);
+            line-height: 1.7;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: var(--primary-navy);
+            color: white;
+            padding: 5rem 2rem;
+            text-align: center;
+        }
+
+        .cta-content {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .cta-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .cta-description {
+            font-size: 1.1rem;
+            margin-bottom: 2.5rem;
+            color: #cbd5e0;
+            line-height: 1.7;
+        }
+
+        .btn {
+            padding: 1rem 2.5rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            margin: 0 0.75rem;
+        }
+
+        .btn-primary {
+            background: var(--accent-blue);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: white;
+            color: var(--primary-navy);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            color: var(--primary-navy);
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--text-dark);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .header {
+                padding: 6rem 1rem 3rem 1rem;
+            }
+
+            .case-study {
+                padding: 3rem 1rem;
+            }
+
+            .case-section {
+                padding: 2rem 1.5rem;
+            }
+
+            .btn {
+                display: block;
+                margin: 0.75rem 0;
+            }
+
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .case-meta {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .tech-list {
+                justify-content: center;
+            }
+        }
+
+        /* Simple Page Load Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Clean page entrance */
+        body {
+            animation: fadeInUp 0.6s ease-out both;
+        }
+
+        .header-content h1 {
+            animation: fadeInUp 0.6s ease-out 0.1s both;
+        }
+
+        .header-subtitle {
+            animation: fadeInUp 0.6s ease-out 0.2s both;
+        }
+
+        .disclaimer {
+            animation: fadeInUp 0.6s ease-out 0.3s both;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#home" class="logo">Aedan Keller</a>
+            <ul class="nav-links">
+                <a href="index.html">Home</a></li>
+                <a href="cases.html">Portfolio</a></li>
+                <a href="aboutme.html">About Me</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <section class="header">
+        <div class="header-content">
+            <h1>CASE STUDIES</h1>
+            <p class="header-subtitle">
+                Manufacturing automation projects I've completed
+            </p>
+            
+            <div class="disclaimer">
+                <div class="disclaimer-title">Confidentiality Notice</div>
+                Client confidentiality and proprietary business information are strictly protected. The following case studies present project outcomes and methodologies while adhering to non-disclosure agreements. Specific client names and proprietary processes have been generalized to maintain confidentiality while accurately representing the scope and results of the solutions delivered.
+            </div>
+            
+            <a href="index.html" class="back-link">← Return to Home</a>
+        </div>
+    </section>
+
+    <!-- Case Study 1: Aerospace Manufacturing -->
+    <section class="case-study">
+        <div class="case-container">
+            <div class="case-header">
+                <h2 class="case-title">Aerospace Manufacturing Scheduling Automation</h2>
+                <div class="case-subtitle">Eliminated manual scheduling for precision component manufacturer</div>
+                <div class="case-meta">
+                    <div class="meta-item">Aerospace Manufacturing</div>
+                    <div class="meta-item">Precision Components</div>
+                    <div class="meta-item">Multi-Cell Operations</div>
+                </div>
+            </div>
+            
+            <div class="case-content">
+                <div class="summary-box">
+                    <div class="summary-title">Project Summary</div>
+                    <div class="summary-text">
+                        I built a custom scheduling automation system for an aerospace manufacturer that reduced their daily scheduling work from 4 hours to minutes. The solution automated manufacturing cell assignments and autoclave scheduling, eliminating manual coordination while optimizing resource utilization.
+                    </div>
+                </div>
+
+                <div class="case-section">
+                    <h3 class="section-title">The Situation</h3>
+                    <div class="section-content">
+                        <p class="situation-text">
+                            The aerospace facility was spending 4+ hours daily on manual scheduling. Multiple production personnel had to coordinate manufacturing cell assignments, autoclave scheduling, and resolve resource conflicts manually. This created bottlenecks, suboptimal resource utilization, and production delays.
+                        </p>
+                        <p class="situation-text">
+                            The manual process involved spreadsheets, phone calls, and constant adjustments throughout the day. When conflicts arose or priorities changed, the entire schedule often needed to be rebuilt from scratch.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="case-section">
+                    <h3 class="section-title">My Approach</h3>
+                    <div class="approach-grid">
+                        <div class="approach-item">
+                            <div class="approach-title">1. Analyzed Current Workflow</div>
+                            <div class="approach-description">
+                                I spent time on-site mapping their existing scheduling process, understanding constraints, priorities, and decision-making rules.
+                            </div>
+                        </div>
+                        <div class="approach-item">
+                            <div class="approach-title">2. Designed Custom Logic</div>
+                            <div class="approach-description">
+                                I created optimization algorithms specific to their equipment setup, processing requirements, and business rules.
+                            </div>
+                        </div>
+                        <div class="approach-item">
+                            <div class="approach-title">3. Built Automation System</div>
+                            <div class="approach-description">
+                                I developed a system that automatically assigns jobs to manufacturing cells and optimizes autoclave utilization based on their specific constraints.
+                            </div>
+                        </div>
+                        <div class="approach-item">
+                            <div class="approach-title">4. Integrated with Existing Systems</div>
+                            <div class="approach-description">
+                                I connected the new system to their current production management tools to ensure seamless data flow.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="case-section">
+                    <h3 class="section-title">The Results</h3>
+                    <div class="results-section">
+                        <div class="results-grid">
+                            <div class="result-item">
+                                <div class="result-metric">4 Hours to Minutes</div>
+                                <div class="result-description">Daily scheduling time reduced from 4+ hours to under 30 minutes</div>
+                            </div>
+                            <div class="result-item">
+                                <div class="result-metric">100% Automation</div>
+                                <div class="result-description">Complete elimination of manual cell assignment decisions</div>
+                            </div>
+                            <div class="result-item">
+                                <div class="result-metric">Optimized Utilization</div>
+                                <div class="result-description">Maximized autoclave and manufacturing cell efficiency</div>
+                            </div>
+                            <div class="result-item">
+                                <div class="result-metric">6 Week Implementation</div>
+                                <div class="result-description">From initial analysis to full deployment</div>
+                            </div>
+                        </div>
+                        
+                        <div class="technical-details">
+                            <div class="tech-title">Technical Implementation</div>
+                            <div class="tech-list">
+                                <span class="tech-tag">Custom Optimization Algorithms</span>
+                                <span class="tech-tag">Constraint Programming</span>
+                                <span class="tech-tag">Real-Time Processing</span>
+                                <span class="tech-tag">System Integration</span>
+                                <span class="tech-tag">User Interface Design</span>
+                                <span class="tech-tag">Load Balancing</span>
+                            </div>
+                        </div>
+                        
+                        <div class="project-timeline">
+                            <div class="timeline-label">Total Project Duration</div>
+                            <div class="timeline-duration">6 Weeks - Analysis to Deployment</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Case Study 2: Warehouse Optimization -->
+    <section class="case-study">
+        <div class="case-container">
+            <div class="case-header">
+                <h2 class="case-title">Warehouse Capacity Optimization</h2>
+                <div class="case-subtitle">Inventory management system for agricultural retailer</div>
+                <div class="case-meta">
+                    <div class="meta-item">Regional Retail</div>
+                    <div class="meta-item">11,000+ SKUs</div>
+                    <div class="meta-item">Multi-Location</div>
+                </div>
+            </div>
+            
+            <div class="case-content">
+                <div class="summary-box">
+                    <div class="summary-title">Project Summary</div>
+                    <div class="summary-text">
+                        I designed and implemented a custom inventory optimization system that reduced warehouse capacity from 130% to 80% while saving over $10,000 annually in carrying costs. The system automated purchasing decisions and improved communication between departments.
+                    </div>
+                </div>
+
+                <div class="case-section">
+                    <h3 class="section-title">The Situation</h3>
+                    <div class="section-content">
+                        <p class="situation-text">
+                            The agricultural retailer was operating at 130% warehouse capacity with over 11,000 SKUs. Poor communication between purchasing and operations led to systematic over-purchasing and substantial dead stock accumulation.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="case-section">
+                    <h3 class="section-title">My Approach</h3>
+                    <div class="approach-grid">
+                        <div class="approach-item">
+                            <div class="approach-title">1. Data Analysis</div>
+                            <div class="approach-description">
+                                I analyzed their enterprise WMS data to identify purchasing patterns and inventory inefficiencies.
+                            </div>
+                        </div>
+                        <div class="approach-item">
+                            <div class="approach-title">2. Pilot Program Design</div>
+                            <div class="approach-description">
+                                I selected the top 300 products for optimization to demonstrate ROI before full implementation.
+                            </div>
+                        </div>
+                        <div class="approach-item">
+                            <div class="approach-title">3. Custom Inventory Model</div>
+                            <div class="approach-description">
+                                I built min-max optimization models integrated with their existing systems.
+                            </div>
+                        </div>
+                        <div class="approach-item">
+                            <div class="approach-title">4. Process Improvement</div>
+                            <div class="approach-description">
+                                I established new communication protocols between purchasing and operations teams.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="case-section">
+                    <h3 class="section-title">The Results</h3>
+                    <div class="results-section">
+                        <div class="results-grid">
+                            <div class="result-item">
+                                <div class="result-metric">130% to 80%</div>
+                                <div class="result-description">Warehouse capacity reduced to optimal levels</div>
+                            </div>
+                            <div class="result-item">
+                                <div class="result-metric">$10,000+ Savings</div>
+                                <div class="result-description">Annual cost reduction in carrying costs</div>
+                            </div>
+                            <div class="result-item">
+                                <div class="result-metric">Automated Purchasing</div>
+                                <div class="result-description">Systematic inventory management for priority items</div>
+                            </div>
+                            <div class="result-item">
+                                <div class="result-metric">3 Month Timeline</div>
+                                <div class="result-description">Analysis through full implementation</div>
+                            </div>
+                        </div>
+                        
+                        <div class="technical-details">
+                            <div class="tech-title">Technical Implementation</div>
+                            <div class="tech-list">
+                                <span class="tech-tag">SQL Data Analysis</span>
+                                <span class="tech-tag">VBA Automation</span>
+                                <span class="tech-tag">Excel Integration</span>
+                                <span class="tech-tag">WMS Connectivity</span>
+                                <span class="tech-tag">Statistical Modeling</span>
+                                <span class="tech-tag">Process Design</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="cta-content">
+            <h2 class="cta-title">Interested in Similar Results?</h2>
+            <p class="cta-description">
+                If you're facing similar operational challenges, I'd be happy to discuss how a custom solution could work for your specific situation.
+            </p>
+            <a href="index.html#contact" class="btn btn-primary">Schedule Consultation</a>
+            <a href="index.html" class="btn btn-secondary">Return to Home</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2024 Aedan Keller - Manufacturing Scheduling Specialist</p>
+    </footer>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Simple scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe case studies for simple fade-in on scroll
+        document.querySelectorAll('.case-study').forEach(section => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(20px)';
+            section.style.transition = 'all 0.6s ease-out';
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>
