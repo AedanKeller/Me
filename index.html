@@ -1,941 +1,699 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aedan Keller - Manufacturing Scheduling Specialist</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <title>Aedan Keller | Inventory Optimization & Systems</title>
+    <meta name="description"
+        content="Inventory systems for product businesses. Stop overbuying, prevent stockouts, and automate your buying plan.">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Space+Grotesk:wght@500;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            black: '#0a0a0a',
+                            dark: '#121212',
+                            card: '#1c1c1c',
+                            orange: '#FF5500', // Vibrant Orange
+                            orangeHover: '#CC4400',
+                            gray: '#888888',
+                            light: '#e5e5e5'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                    },
+                    animation: {
+                        'wiggle': 'wiggle 2s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        wiggle: {
+                            '0%, 100%': { transform: 'rotate(-2deg)' },
+                            '50%': { transform: 'rotate(2deg)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
-        :root {
-            --primary-navy: #1a365d;
-            --accent-blue: #3182ce;
-            --text-dark: #2d3748;
-            --text-light: #718096;
-            --background: #ffffff;
-            --section-bg: #f7fafc;
-            --border: #e2e8f0;
-            --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --success-green: #38a169;
-            --warning-orange: #ed8936;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            line-height: 1.6;
-            color: var(--text-dark);
+            background-color: #0a0a0a;
+            color: #e5e5e5;
             overflow-x: hidden;
         }
 
-        /* Navigation */
-        .navbar {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            z-index: 1000;
-            padding: 1rem 0;
-            transition: all 0.3s ease;
+        .glass-nav {
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .orange-glow {
+            box-shadow: 0 0 20px rgba(255, 85, 0, 0.15);
         }
 
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary-navy);
-            text-decoration: none;
+        /* Scroll Animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
         }
 
-        .nav-links {
-            display: flex;
-            list-style: none;
-            gap: 2rem;
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
         }
 
-        .nav-links a {
-            text-decoration: none;
-            color: var(--text-dark);
-            font-weight: 500;
-            transition: color 0.3s ease;
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
         }
 
-        .nav-links a:hover {
-            color: var(--accent-blue);
+        ::-webkit-scrollbar-track {
+            background: #0a0a0a;
         }
 
-        /* Hero Section */
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
-            padding: 0 2rem;
-            position: relative;
-            overflow: hidden;
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
         }
 
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="%23cbd5e0" stroke-width="1.5"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grid)"/></svg>') repeat;
-            opacity: 0.8;
-        }
-
-        .hero-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1.2fr 1fr;
-            gap: 2rem;
-            align-items: center;
-            position: relative;
-            z-index: 1;
-        }
-
-        .hero-content {
-            padding-right: 1rem;
-        }
-
-        .hero-content h1 {
-            font-size: clamp(2.2rem, 4.5vw, 3.5rem);
-            font-weight: 700;
-            color: var(--primary-navy);
-            margin-bottom: 1rem;
-            line-height: 1.1;
-        }
-
-        .hero-subtitle {
-            font-size: 1.3rem;
-            color: var(--text-light);
-            margin-bottom: 2rem;
-            font-weight: 400;
-            line-height: 1.4;
-        }
-
-        .hero-description {
-            font-size: 1.125rem;
-            color: var(--text-dark);
-            margin-bottom: 3rem;
-            line-height: 1.7;
-        }
-
-        .pricing-highlight {
-            background: var(--success-green);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            display: inline-block;
-            margin-bottom: 2rem;
-        }
-
-        .cta-buttons {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            text-decoration: none;
-            display: inline-block;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .btn-primary {
-            background: var(--accent-blue);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: var(--primary-navy);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(49, 130, 206, 0.3);
-        }
-
-        .btn-secondary {
-            background: transparent;
-            color: var(--primary-navy);
-            border: 2px solid var(--primary-navy);
-        }
-
-        .btn-secondary:hover {
-            background: var(--primary-navy);
-            color: white;
-            transform: translateY(-2px);
-        }
-
-        .hero-image {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .hero-photo {
-            width: 420px;
-            height: 420px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 8px solid white;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease;
-        }
-
-        .hero-photo:hover {
-            transform: scale(1.05);
-        }
-
-        /* Proven Results Section */
-        .proven-results {
-            background: white;
-            padding: 6rem 2rem;
-            margin-top: -2rem;
-            position: relative;
-            z-index: 2;
-        }
-
-        .results-container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .results-title {
-            text-align: center;
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--primary-navy);
-            margin-bottom: 4rem;
-        }
-
-        .results-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 3rem;
-        }
-
-        .result-card {
-            background: var(--section-bg);
-            padding: 2.5rem;
-            border-radius: 16px;
-            text-align: center;
-            border-left: 6px solid var(--success-green);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            position: relative;
-        }
-
-        .result-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-        }
-
-        .result-metric {
-            font-size: 2.2rem;
-            font-weight: 700;
-            color: var(--accent-blue);
-            margin-bottom: 1rem;
-        }
-
-        .result-description {
-            color: var(--text-dark);
-            font-weight: 500;
-            line-height: 1.6;
-            margin-bottom: 2rem;
-            font-size: 1.1rem;
-        }
-
-        .chart-container {
-            height: 200px;
-            position: relative;
-            margin-top: 1.5rem;
-        }
-
-        /* Value Proposition Section */
-        .value-prop {
-            padding: 6rem 2rem;
-            background: var(--section-bg);
-        }
-
-        .value-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
-            align-items: center;
-        }
-
-        .section-title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--primary-navy);
-            margin-bottom: 3rem;
-            line-height: 1.2;
-        }
-
-        .value-content h2 {
-            margin-bottom: 2rem;
-        }
-
-        .value-list {
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
-        }
-
-        .value-item {
-            background: white;
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-            border-left: 5px solid var(--accent-blue);
-            transition: transform 0.3s ease;
-        }
-
-        .value-item:hover {
-            transform: translateX(5px);
-        }
-
-        .value-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--primary-navy);
-            margin-bottom: 0.8rem;
-        }
-
-        .value-description {
-            color: var(--text-dark);
-            line-height: 1.6;
-            font-size: 1rem;
-        }
-
-        .large-image {
-            width: 100%;
-            height: 600px;
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            position: relative;
-        }
-
-        .large-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: center;
-        }
-
-        .large-image .placeholder-text {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: white;
-            font-size: 1.4rem;
-            font-weight: 500;
-            text-align: center;
-            background: rgba(0, 0, 0, 0.6);
-            padding: 2rem;
-            border-radius: 12px;
-            backdrop-filter: blur(10px);
-            display: none;
-        }
-
-        /* Manufacturing Crisis Section */
-        .crisis-section {
-            padding: 6rem 2rem;
-            background: white;
-        }
-
-        .crisis-container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .crisis-intro {
-            text-align: center;
-            max-width: 800px;
-            margin: 0 auto 4rem auto;
-        }
-
-        .crisis-intro-text {
-            font-size: 1.2rem;
-            color: var(--text-dark);
-            line-height: 1.6;
-            margin-bottom: 2rem;
-        }
-
-        .crisis-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
-        .crisis-stat {
-            text-align: center;
-            padding: 2.5rem;
-            background: linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%);
-            border-radius: 16px;
-            border-top: 6px solid var(--warning-orange);
-            transition: transform 0.3s ease;
-        }
-
-        .crisis-stat:hover {
-            transform: translateY(-5px);
-        }
-
-        .stat-number {
-            font-size: 2.8rem;
-            font-weight: 700;
-            color: var(--warning-orange);
-            margin-bottom: 1rem;
-        }
-
-        .stat-description {
-            color: var(--text-dark);
-            font-weight: 500;
-            line-height: 1.6;
-            font-size: 1.1rem;
-        }
-
-        .solution-callout {
-            background: linear-gradient(135deg, #f0fff4 0%, #c6f6d5 100%);
-            border: 3px solid var(--success-green);
-            border-radius: 16px;
-            padding: 3rem;
-            margin-top: 4rem;
-            text-align: center;
-        }
-
-        .callout-title {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--primary-navy);
-            margin-bottom: 1.5rem;
-        }
-
-        .callout-text {
-            font-size: 1.2rem;
-            color: var(--text-dark);
-            line-height: 1.7;
-        }
-
-        /* Perfect For Section */
-        .perfect-for {
-            padding: 6rem 2rem;
-            background: var(--section-bg);
-        }
-
-        .perfect-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
-            align-items: center;
-        }
-
-        .perfect-content h2 {
-            margin-bottom: 2rem;
-        }
-
-        .perfect-list {
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
-        }
-
-        .perfect-item {
-            background: white;
-            padding: 2rem;
-            border-radius: 12px;
-            border-left: 5px solid var(--success-green);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-            transition: transform 0.3s ease;
-        }
-
-        .perfect-item:hover {
-            transform: translateX(5px);
-        }
-
-        .perfect-text {
-            color: var(--text-dark);
-            font-weight: 500;
-            line-height: 1.6;
-            font-size: 1.1rem;
-        }
-
-        /* Contact Section */
-        .contact {
-            padding: 6rem 2rem;
-            background: var(--primary-navy);
-            color: white;
-        }
-
-        .contact-container {
-            max-width: 800px;
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        .contact h2 {
-            color: white;
-            margin-bottom: 2rem;
-            font-size: 2.5rem;
-        }
-
-        .contact-description {
-            font-size: 1.3rem;
-            margin-bottom: 3rem;
-            color: #cbd5e0;
-        }
-
-        .contact-info {
-            display: flex;
-            justify-content: center;
-            gap: 3rem;
-            flex-wrap: wrap;
-            margin-top: 2rem;
-        }
-
-        .contact-item {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            color: #cbd5e0;
-            font-size: 1.1rem;
-        }
-
-        /* Footer */
-        .footer {
-            background: var(--text-dark);
-            color: white;
-            text-align: center;
-            padding: 2rem;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .hero-container,
-            .value-container,
-            .perfect-container {
-                grid-template-columns: 1fr;
-                text-align: center;
-                gap: 2rem;
-            }
-
-            .nav-links {
-                display: none;
-            }
-
-            .hero-photo {
-                width: 300px;
-                height: 300px;
-            }
-
-            .cta-buttons {
-                justify-content: center;
-            }
-
-            .contact-info {
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            .results-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .large-image {
-                height: 400px;
-            }
-
-            .large-image .placeholder-text {
-                font-size: 1.2rem;
-            }
-        }
-
-        /* Animations */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .animate-fade-in {
-            animation: fadeInUp 0.6s ease-out;
-        }
-
-        /* Smooth scrolling */
-        html {
-            scroll-behavior: smooth;
+        ::-webkit-scrollbar-thumb:hover {
+            background: #FF5500;
         }
     </style>
 </head>
-<body>
+
+<body class="antialiased selection:bg-brand-orange selection:text-white">
+
     <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <a href="#home" class="logo">Aedan Keller</a>
-            <ul class="nav-links">
-                <li><a href="#home">Home</a></li>
-                <a href="cases.html">Portfolio</a></li>
-                <a href="aboutme.html">About Me</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
+    <nav class="fixed w-full z-50 glass-nav transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logo -->
+                <a href="#"
+                    class="font-display font-bold text-xl tracking-tight text-white hover:text-brand-orange transition-colors">
+                    AEDAN KELLER<span class="text-brand-orange">.</span>
+                </a>
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#fit" class="text-sm font-medium text-gray-400 hover:text-white transition-colors">Is This
+                        You?</a>
+                    <a href="#process" class="text-sm font-medium text-gray-400 hover:text-white transition-colors">My
+                        Process</a>
+                    <a href="#results"
+                        class="text-sm font-medium text-gray-400 hover:text-white transition-colors">Results</a>
+                    <a href="#faq" class="text-sm font-medium text-gray-400 hover:text-white transition-colors">FAQ</a>
+                    <a href="https://cal.com/" target="_blank"
+                        class="px-5 py-2.5 bg-brand-orange text-white text-sm font-bold rounded hover:bg-brand-orangeHover transition-all orange-glow">
+                        Book a Call
+                    </a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="mobile-menu-btn" class="text-white focus:outline-none">
+                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Panel -->
+        <div id="mobile-menu" class="hidden md:hidden bg-brand-card border-b border-gray-800">
+            <div class="px-6 py-4 space-y-4">
+                <a href="#fit" class="block text-gray-400 hover:text-white">Is This You?</a>
+                <a href="#process" class="block text-gray-400 hover:text-white">My Process</a>
+                <a href="#results" class="block text-gray-400 hover:text-white">Results</a>
+                <a href="#faq" class="block text-gray-400 hover:text-white">FAQ</a>
+                <a href="https://cal.com/"
+                    class="block w-full text-center px-5 py-3 bg-brand-orange text-white font-bold rounded">
+                    Book a Call
+                </a>
+            </div>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <section id="home" class="hero">
-        <div class="hero-container">
-            <div class="hero-content animate-fade-in">
-                <h1>AEDAN KELLER</h1>
-                <div class="hero-subtitle">Manufacturing Scheduling Specialist</div>
-                <div class="pricing-highlight">University Pricing with Professional Results</div>
-                <p class="hero-description">
-                    I turn 4-hour scheduling nightmares into 10-minute solutions. Custom automation built specifically for your equipment and workflow.
-                </p>
-                <div class="cta-buttons">
-                    <a href="#contact" class="btn btn-primary">Get Free Assessment</a>
-                    <a href="cases.html" class="btn btn-secondary">Case Studies</a>
-                </div>
-            </div>
-            <div class="hero-image">
-                <div style="width: 420px; height: 420px; border-radius: 50%; border: 8px solid white; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1); overflow: hidden;">
-                    <img src="Headshot.png" alt="Aedan Keller" style="width: 100%; height: 100%; object-fit: cover;">
-                </div>
-            </div>
+    <section class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden min-h-screen flex items-center">
+        <!-- Background decorative elements -->
+        <div
+            class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-brand-orange opacity-10 blur-[100px] rounded-full">
         </div>
-    </section>
-
-    <!-- Proven Results Section -->
-    <section id="results" class="proven-results">
-        <div class="results-container">
-            <h2 class="results-title">MY PROVEN RESULTS</h2>
-            <div class="results-grid">
-                <div class="result-card">
-                    <div class="result-metric">From 4 Hours to Minutes</div>
-                    <div class="result-description">Aerospace manufacturer's daily scheduling transformed</div>
-                    <div class="chart-container">
-                        <canvas id="timeChart"></canvas>
-                    </div>
-                </div>
-                <div class="result-card">
-                    <div class="result-metric">6-Week Delivery</div>
-                    <div class="result-description">Complete custom solution designed and deployed</div>
-                    <div class="chart-container">
-                        <canvas id="timelineChart"></canvas>
-                    </div>
-                </div>
-                <div class="result-card">
-                    <div class="result-metric">$10000s Saved</div> <br>
-                    <div class="result-description">Reliable ROI Driven by Streamlined Labor Costs and Boosted Efficiency</div>
-                    <div class="chart-container">
-                        <canvas id="savingsChart"></canvas>
-                    </div>
-                </div>
-            </div>
+        <div class="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 bg-gray-800 opacity-20 blur-[100px] rounded-full">
         </div>
-    </section>
 
-    <!-- Value Proposition Section -->
-    <section id="approach" class="value-prop">
-        <div class="value-container">
-            <div class="large-image">
-                <img src="AdobeStock_794471863.jpeg" alt="Manufacturing Equipment & Facility">
-            </div>
-            <div class="value-content">
-                <h2 class="section-title">What Makes My Approach Different</h2>
-                <div class="value-list">
-                    <div class="value-item">
-                        <h3 class="value-title">I study YOUR specific equipment</h3>
-                        <p class="value-description">Every solution starts with understanding your unique production flow and current challenges</p>
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10 w-full">
+            <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+
+                <!-- Copy -->
+                <div class="reveal active">
+                    <h1 class="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-8">
+                        <span class="block whitespace-nowrap lg:whitespace-normal">Buy with confidence.</span>
+                        <span class="block whitespace-nowrap lg:whitespace-normal">Stop overbuying.</span>
+                        <span class="block text-brand-orange whitespace-nowrap lg:whitespace-normal">Stop stocking
+                            out.</span>
+                    </h1>
+
+                    <p class="text-lg text-gray-400 mb-10 max-w-lg leading-relaxed">
+                        I help product businesses decide what to buy, how much to hold, and what to cut—then I build
+                        lightweight systems so the plan runs every week.
+                    </p>
+
+                    <div class="flex flex-col sm:flex-row gap-6 items-start sm:items-center">
+                        <div>
+                            <a href="https://cal.com/" target="_blank"
+                                class="px-8 py-4 bg-brand-orange text-white font-bold text-center rounded hover:bg-brand-orangeHover transition-all orange-glow flex items-center justify-center gap-2 group">
+                                Book a 10-min Call
+                                <i data-lucide="arrow-right"
+                                    class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                            </a>
+                            <p class="text-xs text-gray-500 mt-2 ml-1">Initial suggestions. No commitment.</p>
+                        </div>
+                        <a href="#results"
+                            class="px-8 py-4 bg-transparent border border-gray-700 text-white font-medium text-center rounded hover:bg-white/5 transition-all mb-6 sm:mb-0">
+                            See Proof
+                        </a>
                     </div>
-                    <div class="value-item">
-                        <h3 class="value-title">I design automation that fits YOUR processes</h3>
-                        <p class="value-description">Custom solutions that integrate seamlessly with how you already operate</p>
+                </div>
+
+                <!-- Headshot -->
+                <div class="relative flex justify-center lg:justify-end reveal delay-200">
+                    <div
+                        class="relative w-80 h-96 md:w-96 md:h-[30rem] rounded-2xl overflow-hidden border border-gray-800 shadow-2xl group">
+                        <!-- Replace with your actual headshot URL -->
+                        <img src="photos/Headshot copy.jpeg" alt="Aedan Keller"
+                            class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 scale-105 group-hover:scale-100">
+
+                        <div
+                            class="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-black via-black/80 to-transparent">
+                            <p class="font-display font-bold text-xl text-white">Aedan Keller</p>
+                            <!-- Removed title as requested -->
+                        </div>
                     </div>
-                    <div class="value-item">
-                        <h3 class="value-title">I create tools YOUR team actually wants to use</h3>
-                        <p class="value-description">User-friendly interfaces designed around your workflow, with training included</p>
+                    <!-- Decorative back shape -->
+                    <div
+                        class="absolute -z-10 top-10 -right-10 w-full h-full border-2 border-brand-orange/20 rounded-2xl hidden md:block">
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Manufacturing Crisis Section -->
-    <section id="crisis" class="crisis-section">
-        <div class="crisis-container">
-            <div class="crisis-intro">
-                <h2 class="section-title">The Manufacturing Workforce Crisis</h2>
-                <p class="crisis-intro-text">
-                    Manufacturing faces an unprecedented challenge. While demand grows, the industry struggles with a critical shortage of skilled workers - forcing teams to spend countless hours on manual processes that could be automated.
-                </p>
-            </div>
-            
-            <div class="crisis-stats">
-                <div class="crisis-stat">
-                    <div class="stat-number">750,000</div>
-                    <div class="stat-description">Manufacturing jobs currently unfilled in the US</div>
-                </div>
-                <div class="crisis-stat">
-                    <div class="stat-number">75%</div>
-                    <div class="stat-description">Of manufacturers say workforce is their #1 challenge</div>
-                </div>
-                <div class="crisis-stat">
-                    <div class="stat-number">2.1 Million</div>
-                    <div class="stat-description">Jobs predicted to remain unfilled by 2030</div>
-                </div>
-                <div class="crisis-stat">
-                    <div class="stat-number">10+ Hours</div>
-                    <div class="stat-description">Average weekly time spent on manual scheduling</div>
-                </div>
+    <!-- Cold Traffic / Fit Section -->
+    <section id="fit" class="py-24 bg-brand-dark border-y border-white/5">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="text-center mb-16 reveal">
+                <h2 class="font-display text-3xl md:text-4xl font-bold mb-6">If you’re seeing any of these, you’re a
+                    fit:</h2>
+                <p class="text-gray-400">Inventory distortion usually looks like one of these four problems.</p>
             </div>
 
-            <div class="solution-callout">
-                <h3 class="callout-title">The Solution: Amplify Your Existing Workforce</h3>
-                <p class="callout-text">
-                    Smart manufacturers use automation to free skilled teams from manual tasks. When I eliminated 4 hours of daily scheduling work, those employees could focus on high-value production activities.
-                </p>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Fit 1 -->
+                <div
+                    class="p-6 rounded-xl bg-brand-card border border-white/5 hover:border-brand-orange/30 transition-all duration-300 reveal delay-100">
+                    <div class="mb-4 text-brand-orange"><i data-lucide="alert-circle" class="w-8 h-8"></i></div>
+                    <h3 class="text-lg font-bold mb-2 text-white">Stockouts on winners</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">You run out of best-sellers right when demand
+                        peaks, leaving revenue on the table.</p>
+                </div>
+
+                <!-- Fit 2 -->
+                <div
+                    class="p-6 rounded-xl bg-brand-card border border-white/5 hover:border-brand-orange/30 transition-all duration-300 reveal delay-200">
+                    <div class="mb-4 text-brand-orange"><i data-lucide="layers" class="w-8 h-8"></i></div>
+                    <h3 class="text-lg font-bold mb-2 text-white">Old inventory piling up</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">Cash is trapped in slow-moving SKUs that just sit
+                        in the warehouse eating margin.</p>
+                </div>
+
+                <!-- Fit 3 -->
+                <div
+                    class="p-6 rounded-xl bg-brand-card border border-white/5 hover:border-brand-orange/30 transition-all duration-300 reveal delay-300">
+                    <div class="mb-4 text-brand-orange"><i data-lucide="clock" class="w-8 h-8"></i></div>
+                    <h3 class="text-lg font-bold mb-2 text-white">Buying takes hours</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">Your team spends days grinding through spreadsheets
+                        every time a PO needs to be placed.</p>
+                </div>
+
+                <!-- Fit 4 -->
+                <div
+                    class="p-6 rounded-xl bg-brand-card border border-white/5 hover:border-brand-orange/30 transition-all duration-300 reveal delay-300">
+                    <div class="mb-4 text-brand-orange"><i data-lucide="git-merge" class="w-8 h-8"></i></div>
+                    <h3 class="text-lg font-bold mb-2 text-white">Channel Mismatch</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">Inventory levels don't match sales velocity across
+                        wholesale, retail, and eCommerce channels.</p>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- Perfect For Section -->
-    <section id="perfect-for" class="perfect-for">
-        <div class="perfect-container">
-            <div class="perfect-content">
-                <h2 class="section-title">Perfect for Manufacturers Who...</h2>
-                <div class="perfect-list">
-                    <div class="perfect-item">
-                        <p class="perfect-text">Spend 10+ hours per week on manual scheduling and miss delivery promises</p>
-                    </div>
-                    <div class="perfect-item">
-                        <p class="perfect-text">Have 20-100 employees and operate multiple production cells that need coordination</p>
-                    </div>
-                    <div class="perfect-item">
-                        <p class="perfect-text">Pay overtime costs due to poor resource planning and can't assess capacity quickly</p>
-                    </div>
-                    <div class="perfect-item">
-                        <p class="perfect-text">Need custom automation but can't afford enterprise software solutions</p>
+    <!-- My Process & Solution Section (Consolidated) -->
+    <section id="process" class="py-24 bg-brand-black">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="text-center mb-16 reveal">
+                <span class="text-brand-orange font-bold tracking-widest uppercase text-sm mb-2 block">My Process</span>
+                <h2 class="font-display text-4xl md:text-5xl font-bold mb-6">What I can do for your business.</h2>
+
+                <!-- Fraction of cost chip -->
+                <div
+                    class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-card border border-brand-orange/30 shadow-[0_0_15px_rgba(255,85,0,0.1)] mb-8">
+                    <i data-lucide="check-circle" class="w-4 h-4 text-brand-orange"></i>
+                    <span class="text-sm font-medium text-white">Enterprise results at a <span
+                            class="text-brand-orange font-bold inline-block animate-wiggle">fraction of the cost</span>
+                        of big firms.</span>
+                </div>
+
+                <div class="max-w-3xl mx-auto mt-4 text-gray-400">
+                    <p class="font-medium text-white text-lg mb-2">You get a system, not just consulting.</p>
+                    <div class="flex flex-wrap justify-center gap-4 text-sm">
+                        <span class="flex items-center"><i data-lucide="check"
+                                class="w-4 h-4 text-brand-orange mr-1"></i> Weekly Buy List</span>
+                        <span class="flex items-center"><i data-lucide="check"
+                                class="w-4 h-4 text-brand-orange mr-1"></i> Targets per SKU (Min/Max)</span>
+                        <span class="flex items-center"><i data-lucide="check"
+                                class="w-4 h-4 text-brand-orange mr-1"></i> Simple Automation Tool</span>
                     </div>
                 </div>
             </div>
-            <div class="large-image">
-                <img src="pexels-tiger-lily-4481259.jpg" alt="Manufacturing Team Photo">
+
+            <div class="space-y-24">
+
+                <!-- Step 1: Audit & Intake -->
+                <div class="grid lg:grid-cols-2 gap-12 items-center reveal">
+                    <div class="order-2 lg:order-1">
+                        <div
+                            class="w-16 h-16 bg-brand-card border border-gray-700 rounded-2xl flex items-center justify-center mb-6">
+                            <span class="font-display font-bold text-2xl text-white">01</span>
+                        </div>
+                        <h3 class="text-3xl font-display font-bold text-white mb-4">Inventory Health Audit</h3>
+                        <p class="text-gray-400 text-lg leading-relaxed mb-6">
+                            We start by cutting through the noise. I analyze your sales history, current stock, and
+                            supplier data to identify what’s driving stockouts and where your cash is trapped in dead
+                            inventory.
+                        </p>
+                        <ul class="space-y-2">
+                            <li class="flex items-center text-sm text-gray-300"><i data-lucide="arrow-right"
+                                    class="w-4 h-4 text-brand-orange mr-2"></i> Identify Winners vs. Slow Movers (ABC
+                                Analysis)</li>
+                            <li class="flex items-center text-sm text-gray-300"><i data-lucide="arrow-right"
+                                    class="w-4 h-4 text-brand-orange mr-2"></i> Pinpoint immediate stockout risks</li>
+                        </ul>
+                    </div>
+                    <div class="order-1 lg:order-2 relative group">
+                        <div
+                            class="absolute inset-0 bg-brand-orange/20 blur-3xl opacity-20 group-hover:opacity-30 transition-opacity">
+                        </div>
+                        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2015&auto=format&fit=crop"
+                            class="relative rounded-2xl border border-gray-800 shadow-2xl grayscale group-hover:grayscale-0 transition-all duration-700"
+                            alt="Audit Process">
+                    </div>
+                </div>
+
+                <!-- Step 2: Buying Plan -->
+                <div class="grid lg:grid-cols-2 gap-12 items-center reveal">
+                    <div class="order-1 relative group">
+                        <div
+                            class="absolute inset-0 bg-brand-orange/20 blur-3xl opacity-20 group-hover:opacity-30 transition-opacity">
+                        </div>
+                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop"
+                            class="relative rounded-2xl border border-gray-800 shadow-2xl grayscale group-hover:grayscale-0 transition-all duration-700"
+                            alt="Data Planning">
+                    </div>
+                    <div class="order-2">
+                        <div
+                            class="w-16 h-16 bg-brand-card border border-gray-700 rounded-2xl flex items-center justify-center mb-6">
+                            <span class="font-display font-bold text-2xl text-white">02</span>
+                        </div>
+                        <h3 class="text-3xl font-display font-bold text-white mb-4">Buying Plan & Targets</h3>
+                        <p class="text-gray-400 text-lg leading-relaxed mb-6">
+                            No more guessing. I build a data-driven plan that sets clear stock targets for every SKU.
+                            You get a specific buying roadmap: exactly what to buy, how much to order, and when to place
+                            the PO.
+                        </p>
+                        <ul class="space-y-2">
+                            <li class="flex items-center text-sm text-gray-300"><i data-lucide="arrow-right"
+                                    class="w-4 h-4 text-brand-orange mr-2"></i> Set "How Much to Keep" targets</li>
+                            <li class="flex items-center text-sm text-gray-300"><i data-lucide="arrow-right"
+                                    class="w-4 h-4 text-brand-orange mr-2"></i> Weekly Buy List generation</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Step 3: Automation -->
+                <div class="grid lg:grid-cols-2 gap-12 items-center reveal">
+                    <div class="order-2 lg:order-1">
+                        <div
+                            class="w-16 h-16 bg-brand-card border border-gray-700 rounded-2xl flex items-center justify-center mb-6">
+                            <span class="font-display font-bold text-2xl text-white">03</span>
+                        </div>
+                        <h3 class="text-3xl font-display font-bold text-white mb-4">Lightweight Systems</h3>
+                        <p class="text-gray-400 text-lg leading-relaxed mb-6">
+                            A plan is useless if it takes 10 hours a week to update. I build simple, robust automation
+                            (Excel + Python/VBA) that allows you to refresh your numbers in minutes, not days.
+                        </p>
+                        <p class="text-brand-orange font-medium mb-6 flex items-center gap-2">
+                            <i data-lucide="layers" class="w-4 h-4"></i> I work with your existing software.
+                        </p>
+                        <ul class="space-y-2">
+                            <li class="flex items-center text-sm text-gray-300"><i data-lucide="arrow-right"
+                                    class="w-4 h-4 text-brand-orange mr-2"></i> Automated reorder triggers</li>
+                            <li class="flex items-center text-sm text-gray-300"><i data-lucide="arrow-right"
+                                    class="w-4 h-4 text-brand-orange mr-2"></i> Consistent, repeatable weekly workflow
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="order-1 lg:order-2 relative group">
+                        <div
+                            class="absolute inset-0 bg-brand-orange/20 blur-3xl opacity-20 group-hover:opacity-30 transition-opacity">
+                        </div>
+                        <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2070&auto=format&fit=crop"
+                            class="relative rounded-2xl border border-gray-800 shadow-2xl grayscale group-hover:grayscale-0 transition-all duration-700"
+                            alt="Automation Code">
+                    </div>
+                </div>
+
+            </div>
+
+            <p class="text-center text-sm text-gray-500 mt-16 reveal">Works for ecommerce, retail, and parts/materials
+                businesses—not just Shopify.</p>
+        </div>
+    </section>
+
+    <!-- Proof / Outcomes -->
+    <section id="results" class="py-24 bg-brand-dark border-y border-white/5 relative">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="text-center mb-16 reveal">
+                <h2 class="font-display text-4xl md:text-5xl font-bold mb-4">Take a look at the results.</h2>
+                <p class="text-brand-gray text-lg">Real outcomes from real brands </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-12">
+
+                <!-- Result 1: Availability -->
+                <div class="bg-brand-card border border-gray-800 rounded-2xl p-8 reveal flex flex-col justify-between">
+                    <div class="mb-6">
+                        <div
+                            class="inline-block px-3 py-1 bg-brand-orange/10 text-brand-orange text-xs font-bold rounded uppercase mb-2">
+                            Availability</div>
+                        <h3 class="text-2xl font-bold text-white mb-2">Best-Sellers: 80% to 99%</h3>
+                        <p class="text-gray-400 text-sm mb-4">Raised top-product fulfillment by prioritizing the right
+                            items and planning buys based on actual demand.</p>
+                        <div class="pt-4 border-t border-gray-800">
+                            <p class="text-xs text-gray-500 font-mono">Timeframe: 12 weeks •
+                                Scope: Top 500 SKUs</p>
+                        </div>
+                    </div>
+                    <div class="h-64 w-full bg-brand-black/50 rounded-lg p-4 border border-white/5">
+                        <canvas id="availabilityChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Result 2: Dead Stock (Now with Chart) -->
+                <div
+                    class="bg-brand-card border border-gray-800 rounded-2xl p-8 reveal delay-100 flex flex-col justify-between">
+                    <div class="mb-6">
+                        <div
+                            class="inline-block px-3 py-1 bg-brand-orange/10 text-brand-orange text-xs font-bold rounded uppercase mb-2">
+                            Cash Flow</div>
+                        <h3 class="text-2xl font-bold text-white mb-2">Cut dead stock by 40%</h3>
+                        <p class="text-gray-400 text-sm mb-4">Identified slow movers early and completely changed the
+                            buying cadence to stop cash bleeding.</p>
+                        <div class="pt-4 border-t border-gray-800">
+                            <p class="text-xs text-gray-500 font-mono">Timeframe: 6 months
+                                • Scope: Multi-warehouse</p>
+                        </div>
+                    </div>
+                    <div class="h-64 w-full bg-brand-black/50 rounded-lg p-4 border border-white/5">
+                        <canvas id="deadStockChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Result 3: Efficiency (Span 2 cols on desktop) -->
+                <div
+                    class="md:col-span-2 bg-brand-card border border-gray-800 rounded-2xl p-8 flex flex-col md:flex-row items-center justify-between gap-8 reveal delay-200">
+                    <div class="max-w-lg">
+                        <div
+                            class="inline-block px-3 py-1 bg-brand-orange/10 text-brand-orange text-xs font-bold rounded uppercase mb-2">
+                            Efficiency</div>
+                        <h3 class="text-2xl font-bold text-white mb-2">97% Less Planning Time</h3>
+                        <p class="text-gray-400 text-sm mb-4">Automated planning workflows (Python + VBA) turned hours
+                            of spreadsheet grinding into minutes.</p>
+                        <p class="text-xs text-gray-500 font-mono pt-2 border-t border-gray-700 inline-block">Timeframe:
+                            4 weeks • Tool: Custom Script</p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="text-right">
+                            <p class="text-xs text-gray-500 uppercase tracking-widest">Time Spent</p>
+                            <p class="text-4xl font-display font-bold text-white">97% <span
+                                    class="text-brand-orange text-lg">▼</span></p>
+                        </div>
+                        <div class="h-16 w-px bg-gray-800"></div>
+                        <div class="text-left">
+                            <p class="text-xs text-gray-500 uppercase tracking-widest">Speed</p>
+                            <p class="text-4xl font-display font-bold text-white">10x</p>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </section>
 
-    <!-- Contact Section -->
-    <section id="contact" class="contact">
-        <div class="contact-container">
-            <h2>Ready to Transform Your Scheduling?</h2>
-            <p class="contact-description">
-                Let's discuss how I can eliminate your scheduling headaches and save thousands annually.
+    <!-- FAQ -->
+    <section id="faq" class="py-20 bg-brand-black border-t border-white/5">
+        <div class="max-w-3xl mx-auto px-6 lg:px-8 reveal">
+            <h2 class="font-display text-3xl font-bold mb-10 text-center">FAQ</h2>
+
+            <div class="space-y-6">
+                <!-- Q0: What I need -->
+                <div class="border-b border-gray-800 pb-6">
+                    <h3 class="text-lg font-bold text-white mb-2">What do you need from me to start?</h3>
+                    <p class="text-gray-400 mb-2">Will depend project to project, book a call and we can talk about it!
+                    </p>
+                </div>
+                <!-- Q1 -->
+                <div class="border-b border-gray-800 pb-6">
+                    <h3 class="text-lg font-bold text-white mb-2">Do I need Shopify?</h3>
+                    <p class="text-gray-400">No. If you can export sales + inventory to CSV/Excel, we can build the
+                        plan.</p>
+                </div>
+                <!-- Q2 -->
+                <div class="border-b border-gray-800 pb-6">
+                    <h3 class="text-lg font-bold text-white mb-2">Do you replace my inventory software?</h3>
+                    <p class="text-gray-400">No. I build the decision layer: what to buy, how much to hold, when to
+                        order.</p>
+                </div>
+                <!-- Q3 -->
+                <div class="border-b border-gray-800 pb-6">
+                    <h3 class="text-lg font-bold text-white mb-2">What if I have multiple warehouses?</h3>
+                    <p class="text-gray-400">No problem. The system can segment inventory plans by location to ensure
+                        the right stock is in the right place.</p>
+                </div>
+                <!-- Q4 -->
+                <div class="border-b border-gray-800 pb-6">
+                    <h3 class="text-lg font-bold text-white mb-2">Do you handle supplier negotiations?</h3>
+                    <p class="text-gray-400">I focus on the data and the buying plan. However, arming you with accurate
+                        forecast data gives you significant leverage in those conversations.</p>
+                </div>
+                <!-- Q5 -->
+                <div class="border-b border-gray-800 pb-6">
+                    <h3 class="text-lg font-bold text-white mb-2">Is this a monthly retainer?</h3>
+                    <p class="text-gray-400">Typically, this is a project-based engagement (Audit + Build). Retainers
+                        are available if you want ongoing advisory support.</p>
+                </div>
+                <!-- Q6 -->
+                <div>
+                    <h3 class="text-lg font-bold text-white mb-2">How fast can we start?</h3>
+                    <p class="text-gray-400">Usually as soon as you can send exports.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Footer -->
+    <section class="py-24 relative overflow-hidden text-center reveal">
+        <div class="absolute inset-0 bg-brand-orange opacity-5"></div>
+        <div class="max-w-2xl mx-auto px-6 relative z-10">
+            <h2 class="font-display text-4xl md:text-5xl font-bold mb-6 text-white">Ready to stop buying blind?</h2>
+            <p class="text-xl text-gray-400 mb-10">
+                In one call, I’ll tell you where you’re overbought, what’s at risk of stocking out, and what to fix
+                first.
             </p>
-            
-            <div class="contact-info">
-                <div class="contact-item">
-                    <span>📧</span>
-                    <span>aedan@example.com</span>
-                </div>
-                <div class="contact-item">
-                    <span>📱</span>
-                    <span>(555) 123-4567</span>
-                </div>
-                <div class="contact-item">
-                    <span>💼</span>
-                    <span>LinkedIn Profile</span>
-                </div>
-            </div>
+            <a href="https://cal.com/" target="_blank"
+                class="inline-block px-10 py-5 bg-brand-orange text-white text-lg font-bold rounded-lg hover:bg-brand-orangeHover hover:scale-105 transition-all shadow-[0_0_40px_rgba(255,85,0,0.3)]">
+                Book a 10-min Call
+            </a>
+            <p class="text-xs text-gray-500 mt-4">Initial suggestions. No commitment.</p>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="footer">
-        <p>&copy; 2025 Aedan Keller. Manufacturing Scheduling Solutions.</p>
+    <footer class="bg-black border-t border-gray-900 py-12">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="text-center md:text-left">
+                <span class="font-display font-bold text-xl text-white">AEDAN KELLER<span
+                        class="text-brand-orange">.</span></span>
+                <p class="text-gray-500 text-sm mt-2">Inventory Optimization Expert.</p>
+            </div>
+            <div class="flex gap-6">
+                <a href="#" class="text-gray-500 hover:text-brand-orange transition-colors"><i data-lucide="linkedin"
+                        class="w-5 h-5"></i></a>
+                <a href="#" class="text-gray-500 hover:text-brand-orange transition-colors"><i data-lucide="mail"
+                        class="w-5 h-5"></i></a>
+            </div>
+            <div class="text-gray-600 text-sm">
+                &copy;
+                <script>document.write(new Date().getFullYear())</script> Aedan Keller. All rights reserved.
+            </div>
+        </div>
     </footer>
 
+    <!-- Scripts -->
     <script>
-        // Initialize charts when DOM is loaded
-        document.addEventListener('DOMContentLoaded', function() {
-            // Time Reduction Chart
-            const timeCtx = document.getElementById('timeChart').getContext('2d');
-            new Chart(timeCtx, {
-                type: 'bar',
-                data: {
-                    labels: ['Before', 'After'],
-                    datasets: [{
-                        label: 'Time (hours)',
-                        data: [4, 0.17], // 10 minutes = 0.17 hours
-                        backgroundColor: ['#ed8936', '#38a169'],
-                        borderColor: ['#dd6b20', '#2f855a'],
-                        borderWidth: 2
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 5,
-                            ticks: {
-                                callback: function(value) {
-                                    if (value === 0.17) return '10 min';
-                                    return value + 'h';
-                                }
-                            }
-                        }
-                    }
-                }
-            });
+        // Initialize Icons
+        lucide.createIcons();
 
-            // Project Timeline Chart
-            const timelineCtx = document.getElementById('timelineChart').getContext('2d');
-            new Chart(timelineCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Analysis', 'Build', 'Deploy'],
-                    datasets: [{
-                        data: [2, 3, 1],
-                        backgroundColor: ['#38a169', '#3182ce', '#1a365d'],
-                        borderWidth: 2,
-                        borderColor: '#fff'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: {
-                                usePointStyle: true,
-                                padding: 15
-                            }
-                        }
-                    }
-                }
-            });
-
-            // Cost Savings Chart
-            const savingsCtx = document.getElementById('savingsChart').getContext('2d');
-            new Chart(savingsCtx, {
-                type: 'line',
-                data: {
-                    labels: ['Month 1', 'Month 2', 'Month 3', 'Month 4', 'Month 5', 'Month 6'],
-                    datasets: [{
-                        label: 'Efficiency Gains',
-                        data: [10, 25, 45, 65, 80, 95],
-                        borderColor: '#3182ce',
-                        backgroundColor: 'rgba(49, 130, 206, 0.1)',
-                        fill: true,
-                        tension: 0.4,
-                        borderWidth: 3
-                    }, {
-                        label: 'Labor Savings',
-                        data: [5, 20, 40, 60, 75, 90],
-                        borderColor: '#38a169',
-                        backgroundColor: 'rgba(56, 161, 105, 0.1)',
-                        fill: true,
-                        tension: 0.4,
-                        borderWidth: 3
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: {
-                                usePointStyle: true,
-                                padding: 15
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 100,
-                            ticks: {
-                                callback: function(value) {
-                                    return value + '%';
-                                }
-                            }
-                        }
-                    }
-                }
-            });
+        // Mobile Menu Toggle
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
         });
 
-        // Smooth scrolling for navigation links
+        // --- Charts Configuration ---
+        Chart.defaults.color = '#888888';
+        Chart.defaults.font.family = 'Inter';
+
+        // 1. Availability Chart
+        const ctxAvailability = document.getElementById('availabilityChart').getContext('2d');
+        new Chart(ctxAvailability, {
+            type: 'bar',
+            data: {
+                labels: ['Before', 'After'],
+                datasets: [{
+                    label: 'Best-Seller Availability (%)',
+                    data: [80, 99],
+                    backgroundColor: ['#333333', '#FF5500'],
+                    borderRadius: 6,
+                    barThickness: 50,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        grid: { color: '#222' }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+
+        // 2. Dead Stock Chart (New)
+        const ctxDeadStock = document.getElementById('deadStockChart').getContext('2d');
+        new Chart(ctxDeadStock, {
+            type: 'bar',
+            data: {
+                labels: ['Month 1', 'Month 6'],
+                datasets: [{
+                    label: 'Dead Stock Value ($)',
+                    data: [100, 60], // Represents index from 100% to 60% (40% reduction)
+                    backgroundColor: ['#333333', '#FF5500'],
+                    borderRadius: 6,
+                    barThickness: 50,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                return context.raw + '% Index';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 120,
+                        grid: { color: '#222' },
+                        display: false // Hide axis numbers for cleaner look
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+
+        // Smooth Scroll handling for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+                // Close mobile menu if open
+                if (!mobileMenu.classList.contains('hidden')) {
+                    mobileMenu.classList.add('hidden');
                 }
             });
         });
 
-        // Add scroll effect to navbar
-        window.addEventListener('scroll', function() {
-            const navbar = document.querySelector('.navbar');
-            if (window.scrollY > 100) {
-                navbar.style.background = 'rgba(255, 255, 255, 0.98)';
-                navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
-            } else {
-                navbar.style.background = 'rgba(255, 255, 255, 0.95)';
-                navbar.style.boxShadow = 'none';
+        // --- Reveal on Scroll Animation ---
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                var elementVisible = 100; // Trigger distance
+
+                if (elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add("active");
+                }
             }
-        });
+        }
+        window.addEventListener("scroll", reveal);
+        // Trigger once on load
+        reveal();
     </script>
 </body>
+
 </html>
