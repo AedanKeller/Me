@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Services | Aedan Keller — Fractional Inventory Planner</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <meta name="description"
+        content="Full-service fractional inventory management: weekly buy lists, demand forecasting, inventory health audits, cash flow management, and vendor optimization.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { brand: { black: '#0a0a0a', dark: '#121212', card: '#1c1c1c', orange: '#FF5500', orangeHover: '#CC4400', gray: '#888888', light: '#e5e5e5' } },
+                    fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Space Grotesk', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: #0a0a0a;
+            color: #e5e5e5;
+            overflow-x: hidden
+        }
+
+        .glass-nav {
+            background: rgba(10, 10, 10, .8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, .05)
+        }
+
+        .orange-glow {
+            box-shadow: 0 0 20px rgba(255, 85, 0, .15)
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all .8s cubic-bezier(.4, 0, .2, 1)
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0)
+        }
+
+        .reveal-scale {
+            opacity: 0;
+            transform: scale(.9);
+            transition: all .8s cubic-bezier(.4, 0, .2, 1)
+        }
+
+        .reveal-scale.active {
+            opacity: 1;
+            transform: scale(1)
+        }
+
+        .reveal-left {
+            opacity: 0;
+            transform: translateX(-50px);
+            transition: all .8s cubic-bezier(.4, 0, .2, 1)
+        }
+
+        .reveal-left.active {
+            opacity: 1;
+            transform: translateX(0)
+        }
+
+        .reveal-right {
+            opacity: 0;
+            transform: translateX(50px);
+            transition: all .8s cubic-bezier(.4, 0, .2, 1)
+        }
+
+        .reveal-right.active {
+            opacity: 1;
+            transform: translateX(0)
+        }
+
+        .hover-lift {
+            transition: all .3s cubic-bezier(.4, 0, .2, 1)
+        }
+
+        .hover-lift:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(255, 85, 0, .15)
+        }
+
+        .hover-glow:hover {
+            box-shadow: 0 0 30px rgba(255, 85, 0, .3)
+        }
+
+        .hover-scale {
+            transition: all .3s cubic-bezier(.4, 0, .2, 1)
+        }
+
+        .hover-scale:hover {
+            transform: scale(1.02)
+        }
+
+        .stagger-1 {
+            transition-delay: .1s
+        }
+
+        .stagger-2 {
+            transition-delay: .2s
+        }
+
+        .stagger-3 {
+            transition-delay: .3s
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0a0a0a
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #FF5500
+        }
+
+        .service-section:nth-child(even) {
+            background: #121212
+        }
+
+        .deliverable-item {
+            position: relative;
+            padding-left: 1.5rem
+        }
+
+        .deliverable-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: .6rem;
+            width: 8px;
+            height: 8px;
+            background: #FF5500;
+            border-radius: 50%
+        }
+    </style>
+</head>
+
+<body class="antialiased selection:bg-brand-orange selection:text-white">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 glass-nav transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <a href="index.html"
+                    class="font-display font-bold text-xl tracking-tight text-white hover:text-brand-orange transition-colors">AEDAN
+                    KELLER<span class="text-brand-orange">.</span></a>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="index.html"
+                        class="text-sm font-medium text-gray-400 hover:text-white transition-colors">Home</a>
+                    <a href="#buy-list" class="text-sm font-medium text-gray-400 hover:text-white transition-colors">Buy
+                        List</a>
+                    <a href="#forecasting"
+                        class="text-sm font-medium text-gray-400 hover:text-white transition-colors">Forecasting</a>
+                    <a href="#health-audit"
+                        class="text-sm font-medium text-gray-400 hover:text-white transition-colors">Health Audit</a>
+                    <a href="#cash-flow"
+                        class="text-sm font-medium text-gray-400 hover:text-white transition-colors">Cash Flow</a>
+                    <a href="#vendor"
+                        class="text-sm font-medium text-gray-400 hover:text-white transition-colors">Vendor</a>
+                    <a href="javascript:void(0);" data-cal-link="aedan-keller-ijsvjv/15min" data-cal-namespace="15min"
+                        data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true"}'
+                        class="px-5 py-2.5 bg-brand-orange text-white text-sm font-bold rounded hover:bg-brand-orangeHover transition-all orange-glow hover-scale">Free
+                        Inventory Audit</a>
+                </div>
+                <div class="md:hidden">
+                    <button id="mobile-menu-btn" class="text-white focus:outline-none"><i data-lucide="menu"
+                            class="w-6 h-6"></i></button>
+                </div>
+            </div>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden bg-brand-card border-b border-gray-800">
+            <div class="px-6 py-4 space-y-4">
+                <a href="index.html" class="block text-gray-400 hover:text-white">Home</a>
+                <a href="#buy-list" class="block text-gray-400 hover:text-white">Buy List</a>
+                <a href="#forecasting" class="block text-gray-400 hover:text-white">Forecasting</a>
+                <a href="#health-audit" class="block text-gray-400 hover:text-white">Health Audit</a>
+                <a href="#cash-flow" class="block text-gray-400 hover:text-white">Cash Flow</a>
+                <a href="#vendor" class="block text-gray-400 hover:text-white">Vendor</a>
+                <a href="javascript:void(0);" data-cal-link="aedan-keller-ijsvjv/15min" data-cal-namespace="15min"
+                    data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true"}'
+                    class="block w-full text-center px-5 py-3 bg-brand-orange text-white font-bold rounded">Free
+                    Audit</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="pt-32 pb-16 lg:pt-44 lg:pb-24 relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-96 h-96 bg-brand-orange opacity-10 blur-[120px] rounded-full"></div>
+        <div class="max-w-5xl mx-auto px-6 lg:px-8 text-center relative z-10">
+            <span
+                class="inline-block px-3 py-1 bg-brand-orange/10 text-brand-orange text-xs font-bold rounded-full uppercase tracking-widest mb-6 border border-brand-orange/20">Services</span>
+            <h1 class="font-display text-4xl md:text-6xl font-bold mb-6">Everything your inventory<br>needs. <span
+                    class="text-brand-orange">Nothing it doesn't.</span></h1>
+            <p class="text-lg text-gray-400 max-w-2xl mx-auto mb-8">Each service below is available as part of your
+                custom retainer. Pick what you need — I'll handle the rest.</p>
+            <div class="flex justify-center gap-4 flex-wrap">
+                <a href="#buy-list"
+                    class="px-4 py-2 bg-brand-card border border-gray-700 text-sm text-white rounded-lg hover:border-brand-orange/50 transition-all hover-scale">Buy
+                    List</a>
+                <a href="#forecasting"
+                    class="px-4 py-2 bg-brand-card border border-gray-700 text-sm text-white rounded-lg hover:border-brand-orange/50 transition-all hover-scale">Forecasting</a>
+                <a href="#health-audit"
+                    class="px-4 py-2 bg-brand-card border border-gray-700 text-sm text-white rounded-lg hover:border-brand-orange/50 transition-all hover-scale">Health
+                    Audit</a>
+                <a href="#cash-flow"
+                    class="px-4 py-2 bg-brand-card border border-gray-700 text-sm text-white rounded-lg hover:border-brand-orange/50 transition-all hover-scale">Cash
+                    Flow</a>
+                <a href="#vendor"
+                    class="px-4 py-2 bg-brand-card border border-gray-700 text-sm text-white rounded-lg hover:border-brand-orange/50 transition-all hover-scale">Vendor</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Service 1: Weekly Buy List -->
+    <section id="buy-list" class="service-section py-24 bg-brand-black border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div class="reveal-left">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-14 h-14 bg-brand-orange/10 rounded-xl flex items-center justify-center"><i
+                                data-lucide="clipboard-list" class="w-7 h-7 text-brand-orange"></i></div>
+                        <div>
+                            <span class="text-brand-orange text-xs font-bold uppercase tracking-widest">01 — Primary
+                                Execution</span>
+                            <h2 class="font-display text-3xl md:text-4xl font-bold text-white">The Weekly Buy List</h2>
+                        </div>
+                    </div>
+                    <p class="text-gray-400 text-lg leading-relaxed mb-8">Every week, I deliver a complete list of
+                        exactly what needs to be ordered from every vendor — calculated, justified, and ready for your
+                        sign-off.</p>
+                    <div class="space-y-4 mb-8">
+                        <div class="deliverable-item text-gray-300"><strong class="text-white">Reorder Point
+                                Calculation</strong> — I determine the trigger level for every SKU based on lead times
+                            and sales velocity.</div>
+                        <div class="deliverable-item text-gray-300"><strong class="text-white">Statistical Order
+                                Sizing</strong> — Using demand models to size each order so you don't stock out before
+                            the next shipment.</div>
+                        <div class="deliverable-item text-gray-300"><strong class="text-white">PO Generation</strong> —
+                            Formatted purchase orders ready for you or your warehouse manager to approve.</div>
+                    </div>
+                    <div
+                        class="inline-flex items-center gap-2 px-4 py-2 bg-brand-card border border-gray-700 rounded-lg text-sm text-gray-300">
+                        <i data-lucide="clock" class="w-4 h-4 text-brand-orange"></i> Delivered every Monday by 9am
+                    </div>
+                </div>
+                <div class="reveal-right">
+                    <!-- Sample Buy List Table -->
+                    <div
+                        class="bg-gray-900 border border-gray-800 rounded-lg overflow-hidden font-mono text-xs shadow-2xl hover-lift">
+                        <div class="bg-gray-800 px-4 py-3 border-b border-gray-700 flex items-center gap-2">
+                            <i data-lucide="file-spreadsheet" class="w-4 h-4 text-green-500"></i>
+                            <span class="text-white font-bold">Buy_List_Week_42.xlsx</span>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-gray-400">
+                                <thead class="bg-gray-800/50 text-gray-200">
+                                    <tr>
+                                        <th class="p-3">SKU</th>
+                                        <th class="p-3">Velocity</th>
+                                        <th class="p-3">On Hand</th>
+                                        <th class="p-3 text-brand-orange">Order</th>
+                                        <th class="p-3">Reason</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-800">
+                                    <tr>
+                                        <td class="p-3 text-white">BLK-TEE-M</td>
+                                        <td class="p-3">142/wk</td>
+                                        <td class="p-3">405</td>
+                                        <td class="p-3 text-brand-orange font-bold">850</td>
+                                        <td class="p-3">Below ROP</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 text-white">WHT-HOOD-L</td>
+                                        <td class="p-3">89/wk</td>
+                                        <td class="p-3">120</td>
+                                        <td class="p-3 text-brand-orange font-bold">400</td>
+                                        <td class="p-3 text-red-400">Urgent</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 text-white">GRY-JOGGER</td>
+                                        <td class="p-3">67/wk</td>
+                                        <td class="p-3">580</td>
+                                        <td class="p-3 text-gray-600">0</td>
+                                        <td class="p-3 text-gray-500">Sufficient</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Service 2: Demand Forecasting -->
+    <section id="forecasting" class="service-section py-24 bg-brand-dark border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div class="order-2 lg:order-1 reveal-left">
+                    <div class="h-72 w-full bg-brand-black/50 rounded-xl p-6 border border-white/5 hover-lift"><canvas
+                            id="forecastChart"></canvas></div>
+                </div>
+                <div class="order-1 lg:order-2 reveal-right">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-14 h-14 bg-brand-orange/10 rounded-xl flex items-center justify-center"><i
+                                data-lucide="trending-up" class="w-7 h-7 text-brand-orange"></i></div>
+                        <div>
+                            <span class="text-brand-orange text-xs font-bold uppercase tracking-widest">02 —
+                                Intelligence</span>
+                            <h2 class="font-display text-3xl md:text-4xl font-bold text-white">Demand Forecasting</h2>
+                        </div>
+                    </div>
+                    <p class="text-gray-400 text-lg leading-relaxed mb-8">I act as the meteorologist for your sales —
+                        predicting demand 3–6 months out so you order the right inventory before peaks hit.</p>
+                    <div class="space-y-4">
+                        <div class="deliverable-item text-gray-300"><strong class="text-white">Seasonality
+                                Adjustments</strong> — Predicting spikes like Black Friday and summer peaks so you order
+                            months in advance.</div>
+                        <div class="deliverable-item text-gray-300"><strong class="text-white">Trend Detection</strong>
+                            — Identifying which products are growing and which are dying so you lean in or cut losses
+                            early.</div>
+                        <div class="deliverable-item text-gray-300"><strong class="text-white">Promotional
+                                Planning</strong> — Coordinating with your marketing team so inventory is in the
+                            warehouse before ads launch.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Service 3: Inventory Health Audit -->
+    <section id="health-audit" class="service-section py-24 bg-brand-black border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div class="reveal-left">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-14 h-14 bg-brand-orange/10 rounded-xl flex items-center justify-center"><i
+                                data-lucide="heart-pulse" class="w-7 h-7 text-brand-orange"></i></div>
+                        <div>
+                            <span class="text-brand-orange text-xs font-bold uppercase tracking-widest">03 —
+                                Optimization</span>
+                            <h2 class="font-display text-3xl md:text-4xl font-bold text-white">Inventory Health Auditing
+                            </h2>
+                        </div>
+                    </div>
+                    <p class="text-gray-400 text-lg leading-relaxed mb-8">I find the hidden cash trapped in your
+                        warehouse and turn it into working capital.</p>
+                    <div class="space-y-4">
+                        <div class="deliverable-item text-gray-300"><strong class="text-white">ABC Analysis</strong> —
+                            Categorizing products into A (80% of revenue), B, and C tiers. I ensure your A-items never
+                            stock out while minimizing C-item bloat.</div>
+                        <div class="deliverable-item text-gray-300"><strong class="text-white">Dead Stock
+                                Identification</strong> — Flagging items that haven't sold in 90+ days with liquidation
+                            or discount recommendations.</div>
+                        <div class="deliverable-item text-gray-300"><strong class="text-white">Stockout
+                                Analysis</strong> — Calculating exactly how much revenue was lost from out-of-stocks —
+                            justifying smarter purchasing.</div>
+                    </div>
+                </div>
+                <div class="reveal-right">
+                    <div class="h-72 w-full bg-brand-black/50 rounded-xl p-6 border border-white/5 hover-lift"><canvas
+                            id="abcChart"></canvas></div>
+                    <div class="grid grid-cols-3 gap-4 mt-4">
+                        <div class="text-center p-3 bg-brand-card rounded-lg border border-white/5">
+                            <p class="text-brand-orange font-bold text-lg">A</p>
+                            <p class="text-xs text-gray-400">80% Revenue</p>
+                        </div>
+                        <div class="text-center p-3 bg-brand-card rounded-lg border border-white/5">
+                            <p class="text-yellow-500 font-bold text-lg">B</p>
+                            <p class="text-xs text-gray-400">15% Revenue</p>
+                        </div>
+                        <div class="text-center p-3 bg-brand-card rounded-lg border border-white/5">
+                            <p class="text-gray-500 font-bold text-lg">C</p>
+                            <p class="text-xs text-gray-400">5% Revenue</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Service 4: Cash Flow & OTB -->
+    <section id="cash-flow" class="service-section py-24 bg-brand-dark border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div class="order-2 lg:order-1 reveal-left">
+                    <div class="h-72 w-full bg-brand-black/50 rounded-xl p-6 border border-white/5 hover-lift"><canvas
+                            id="otbChart"></canvas></div>
+                </div>
+                <div class="order-1 lg:order-2 reveal-right">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-14 h-14 bg-brand-orange/10 rounded-xl flex items-center justify-center"><i
+                                data-lucide="wallet" class="w-7 h-7 text-brand-orange"></i></div>
+                        <div>
+                            <span class="text-brand-orange text-xs font-bold uppercase tracking-widest">04 — Financial
+                                Guardrail</span>
+                            <h2 class="font-display text-3xl md:text-4xl font-bold text-white">Cash Flow & OTB
+                                Management</h2>
+                        </div>
+                    </div>
+                    <p class="text-gray-400 text-lg leading-relaxed mb-8">When your budget can't fund everything, I
+                        decide which products get top priority — so every dollar works as hard as possible.</p>
+                    <div class="space-y-4">
+                        <div class="deliverable-item text-gray-300"><strong class="text-white">Open-to-Buy
+                                Budgeting</strong> — If you have $50K for inventory but need $70K, I prioritize the
+                            highest-impact purchases.</div>
+                        <div class="deliverable-item text-gray-300"><strong class="text-white">Lead Time
+                                Monitoring</strong> — Tracking actual vendor delivery times and adjusting safety stock
+                            buffers so delays don't catch you off guard.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Service 5: Vendor & Logistics -->
+    <section id="vendor" class="service-section py-24 bg-brand-black border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div class="reveal-left">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-14 h-14 bg-brand-orange/10 rounded-xl flex items-center justify-center"><i
+                                data-lucide="ship" class="w-7 h-7 text-brand-orange"></i></div>
+                        <div>
+                            <span class="text-brand-orange text-xs font-bold uppercase tracking-widest">05 —
+                                Efficiency</span>
+                            <h2 class="font-display text-3xl md:text-4xl font-bold text-white">Vendor & Logistics
+                                Optimization</h2>
+                        </div>
+                    </div>
+                    <p class="text-gray-400 text-lg leading-relaxed mb-8">I optimize how you buy and ship — grouping
+                        orders, calculating economic order quantities, and cutting your per-unit freight costs.</p>
+                    <div class="space-y-4">
+                        <div class="deliverable-item text-gray-300"><strong class="text-white">Container
+                                Building</strong> — Grouping multiple small orders into consolidated shipments to
+                            maximize container utilization and save freight.</div>
+                        <div class="deliverable-item text-gray-300"><strong class="text-white">EOQ Analysis</strong> —
+                            Calculating whether it's cheaper to buy 1,000 units once or 100 units ten times, factoring
+                            shipping vs. holding costs.</div>
+                    </div>
+                </div>
+                <div class="reveal-right">
+                    <div class="h-72 w-full bg-brand-black/50 rounded-xl p-6 border border-white/5 hover-lift"><canvas
+                            id="eoqChart"></canvas></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="py-24 relative overflow-hidden">
+        <div class="absolute inset-0 bg-brand-orange opacity-5"></div>
+        <div
+            class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-brand-orange/10 blur-[150px] rounded-full">
+        </div>
+        <div class="max-w-3xl mx-auto px-6 relative z-10 text-center reveal-scale">
+            <div
+                class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-card border border-brand-orange/30 mb-8">
+                <i data-lucide="gift" class="w-4 h-4 text-brand-orange"></i>
+                <span class="text-sm font-medium text-white">Completely free — no strings attached</span>
+            </div>
+            <h2 class="font-display text-4xl md:text-5xl font-bold mb-6 text-white">See where your inventory stands.
+            </h2>
+            <p class="text-xl text-gray-400 mb-4 max-w-2xl mx-auto">Book a free audit and I'll walk you through your
+                biggest inventory risks, opportunities, and exactly how much cash you can unlock.</p>
+            <p class="text-gray-500 mb-10">No pitch. No obligation. Actionable suggestions you keep either way.</p>
+            <a href="javascript:void(0);" data-cal-link="aedan-keller-ijsvjv/15min" data-cal-namespace="15min"
+                data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true"}'
+                class="inline-block px-10 py-5 bg-brand-orange text-white text-lg font-bold rounded-lg hover:bg-brand-orangeHover hover:scale-105 transition-all shadow-[0_0_40px_rgba(255,85,0,.3)] hover-glow">Book
+                Your Free Audit</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black border-t border-gray-900 py-12">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="text-center md:text-left">
+                <span class="font-display font-bold text-xl text-white">AEDAN KELLER<span
+                        class="text-brand-orange">.</span></span>
+                <p class="text-gray-500 text-sm mt-2">Fractional Inventory Planner.</p>
+            </div>
+            <div class="flex gap-6">
+                <a href="#" class="text-gray-500 hover:text-brand-orange transition-colors hover-scale"><i
+                        data-lucide="linkedin" class="w-5 h-5"></i></a>
+                <a href="#" class="text-gray-500 hover:text-brand-orange transition-colors hover-scale"><i
+                        data-lucide="mail" class="w-5 h-5"></i></a>
+            </div>
+            <div class="text-gray-600 text-sm">&copy;
+                <script>document.write(new Date().getFullYear())</script> Aedan Keller. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+        const menuBtn = document.getElementById('mobile-menu-btn'), mobileMenu = document.getElementById('mobile-menu');
+        menuBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+
+        (function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; let d = C.document; C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if (typeof namespace === "string") { cal.ns[namespace] = cal.ns[namespace] || api; p(cal.ns[namespace], ar); p(cal, ["initNamespace", namespace]); } else p(cal, ar); return; } p(cal, ar); }; })(window, "https://app.cal.com/embed/embed.js", "init");
+        Cal("init", "15min", { origin: "https://app.cal.com" });
+        Cal.ns["15min"]("ui", { "hideEventTypeDetails": false, "layout": "month_view" });
+
+        Chart.defaults.color = '#888'; Chart.defaults.font.family = 'Inter';
+
+        // Forecast Chart — line with forecast vs actual
+        new Chart(document.getElementById('forecastChart'), {
+            type: 'line', data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: [
+                    { label: 'Actual Sales', data: [120, 135, 128, 160, 210, 280, 310, 245, 190, 220, 350, 480], borderColor: '#FF5500', backgroundColor: 'rgba(255,85,0,.1)', fill: true, tension: .4, pointRadius: 3, pointBackgroundColor: '#FF5500' },
+                    { label: 'Forecast', data: [115, 140, 130, 155, 200, 270, 300, 250, 200, 230, 360, 500], borderColor: '#FF8800', borderDash: [5, 5], backgroundColor: 'transparent', tension: .4, pointRadius: 0 }
+                ]
+            }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, padding: 20 } } }, scales: { y: { grid: { color: '#222' }, ticks: { callback: v => v + 'u' } }, x: { grid: { display: false } } } }
+        });
+
+        // ABC Doughnut
+        new Chart(document.getElementById('abcChart'), {
+            type: 'doughnut', data: {
+                labels: ['A Items (80% Revenue)', 'B Items (15%)', 'C Items (5%)'],
+                datasets: [{ data: [80, 15, 5], backgroundColor: ['#FF5500', '#FF8800', '#333'], borderWidth: 0, hoverOffset: 8 }]
+            }, options: { responsive: true, maintainAspectRatio: false, cutout: '60%', plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, padding: 16, color: '#ccc' } } } }
+        });
+
+        // OTB Budget Chart
+        new Chart(document.getElementById('otbChart'), {
+            type: 'bar', data: {
+                labels: ['Category A', 'Category B', 'Category C', 'Category D', 'Category E'],
+                datasets: [
+                    { label: 'Budget Available', data: [15, 12, 8, 10, 5], backgroundColor: 'rgba(255,85,0,.3)', borderRadius: 4, barPercentage: .6 },
+                    { label: 'Optimal Spend', data: [18, 10, 12, 8, 7], backgroundColor: '#FF5500', borderRadius: 4, barPercentage: .6 }
+                ]
+            }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, padding: 20 } } }, scales: { y: { grid: { color: '#222' }, ticks: { callback: v => '$' + v + 'K' } }, x: { grid: { display: false } } } }
+        });
+
+        // EOQ Chart
+        new Chart(document.getElementById('eoqChart'), {
+            type: 'line', data: {
+                labels: ['100', '250', '500', '750', '1000', '1500', '2000'],
+                datasets: [
+                    { label: 'Total Cost', data: [9.2, 7.1, 5.4, 4.8, 4.2, 3.9, 3.8], borderColor: '#FF5500', backgroundColor: 'rgba(255,85,0,.1)', fill: true, tension: .3, pointRadius: 4, pointBackgroundColor: '#FF5500' },
+                    { label: 'Holding Cost', data: [1, 2, 3.5, 4.5, 5.5, 7, 9], borderColor: '#FF8800', borderDash: [5, 5], backgroundColor: 'transparent', tension: .3, pointRadius: 0 },
+                    { label: 'Order Cost', data: [8.2, 5.1, 1.9, 0.3, 0.2, 0.15, 0.1], borderColor: '#666', borderDash: [3, 3], backgroundColor: 'transparent', tension: .3, pointRadius: 0 }
+                ]
+            }, options: {
+                responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, padding: 20 } } }, scales: { y: { grid: { color: '#222' }, ticks: { callback: v => '$' + v } }, x: { grid: { display: false }, title: { display: true, text: 'Order Quantity', color: '#888' } } }
+            }
+        });
+
+        // Reveal on scroll
+        function reveal() { document.querySelectorAll('.reveal,.reveal-scale,.reveal-left,.reveal-right').forEach(el => { if (el.getBoundingClientRect().top < window.innerHeight - 100) el.classList.add('active') }) }
+        window.addEventListener('scroll', reveal); reveal();
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener('click', function (e) { e.preventDefault(); const t = document.querySelector(this.getAttribute('href')); if (t) t.scrollIntoView({ behavior: 'smooth' }); if (!mobileMenu.classList.contains('hidden')) mobileMenu.classList.add('hidden') }));
+    </script>
+</body>
+
+</html>
