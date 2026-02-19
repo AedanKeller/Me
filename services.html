@@ -338,18 +338,29 @@
     }
 
     @media (max-width: 900px) {
+      html, body { overflow-x: hidden; }
       nav { padding: 24px 28px; }
       section, .service-detail, .process-strip, .cta-strip { padding: 80px 28px; }
       #hero { padding: 140px 28px 80px; }
       .sd-header { grid-template-columns: 1fr; gap: 40px; margin-bottom: 60px; }
-      .process-grid { grid-template-columns: 1fr 1fr; }
+      /* Single column process grid on mobile */
+      .process-grid { grid-template-columns: 1fr; }
       footer { flex-direction: column; gap: 16px; padding: 32px 28px; }
-      /* Make mock report visuals scroll horizontally instead of overflowing */
-      .sd-visual { overflow-x: auto; overflow-y: visible; }
-      .sd-visual > div { min-width: 560px; }
-      /* Scale down table text slightly on mobile */
-      .sd-visual table { font-size: 0.6rem; }
-      .sd-visual th, .sd-visual td { padding: 6px 4px !important; }
+      /* Constrain outcome box padding */
+      .sd-outcome { padding: 28px 24px; }
+      /* Icon wrap full width centered */
+      .sd-icon-wrap { margin-left: auto; margin-right: auto; }
+      /* Mock visuals: fixed width container, inner content scrolls */
+      .sd-visual {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: auto;
+        overflow-y: visible;
+        -webkit-overflow-scrolling: touch;
+      }
+      .sd-visual > div { min-width: 540px; width: max-content; }
+      /* Disclaimer text wrap */
+      .sd-visual + p { max-width: 100%; }
     }
   </style>
 </head>
