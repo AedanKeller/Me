@@ -1,796 +1,1717 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aedan Keller | Fractional Inventory Planner</title>
-    <link rel="icon" type="image/png" href="favicon.png">
-    <meta name="description"
-        content="Fractional Inventory Planner. I manage your purchasing, forecasting, and inventory health every week — cheaper than a full-time hire, smarter than guessing.">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap"
-        rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: { black: '#0a0a0a', dark: '#121212', card: '#1c1c1c', orange: '#FF5500', orangeHover: '#CC4400', gray: '#888888', light: '#e5e5e5' }
-                    },
-                    fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Space Grotesk', 'sans-serif'] },
-                    animation: {
-                        'grow-shrink': 'growShrink 2s ease-in-out infinite', 'float': 'float 6s ease-in-out infinite',
-                        'counter': 'counter 2s ease-out forwards'
-                    },
-                    keyframes: {
-                        growShrink: { '0%,100%': { transform: 'scale(1)' }, '50%': { transform: 'scale(1.05)' } },
-                        float: { '0%,100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-20px)' } },
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        body {
-            background: #0a0a0a;
-            color: #e5e5e5;
-            overflow-x: hidden
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aedan Keller — Inventory Management</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syne:wght@400;500;700;800&family=DM+Mono:wght@300;400&display=swap"
+    rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <!-- Cal.com Embed -->
+  <script type="text/javascript">
+    (function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; let d = C.document; C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if (typeof namespace === "string") { cal.ns[namespace] = cal.ns[namespace] || api; p(cal.ns[namespace], ar); p(cal, ["initNamespace", namespace]); } else p(cal, ar); return; } p(cal, ar); }; })(window, "https://app.cal.com/embed/embed.js", "init");
+    Cal("init", "15min", { origin: "https://app.cal.com" });
+    Cal.ns["15min"]("ui", { "hideEventTypeDetails": false, "layout": "month_view" });
+  </script>
 
-        .glass-nav {
-            background: rgba(10, 10, 10, .8);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255, 255, 255, .05)
-        }
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      cursor: none !important;
+    }
 
-        .orange-glow {
-            box-shadow: 0 0 20px rgba(255, 85, 0, .15)
-        }
+    :root {
+      --bg: #0c0c0b;
+      --bg2: #111110;
+      --cream: #f0ead8;
+      --gold: #c8a96e;
+      --gold-dim: rgba(200, 169, 110, 0.15);
+      --muted: #9a968e;
+      --line: rgba(240, 234, 216, 0.08);
+      --white: #faf8f2;
+    }
 
-        .reveal {
-            opacity: 0;
-            transform: translateY(50px);
-            transition: all .8s cubic-bezier(.4, 0, .2, 1)
-        }
+    html {
+      scroll-behavior: smooth;
+    }
 
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0)
-        }
+    body {
+      background: var(--bg);
+      color: var(--cream);
+      font-family: 'Cormorant Garamond', serif;
+      overflow-x: hidden;
+      cursor: none;
+    }
 
-        .reveal-scale {
-            opacity: 0;
-            transform: scale(.9);
-            transition: all .8s cubic-bezier(.4, 0, .2, 1)
-        }
+    /* ── CUSTOM CURSOR ── */
+    .cursor {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 8px;
+      height: 8px;
+      background: var(--gold);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.08s, width 0.3s, height 0.3s, background 0.3s;
+    }
 
-        .reveal-scale.active {
-            opacity: 1;
-            transform: scale(1)
-        }
+    .cursor-ring {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 36px;
+      height: 36px;
+      border: 1px solid rgba(200, 169, 110, 0.4);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: transform 0.18s ease-out, width 0.3s, height 0.3s;
+    }
 
-        .reveal-left {
-            opacity: 0;
-            transform: translateX(-50px);
-            transition: all .8s cubic-bezier(.4, 0, .2, 1)
-        }
+    /* ── SCROLL REVEAL ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(48px);
+      transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1), transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+    }
 
-        .reveal-left.active {
-            opacity: 1;
-            transform: translateX(0)
-        }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
 
-        .reveal-right {
-            opacity: 0;
-            transform: translateX(50px);
-            transition: all .8s cubic-bezier(.4, 0, .2, 1)
-        }
+    .reveal-delay-1 {
+      transition-delay: 0.1s;
+    }
 
-        .reveal-right.active {
-            opacity: 1;
-            transform: translateX(0)
-        }
+    .reveal-delay-2 {
+      transition-delay: 0.22s;
+    }
 
-        .parallax-slow {
-            transition: transform .5s cubic-bezier(.4, 0, .2, 1)
-        }
+    .reveal-delay-3 {
+      transition-delay: 0.38s;
+    }
 
-        .hover-lift {
-            transition: all .3s cubic-bezier(.4, 0, .2, 1)
-        }
+    .reveal-delay-4 {
+      transition-delay: 0.5s;
+    }
 
-        .hover-lift:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(255, 85, 0, .15)
-        }
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 10000;
+      opacity: 0.35;
+    }
 
-        .hover-glow:hover {
-            box-shadow: 0 0 30px rgba(255, 85, 0, .3)
-        }
+    /* ── HORIZONTAL RULE ── */
+    .rule {
+      width: 100%;
+      height: 1px;
+      background: var(--line);
+      margin: 0;
+    }
 
-        .hover-scale {
-            transition: all .3s cubic-bezier(.4, 0, .2, 1)
-        }
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 28px 60px;
+      background: linear-gradient(to bottom, rgba(12, 12, 11, 0.95) 0%, transparent 100%);
+      backdrop-filter: blur(0px);
+    }
 
-        .hover-scale:hover {
-            transform: scale(1.02)
-        }
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--cream);
+    }
 
-        .stagger-1 {
-            transition-delay: .1s
-        }
+    .nav-link {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.25s;
+    }
 
-        .stagger-2 {
-            transition-delay: .2s
-        }
+    .nav-link:hover {
+      color: var(--gold);
+    }
 
-        .stagger-3 {
-            transition-delay: .3s
-        }
+    .nav-cta {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold);
+      text-decoration: none;
+      border: 1px solid rgba(200, 169, 110, 0.4);
+      padding: 10px 22px;
+      transition: background 0.3s, color 0.3s;
+      background: transparent;
+      cursor: none;
+    }
 
-        .stagger-4 {
-            transition-delay: .4s
-        }
+    .nav-cta:hover {
+      background: var(--gold);
+      color: var(--bg);
+    }
 
-        .stagger-5 {
-            transition-delay: .5s
-        }
+    /* ── SECTIONS ── */
+    section {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 140px 60px;
+      position: relative;
+    }
 
-        .reveal-highlight {
-            opacity: 0;
-            transform: translateY(50px);
-            transition: all .8s cubic-bezier(.4, 0, .2, 1);
-            position: relative
-        }
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      padding: 0 60px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
 
-        .reveal-highlight::before {
-            content: '';
-            position: absolute;
-            inset: -20px;
-            background: radial-gradient(ellipse at center, rgba(255, 85, 0, .25) 0%, transparent 70%);
-            opacity: 0;
-            transition: opacity .8s ease-out;
-            z-index: -1;
-            border-radius: 24px
-        }
+    .hero-left {
+      padding-top: 60px;
+    }
 
-        .reveal-highlight.active {
-            opacity: 1;
-            transform: translateY(0)
-        }
+    .hero-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 32px;
+    }
 
-        .reveal-highlight.active::before {
-            opacity: 1
-        }
+    .hero-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(4rem, 7vw, 7.5rem);
+      font-weight: 300;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      color: var(--white);
+      margin-bottom: 12px;
+    }
 
-        ::-webkit-scrollbar {
-            width: 8px
-        }
+    .hero-name em {
+      font-style: italic;
+      color: var(--gold);
+    }
 
-        ::-webkit-scrollbar-track {
-            background: #0a0a0a
-        }
+    .hero-tagline {
+      font-size: clamp(1.3rem, 2.2vw, 1.9rem);
+      font-weight: 300;
+      line-height: 1.5;
+      color: #a8a49c;
+      max-width: 520px;
+      margin-top: 28px;
+    }
 
-        ::-webkit-scrollbar-thumb {
-            background: #333;
-            border-radius: 4px
-        }
+    /* ── STAMP ── */
+    .stamp {
+      position: absolute;
+      bottom: -85px;
+      right: -90px;
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 158px;
+      height: 158px;
+      border: 3px solid var(--gold);
+      border-radius: 50%;
+      padding: 20px;
+      text-align: center;
+      transform: rotate(-12deg) scale(0);
+      opacity: 0;
+      box-shadow:
+        0 0 0 6px var(--bg),
+        0 0 0 8px rgba(200, 169, 110, 0.18);
+      pointer-events: none;
+    }
 
-        ::-webkit-scrollbar-thumb:hover {
-            background: #FF5500
-        }
+    .stamp::before {
+      content: '';
+      position: absolute;
+      inset: 6px;
+      border: 1px dashed rgba(200, 169, 110, 0.35);
+      border-radius: 50%;
+      pointer-events: none;
+    }
 
-        .service-card {
-            position: relative;
-            overflow: hidden
-        }
+    .stamp.slammed {
+      animation: stamp-slam 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
 
-        .service-card::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(90deg, #FF5500, #FF8800);
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform .4s ease
-        }
+    @keyframes stamp-slam {
+      0% {
+        transform: rotate(-12deg) scale(0) translateY(-40px);
+        opacity: 0;
+      }
 
-        .service-card:hover::after {
-            transform: scaleX(1)
-        }
+      55% {
+        transform: rotate(-12deg) scale(1.1) translateY(0px);
+        opacity: 1;
+      }
 
-        .counter-num {
-            font-variant-numeric: tabular-nums
-        }
-    </style>
+      75% {
+        transform: rotate(-12deg) scale(0.95) translateY(0px);
+        opacity: 1;
+      }
+
+      90% {
+        transform: rotate(-12deg) scale(1.02) translateY(0px);
+        opacity: 1;
+      }
+
+      100% {
+        transform: rotate(-12deg) scale(1) translateY(0px);
+        opacity: 1;
+      }
+    }
+
+    .stamp-top {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.52rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(200, 169, 110, 0.65);
+      margin-bottom: 5px;
+    }
+
+    .stamp-main {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--gold);
+      line-height: 1.2;
+    }
+
+    .stamp-bottom {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.5rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(200, 169, 110, 0.5);
+      margin-top: 5px;
+    }
+
+    /* headshot */
+    .hero-right {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    }
+
+    .headshot-frame {
+      width: min(420px, 90%);
+      aspect-ratio: 3/4;
+      position: relative;
+    }
+
+    .headshot-box {
+      width: 100%;
+      height: 100%;
+      border: 1px solid rgba(200, 169, 110, 0.3);
+      background: var(--bg2);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      color: var(--muted);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .headshot-box svg {
+      opacity: 0.3;
+    }
+
+    .headshot-corner {
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      border-color: var(--gold);
+      border-style: solid;
+      opacity: 0.6;
+    }
+
+    .headshot-corner.tl {
+      top: -1px;
+      left: -1px;
+      border-width: 2px 0 0 2px;
+    }
+
+    .headshot-corner.tr {
+      top: -1px;
+      right: -1px;
+      border-width: 2px 2px 0 0;
+    }
+
+    .headshot-corner.bl {
+      bottom: -1px;
+      left: -1px;
+      border-width: 0 0 2px 2px;
+    }
+
+    .headshot-corner.br {
+      bottom: -1px;
+      right: -1px;
+      border-width: 0 2px 2px 0;
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 48px;
+      left: 60px;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .scroll-hint::before {
+      content: '';
+      width: 60px;
+      height: 1px;
+      background: var(--muted);
+      display: block;
+    }
+
+    /* ── OBVIOUS SECTION ── */
+    #obvious {
+      background: var(--bg2);
+    }
+
+    .section-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.82rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 48px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--line);
+      max-width: 120px;
+    }
+
+    .big-text {
+      font-size: clamp(2.4rem, 5vw, 5.2rem);
+      font-weight: 300;
+      line-height: 1.15;
+      letter-spacing: -0.01em;
+      max-width: 900px;
+    }
+
+    .big-text em {
+      font-style: italic;
+      color: var(--gold);
+    }
+
+    .answer-block {
+      margin-top: 80px;
+      font-size: clamp(1.25rem, 2.2vw, 1.75rem);
+      font-weight: 300;
+      line-height: 1.6;
+      max-width: 720px;
+      color: #b8b4a8;
+    }
+
+    .answer-block strong {
+      color: var(--white);
+      font-weight: 400;
+    }
+
+    /* ── RESULTS / PROOF ── */
+    #results {
+      background: var(--bg);
+    }
+
+    .results-intro {
+      font-size: clamp(1.6rem, 3vw, 3.2rem);
+      font-weight: 300;
+      line-height: 1.3;
+      max-width: 800px;
+      margin-bottom: 0;
+    }
+
+    .results-intro em {
+      font-style: italic;
+      color: var(--gold);
+    }
+
+    /* ── CASE STUDIES ── */
+    .case-section {
+      background: var(--bg);
+    }
+
+    .case-section.alt {
+      background: var(--bg2);
+    }
+
+    .case-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 100px;
+      align-items: center;
+    }
+
+    .case-company {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 28px;
+    }
+
+    .case-metric {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(5rem, 9vw, 9rem);
+      font-weight: 800;
+      color: var(--gold);
+      line-height: 1;
+      margin-bottom: 32px;
+    }
+
+    .case-metric .metric-before {
+      color: rgba(200, 169, 110, 0.35);
+      font-size: 0.6em;
+      vertical-align: middle;
+    }
+
+    .case-metric .metric-arrow {
+      color: rgba(200, 169, 110, 0.4);
+      font-size: 0.45em;
+      vertical-align: middle;
+      margin: 0 0.15em;
+      font-weight: 400;
+    }
+
+    .case-metric .metric-after {
+      vertical-align: middle;
+    }
+
+    .case-desc {
+      font-size: clamp(1.15rem, 1.8vw, 1.45rem);
+      font-weight: 300;
+      line-height: 1.75;
+      color: #b8b4a8;
+    }
+
+    .case-desc strong {
+      color: var(--white);
+      font-weight: 400;
+    }
+
+    .chart-container {
+      width: 100%;
+      height: 300px;
+      position: relative;
+    }
+
+    .proof-line {
+      font-size: clamp(1.8rem, 3.5vw, 3.8rem);
+      font-weight: 300;
+      font-style: italic;
+      color: #8a877f;
+      max-width: 860px;
+    }
+
+    .proof-line strong {
+      color: var(--white);
+      font-style: normal;
+      font-weight: 400;
+    }
+
+    @media (max-width: 900px) {
+      .case-layout {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+    }
+
+    /* ── REAL QUESTION ── */
+    #question {
+      background: var(--bg2);
+      text-align: center;
+      align-items: center;
+    }
+
+    .question-text {
+      font-size: clamp(2.4rem, 5.5vw, 6rem);
+      font-weight: 300;
+      line-height: 1.2;
+      max-width: 900px;
+      color: var(--white);
+    }
+
+    .question-text em {
+      font-style: italic;
+      color: var(--gold);
+    }
+
+    /* ── SERVICES ── */
+    #services {
+      background: var(--bg);
+    }
+
+    .services-intro {
+      font-size: clamp(1.6rem, 2.8vw, 3rem);
+      font-weight: 300;
+      max-width: 700px;
+      line-height: 1.35;
+      margin-bottom: 100px;
+    }
+
+    .service-list {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .service-item {
+      display: grid;
+      grid-template-columns: 80px 1fr 160px;
+      gap: 40px;
+      padding: 52px 0;
+      border-top: 1px solid var(--line);
+      align-items: center;
+      transition: background 0.3s;
+      position: relative;
+    }
+
+    .service-item::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: var(--line);
+    }
+
+    .service-icon {
+      width: 160px;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* ── SERVICE ICON ANIMATIONS ── */
+    @keyframes bar1 {
+
+      0%,
+      100% {
+        height: 10px;
+        y: 26px
+      }
+
+      50% {
+        height: 20px;
+        y: 16px
+      }
+    }
+
+    @keyframes bar2 {
+
+      0%,
+      100% {
+        height: 22px;
+        y: 14px
+      }
+
+      50% {
+        height: 12px;
+        y: 24px
+      }
+    }
+
+    @keyframes bar3 {
+
+      0%,
+      100% {
+        height: 16px;
+        y: 20px
+      }
+
+      33% {
+        height: 28px;
+        y: 8px
+      }
+
+      66% {
+        height: 10px;
+        y: 26px
+      }
+    }
+
+    .icon-bar1 {
+      animation: bar1 2.4s ease-in-out infinite;
+    }
+
+    .icon-bar2 {
+      animation: bar2 2.4s ease-in-out infinite 0.3s;
+    }
+
+    .icon-bar3 {
+      animation: bar3 2.4s ease-in-out infinite 0.6s;
+    }
+
+    @keyframes dash-draw {
+      0% {
+        stroke-dashoffset: 120
+      }
+
+      60% {
+        stroke-dashoffset: 0
+      }
+
+      100% {
+        stroke-dashoffset: 0
+      }
+    }
+
+    @keyframes dot-pulse {
+
+      0%,
+      100% {
+        r: 2.5;
+        opacity: .5
+      }
+
+      50% {
+        r: 4;
+        opacity: 1
+      }
+    }
+
+    .icon-trend-line {
+      stroke-dasharray: 120;
+      stroke-dashoffset: 120;
+      animation: dash-draw 2.8s ease-out infinite;
+    }
+
+    .icon-trend-dot {
+      animation: dot-pulse 2.8s ease-in-out infinite;
+    }
+
+    @keyframes box-float {
+
+      0%,
+      100% {
+        transform: translateY(0)
+      }
+
+      50% {
+        transform: translateY(-3px)
+      }
+    }
+
+    @keyframes arrow-spin {
+      0% {
+        transform: rotate(0deg)
+      }
+
+      100% {
+        transform: rotate(360deg)
+      }
+    }
+
+    .icon-box-group {
+      animation: box-float 2.6s ease-in-out infinite;
+      transform-origin: 28px 26px;
+    }
+
+    .icon-orbit {
+      animation: arrow-spin 3s linear infinite;
+      transform-origin: 28px 28px;
+    }
+
+    /* ── COMPARISON ── */
+    #comparison {
+      background: var(--bg2);
+    }
+
+    .comparison-intro {
+      font-size: clamp(1.6rem, 2.8vw, 3rem);
+      font-weight: 300;
+      max-width: 700px;
+      line-height: 1.35;
+      margin-bottom: 80px;
+    }
+
+    .comparison-intro em {
+      font-style: italic;
+      color: var(--gold);
+    }
+
+    .comp-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 2px;
+    }
+
+    .comp-col {
+      padding: 52px 44px 60px;
+      border: 1px solid var(--line);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .comp-col.featured {
+      background: rgba(200, 169, 110, 0.05);
+      border-color: rgba(200, 169, 110, 0.35);
+    }
+
+    .comp-col.featured::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(to right, var(--gold), rgba(200, 169, 110, 0.3));
+    }
+
+    .comp-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .comp-col:not(.featured) .comp-tag {
+      color: var(--muted);
+    }
+
+    .comp-col.featured .comp-tag {
+      color: var(--gold);
+    }
+
+    .comp-badge {
+      background: var(--gold);
+      color: var(--bg);
+      font-size: 0.58rem;
+      letter-spacing: 0.14em;
+      padding: 3px 8px;
+      font-weight: 700;
+    }
+
+    .comp-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: clamp(1.2rem, 1.8vw, 1.6rem);
+      margin-bottom: 36px;
+      line-height: 1.2;
+    }
+
+    .comp-col:not(.featured) .comp-title {
+      color: #6a6760;
+    }
+
+    .comp-col.featured .comp-title {
+      color: var(--white);
+    }
+
+    .comp-points {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      flex: 1;
+    }
+
+    .comp-point {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      font-size: clamp(0.95rem, 1.3vw, 1.1rem);
+      font-weight: 300;
+      line-height: 1.55;
+    }
+
+    .comp-col:not(.featured) .comp-point {
+      color: #5a5855;
+    }
+
+    .comp-col.featured .comp-point {
+      color: #c0bdb5;
+    }
+
+    .comp-point-icon {
+      flex-shrink: 0;
+      margin-top: 3px;
+    }
+
+    .comp-col:not(.featured) .comp-point-icon {
+      color: #4a4845;
+    }
+
+    .comp-col.featured .comp-point-icon {
+      color: var(--gold);
+    }
+
+    .comp-verdict {
+      margin-top: 40px;
+      padding-top: 28px;
+      border-top: 1px solid var(--line);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      line-height: 1.6;
+    }
+
+    .comp-col:not(.featured) .comp-verdict {
+      color: #4a4845;
+    }
+
+    .comp-col.featured .comp-verdict {
+      color: var(--gold);
+    }
+
+    @media (max-width: 900px) {
+      .comp-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .service-item {
+        grid-template-columns: 80px 1fr;
+        gap: 12px;
+      }
+
+      .service-icon {
+        display: none;
+      }
+    }
+
+    .service-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      color: var(--gold);
+      padding-top: 8px;
+    }
+
+    .service-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.3rem, 2.2vw, 2rem);
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 18px;
+      letter-spacing: -0.01em;
+    }
+
+    .service-desc {
+      font-size: clamp(1rem, 1.5vw, 1.3rem);
+      font-weight: 300;
+      line-height: 1.7;
+      color: var(--muted);
+      max-width: 680px;
+    }
+
+    .service-learn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 20px;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--gold);
+      text-decoration: none;
+      opacity: 0.7;
+      transition: opacity 0.25s, gap 0.25s;
+    }
+
+    .service-learn:hover {
+      opacity: 1;
+      gap: 12px;
+    }
+
+    /* ── HOW IT WORKS ── */
+    #how {
+      background: var(--bg2);
+    }
+
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin-top: 80px;
+    }
+
+    .step {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      padding: 80px 0;
+      border-top: 1px solid var(--line);
+      align-items: center;
+    }
+
+    .step:last-child {
+      border-bottom: 1px solid var(--line);
+    }
+
+    .step-number {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(5rem, 10vw, 10rem);
+      font-weight: 300;
+      color: rgba(200, 169, 110, 0.4);
+      line-height: 1;
+      font-style: italic;
+    }
+
+    .step-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 20px;
+    }
+
+    .step-title {
+      font-size: clamp(1.5rem, 2.5vw, 2.4rem);
+      font-weight: 300;
+      color: var(--white);
+      margin-bottom: 20px;
+      line-height: 1.25;
+    }
+
+    .step-desc {
+      font-size: clamp(1rem, 1.4vw, 1.2rem);
+      font-weight: 300;
+      line-height: 1.7;
+      color: var(--muted);
+    }
+
+    /* ── CTA ── */
+    #cta {
+      background: var(--bg);
+      text-align: center;
+      align-items: center;
+      min-height: 80vh;
+    }
+
+    .cta-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 48px;
+    }
+
+    .cta-headline {
+      font-size: clamp(2.8rem, 6vw, 6.5rem);
+      font-weight: 300;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: var(--white);
+      max-width: 900px;
+      margin-bottom: 60px;
+    }
+
+    .cta-headline em {
+      font-style: italic;
+      color: var(--gold);
+    }
+
+    .cta-btn {
+      display: inline-block;
+      font-family: 'Syne', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--bg);
+      background: var(--gold);
+      padding: 22px 56px;
+      text-decoration: none;
+      transition: opacity 0.3s, transform 0.3s;
+      position: relative;
+      overflow: hidden;
+      border: none;
+      cursor: none;
+    }
+
+    .cta-btn:hover {
+      opacity: 0.88;
+      transform: translateY(-2px);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 40px 60px;
+      border-top: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .footer-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
+
+    .footer-link {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.25s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .footer-link:hover {
+      color: var(--gold);
+    }
+
+    .footer-link svg {
+      flex-shrink: 0;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      nav {
+        padding: 24px 28px;
+      }
+
+      section {
+        padding: 120px 28px;
+      }
+
+      #hero {
+        grid-template-columns: 1fr;
+        gap: 60px;
+        padding: 120px 28px;
+      }
+
+      .hero-right {
+        display: none;
+      }
+
+      .case-cards {
+        grid-template-columns: 1fr;
+      }
+
+      .step {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .step-number {
+        font-size: 5rem;
+      }
+
+      footer {
+        flex-direction: column;
+        gap: 12px;
+        text-align: center;
+        padding: 32px 28px;
+      }
+
+      .service-item {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .scroll-hint {
+        left: 28px;
+      }
+    }
+  </style>
 </head>
 
-<body class="antialiased selection:bg-brand-orange selection:text-white">
+<body>
 
-    <!-- Navigation -->
-    <nav class="fixed w-full z-50 glass-nav transition-all duration-300" id="navbar">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8">
-            <div class="flex items-center justify-between h-20">
-                <a href="index.html"
-                    class="font-display font-bold text-xl tracking-tight text-white hover:text-brand-orange transition-colors">
-                    AEDAN KELLER<span class="text-brand-orange">.</span>
-                </a>
-                <div class="hidden md:flex items-center space-x-8">
-                    <a href="services.html"
-                        class="text-sm font-medium text-gray-400 hover:text-white transition-colors">Services</a>
-                    <a href="#results"
-                        class="text-sm font-medium text-gray-400 hover:text-white transition-colors">Results</a>
-                    <a href="#how-it-works"
-                        class="text-sm font-medium text-gray-400 hover:text-white transition-colors">How It Works</a>
-                    <a href="#faq" class="text-sm font-medium text-gray-400 hover:text-white transition-colors">FAQ</a>
-                    <a href="javascript:void(0);" data-cal-link="aedan-keller-ijsvjv/15min" data-cal-namespace="15min"
-                        data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true"}'
-                        class="px-5 py-2.5 bg-brand-orange text-white text-sm font-bold rounded hover:bg-brand-orangeHover transition-all orange-glow hover-scale">
-                        Free Inventory Audit
-                    </a>
-                </div>
-                <div class="md:hidden">
-                    <button id="mobile-menu-btn" class="text-white focus:outline-none"><i data-lucide="menu"
-                            class="w-6 h-6"></i></button>
-                </div>
-            </div>
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursor-ring"></div>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">Aedan Keller</div>
+    <div style="display:flex;align-items:center;gap:24px;">
+      <a href="services.html" class="nav-link">Services</a>
+      <button class="nav-cta" data-cal-namespace="15min" data-cal-link="aedan-keller-ijsvjv/15min"
+        data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true"}'>Let's Connect</button>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-left">
+      <p class="hero-eyebrow reveal">Inventory Management — DTC Consulting</p>
+      <h1 class="hero-name reveal reveal-delay-1">
+        Aedan<br><em>Keller.</em>
+      </h1>
+      <div style="position:relative;display:inline-block;max-width:520px;">
+        <p class="hero-tagline reveal reveal-delay-2">
+          Tailored inventory management for DTC businesses who want to confidently scale and maximize their profit,
+          consistently.
+        </p>
+        <!-- STAMP: positioned bottom-right of tagline -->
+        <div class="stamp" id="hero-stamp">
+          <span class="stamp-top">At a</span>
+          <span class="stamp-main">Fraction<br>of the<br>Cost</span>
+          <span class="stamp-bottom">of similar services</span>
         </div>
-        <div id="mobile-menu" class="hidden md:hidden bg-brand-card border-b border-gray-800">
-            <div class="px-6 py-4 space-y-4">
-                <a href="services.html" class="block text-gray-400 hover:text-white">Services</a>
-                <a href="#results" class="block text-gray-400 hover:text-white">Results</a>
-                <a href="#how-it-works" class="block text-gray-400 hover:text-white">How It Works</a>
-                <a href="#faq" class="block text-gray-400 hover:text-white">FAQ</a>
-                <a href="javascript:void(0);" data-cal-link="aedan-keller-ijsvjv/15min" data-cal-namespace="15min"
-                    data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true"}'
-                    class="block w-full text-center px-5 py-3 bg-brand-orange text-white font-bold rounded">Free
-                    Inventory Audit</a>
-            </div>
+      </div>
+
+    </div>
+    <div class="hero-right reveal reveal-delay-2">
+      <div class="headshot-frame">
+        <img src="photos/Headshot copy.jpeg" alt="Aedan Keller"
+          style="width:100%;height:100%;object-fit:cover;display:block;" />
+        <div class="headshot-corner tl"></div>
+        <div class="headshot-corner tr"></div>
+        <div class="headshot-corner bl"></div>
+        <div class="headshot-corner br"></div>
+      </div>
+    </div>
+    <div class="scroll-hint">Scroll to read</div>
+  </section>
+
+  <div class="rule"></div>
+
+  <!-- LET'S ADDRESS THE OBVIOUS -->
+  <section id="obvious">
+    <div class="section-label reveal">Let's Address the Obvious</div>
+    <h2 class="big-text reveal reveal-delay-1">
+      I'm a <em>college student.</em>
+    </h2>
+    <div class="answer-block reveal reveal-delay-2">
+      Fair question: <strong>What can a college student actually deliver?</strong>
+      <br /><br />
+      Let me show you.
+    </div>
+  </section>
+
+  <div class="rule"></div>
+
+  <!-- RESULTS INTRO -->
+  <section id="results" style="min-height: auto; padding-bottom: 100px;">
+    <div class="section-label reveal">The Proof</div>
+    <p class="results-intro reveal reveal-delay-1">
+      Results don't care about age.<br>They care about <em>execution.</em>
+    </p>
+  </section>
+
+  <div class="rule"></div>
+
+  <!-- CASE STUDY 1 -->
+  <section class="case-section">
+    <div class="case-layout">
+      <div class="case-left">
+        <div class="case-company reveal">$100M/yr Revenue Retail · 54+ Locations</div>
+        <div class="case-metric reveal reveal-delay-1">−30%</div>
+        <p class="case-desc reveal reveal-delay-2">
+          A major retail business was bleeding <strong>millions in dead stock</strong> across 54+ locations. Using my
+          framework, dead stock was cut by 30% — freeing up capital that had been silently draining their operation.
+        </p>
+      </div>
+      <div class="case-right reveal reveal-delay-2">
+        <div class="chart-container">
+          <canvas id="chart1"></canvas>
         </div>
-    </nav>
+      </div>
+    </div>
+  </section>
 
-    <!-- Hero Section -->
-    <section class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden min-h-screen flex items-center">
-        <div
-            class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-brand-orange opacity-10 blur-[100px] rounded-full parallax-slow">
+  <div class="rule"></div>
+
+  <!-- CASE STUDY 2 -->
+  <section class="case-section alt">
+    <div class="case-layout">
+      <div class="case-left">
+        <div class="case-company reveal">$1.2B Revenue Aerospace Business</div>
+        <div class="case-metric reveal reveal-delay-1">
+          <span class="metric-before">6 hrs</span>
+          <span class="metric-arrow">→</span>
+          <span class="metric-after">10 min</span>
         </div>
-        <div
-            class="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 bg-gray-800 opacity-20 blur-[100px] rounded-full parallax-slow">
+        <p class="case-desc reveal reveal-delay-2">
+          A critical inventory process was consuming <strong>6 hours</strong> of their team's time every cycle. I
+          automated it end-to-end. It now takes 10 minutes.
+        </p>
+      </div>
+      <div class="case-right reveal reveal-delay-2">
+        <div class="chart-container">
+          <canvas id="chart2"></canvas>
         </div>
-        <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10 w-full">
-            <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-                <div class="reveal-left active">
-                    <span
-                        class="inline-block px-3 py-1 bg-brand-orange/10 text-brand-orange text-xs font-bold rounded-full uppercase tracking-widest mb-6 border border-brand-orange/20">Fractional
-                        Inventory Planner</span>
-                    <h1 class="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-8">
-                        <span class="block">Buy with confidence.</span>
-                        <span class="block">Stop overbuying.</span>
-                        <span class="block text-brand-orange">Stop stocking out.</span>
-                    </h1>
-                    <p class="text-lg text-gray-400 mb-6 max-w-lg leading-relaxed">
-                        Enterprise-level inventory planning, at a fraction of the cost.
-                    </p>
-                    <div
-                        class="flex items-start gap-3 p-4 bg-brand-card border border-brand-orange/20 rounded-lg mb-10 max-w-lg hover-scale">
-                        <i data-lucide="shield-check" class="w-6 h-6 text-brand-orange shrink-0 mt-1"></i>
-                        <div class="text-sm text-gray-300 font-medium space-y-1">
-                            <p class="text-white">You approve every PO. Nothing auto-orders.</p>
-                            <p class="text-white">Custom contracts tailored to your business.</p>
-                        </div>
-                    </div>
-                    <div class="flex flex-col sm:flex-row gap-6 items-start sm:items-center">
-                        <div>
-                            <a href="javascript:void(0);" data-cal-link="aedan-keller-ijsvjv/15min"
-                                data-cal-namespace="15min"
-                                data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true"}'
-                                class="px-8 py-4 bg-brand-orange text-white font-bold text-center rounded hover:bg-brand-orangeHover transition-all orange-glow flex items-center justify-center gap-2 group hover-scale hover-glow">
-                                Get Your Free Audit
-                                <i data-lucide="arrow-right"
-                                    class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
-                            </a>
-                            <p class="text-xs text-gray-500 mt-2 ml-1">100% free. No strings attached.</p>
-                        </div>
-                        <a href="services.html"
-                            class="px-8 py-4 bg-transparent border border-gray-700 text-white font-medium text-center rounded hover:bg-white/5 transition-all mb-6 sm:mb-0 hover-scale">
-                            See Services
-                        </a>
-                    </div>
-                </div>
-                <div class="relative flex justify-center lg:justify-end reveal-right delay-200">
-                    <div
-                        class="relative w-80 h-96 md:w-[28rem] md:h-[34rem] rounded-2xl overflow-hidden border border-gray-800 shadow-2xl group hover-lift">
-                        <img src="photos/Headshot copy.jpeg" alt="Aedan Keller"
-                            class="w-full h-full object-cover transition-all duration-700 scale-105 group-hover:scale-100">
-                        <div
-                            class="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-black via-black/80 to-transparent">
-                            <p class="font-display font-bold text-xl text-white">Aedan Keller</p>
-                            <p class="text-xs text-brand-orange font-medium uppercase tracking-wider">Fractional
-                                Inventory Planner</p>
-                        </div>
-                    </div>
-                    <div
-                        class="absolute -z-10 top-10 -right-10 w-full h-full border-2 border-brand-orange/20 rounded-2xl hidden md:block">
-                    </div>
-                </div>
-            </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="rule"></div>
+
+  <!-- PROOF LINE -->
+  <section style="min-height: auto; padding: 120px 60px;">
+    <p class="proof-line reveal">
+      So the real question is:<br>
+      <strong>What can I do for your business?</strong>
+    </p>
+  </section>
+
+  <div class="rule"></div>
+
+  <!-- REAL QUESTION INTERLUDE -->
+  <section id="question">
+    <p class="question-text reveal">
+      Your inventory shouldn't be<br>where your <em>cash goes to die.</em>
+    </p>
+  </section>
+
+  <div class="rule"></div>
+
+  <!-- SERVICES -->
+  <section id="services">
+    <div class="section-label reveal">My Services</div>
+    <p class="services-intro reveal reveal-delay-1">
+      Three disciplines. One outcome: inventory that works for you.
+    </p>
+
+    <div class="service-list">
+      <div class="service-item reveal">
+        <div class="service-num">01</div>
+        <div class="service-body">
+          <div class="service-title">Reporting & Analysis</div>
+          <p class="service-desc">Actionable performance dashboards and trend intelligence that spotlight your most
+            profitable products and reveal where cash is getting stuck and why.</p>
+          <a href="services.html#reporting" class="service-learn">Learn More →</a>
         </div>
-    </section>
-
-    <!-- Services Overview -->
-    <section id="services-overview" class="py-24 bg-brand-dark border-y border-white/5">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8">
-            <div class="text-center mb-16 reveal-scale">
-                <span class="text-brand-orange font-bold tracking-widest uppercase text-sm mb-2 block">What I Do</span>
-                <h2 class="font-display text-4xl md:text-5xl font-bold mb-6">End-to-end inventory leadership.</h2>
-                <p class="text-gray-400 max-w-2xl mx-auto">Every service is tailored to your business through a custom
-                    contract. Here's the toolkit I bring to your team.</p>
-            </div>
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Card 1 -->
-                <div
-                    class="service-card p-6 rounded-xl bg-brand-card border border-white/5 hover:border-brand-orange/30 transition-all duration-300 reveal stagger-1 hover-lift">
-                    <div class="flex items-center gap-3 mb-4">
-                        <div class="w-12 h-12 bg-brand-orange/10 rounded-lg flex items-center justify-center"><i
-                                data-lucide="clipboard-list" class="w-6 h-6 text-brand-orange"></i></div>
-                        <h3 class="text-lg font-bold text-white">Weekly Buy List</h3>
-                    </div>
-                    <p class="text-gray-400 text-sm leading-relaxed mb-4">Every week I deliver a vetted purchase order
-                        with exactly what to buy, how much, and why — ready for your sign-off.</p>
-                    <div class="h-24 w-full"><canvas id="sparkBuyList"></canvas></div>
-                    <a href="services.html#buy-list"
-                        class="inline-flex items-center gap-1 text-brand-orange text-sm font-medium mt-4 hover:gap-2 transition-all">Learn
-                        more <i data-lucide="arrow-right" class="w-3 h-3"></i></a>
-                </div>
-                <!-- Card 2 -->
-                <div
-                    class="service-card p-6 rounded-xl bg-brand-card border border-white/5 hover:border-brand-orange/30 transition-all duration-300 reveal stagger-2 hover-lift">
-                    <div class="flex items-center gap-3 mb-4">
-                        <div class="w-12 h-12 bg-brand-orange/10 rounded-lg flex items-center justify-center"><i
-                                data-lucide="trending-up" class="w-6 h-6 text-brand-orange"></i></div>
-                        <h3 class="text-lg font-bold text-white">Demand Forecasting</h3>
-                    </div>
-                    <p class="text-gray-400 text-sm leading-relaxed mb-4">I predict your sales 3–6 months out so you
-                        order the right inventory before demand hits — not after.</p>
-                    <div class="h-24 w-full"><canvas id="sparkForecast"></canvas></div>
-                    <a href="services.html#forecasting"
-                        class="inline-flex items-center gap-1 text-brand-orange text-sm font-medium mt-4 hover:gap-2 transition-all">Learn
-                        more <i data-lucide="arrow-right" class="w-3 h-3"></i></a>
-                </div>
-                <!-- Card 3 -->
-                <div
-                    class="service-card p-6 rounded-xl bg-brand-card border border-white/5 hover:border-brand-orange/30 transition-all duration-300 reveal stagger-3 hover-lift">
-                    <div class="flex items-center gap-3 mb-4">
-                        <div class="w-12 h-12 bg-brand-orange/10 rounded-lg flex items-center justify-center"><i
-                                data-lucide="heart-pulse" class="w-6 h-6 text-brand-orange"></i></div>
-                        <h3 class="text-lg font-bold text-white">Inventory Health Audit</h3>
-                    </div>
-                    <p class="text-gray-400 text-sm leading-relaxed mb-4">I find the hidden cash trapped in your
-                        warehouse — dead stock, slow movers, and stockout revenue leaks.</p>
-                    <div class="h-24 w-full"><canvas id="sparkABC"></canvas></div>
-                    <a href="services.html#health-audit"
-                        class="inline-flex items-center gap-1 text-brand-orange text-sm font-medium mt-4 hover:gap-2 transition-all">Learn
-                        more <i data-lucide="arrow-right" class="w-3 h-3"></i></a>
-                </div>
-                <!-- Card 4 -->
-                <div
-                    class="service-card p-6 rounded-xl bg-brand-card border border-white/5 hover:border-brand-orange/30 transition-all duration-300 reveal stagger-4 hover-lift">
-                    <div class="flex items-center gap-3 mb-4">
-                        <div class="w-12 h-12 bg-brand-orange/10 rounded-lg flex items-center justify-center"><i
-                                data-lucide="wallet" class="w-6 h-6 text-brand-orange"></i></div>
-                        <h3 class="text-lg font-bold text-white">Cash Flow & OTB</h3>
-                    </div>
-                    <p class="text-gray-400 text-sm leading-relaxed mb-4">I act as a financial guardrail — prioritizing
-                        what to fund when your budget can't cover everything.</p>
-                    <div class="h-24 w-full"><canvas id="sparkOTB"></canvas></div>
-                    <a href="services.html#cash-flow"
-                        class="inline-flex items-center gap-1 text-brand-orange text-sm font-medium mt-4 hover:gap-2 transition-all">Learn
-                        more <i data-lucide="arrow-right" class="w-3 h-3"></i></a>
-                </div>
-                <!-- Card 5 -->
-                <div
-                    class="service-card p-6 rounded-xl bg-brand-card border border-white/5 hover:border-brand-orange/30 transition-all duration-300 reveal stagger-5 hover-lift">
-                    <div class="flex items-center gap-3 mb-4">
-                        <div class="w-12 h-12 bg-brand-orange/10 rounded-lg flex items-center justify-center"><i
-                                data-lucide="ship" class="w-6 h-6 text-brand-orange"></i></div>
-                        <h3 class="text-lg font-bold text-white">Vendor & Logistics</h3>
-                    </div>
-                    <p class="text-gray-400 text-sm leading-relaxed mb-4">I optimize your freight — building containers,
-                        calculating EOQ, and cutting shipping costs per unit.</p>
-                    <div class="h-24 w-full"><canvas id="sparkEOQ"></canvas></div>
-                    <a href="services.html#vendor"
-                        class="inline-flex items-center gap-1 text-brand-orange text-sm font-medium mt-4 hover:gap-2 transition-all">Learn
-                        more <i data-lucide="arrow-right" class="w-3 h-3"></i></a>
-                </div>
-                <!-- Card 6: CTA -->
-                <div
-                    class="service-card p-6 rounded-xl bg-gradient-to-br from-brand-orange/10 to-brand-card border border-brand-orange/20 hover:border-brand-orange/50 transition-all duration-300 reveal stagger-5 hover-lift flex flex-col justify-center items-center text-center">
-                    <i data-lucide="search" class="w-10 h-10 text-brand-orange mb-4"></i>
-                    <h3 class="text-lg font-bold text-white mb-2">Not sure where to start?</h3>
-                    <p class="text-gray-400 text-sm mb-6">I'll audit your inventory for free and walk you through
-                        exactly where you're bleeding cash.</p>
-                    <a href="javascript:void(0);" data-cal-link="aedan-keller-ijsvjv/15min" data-cal-namespace="15min"
-                        data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true"}'
-                        class="px-6 py-3 bg-brand-orange text-white font-bold rounded hover:bg-brand-orangeHover transition-all hover-scale">Get
-                        Your Free Audit</a>
-                </div>
-            </div>
+        <div class="service-icon">
+          <svg width="72" height="72" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <line x1="10" y1="38" x2="46" y2="38" stroke="rgba(200,169,110,0.25)" stroke-width="1.2" />
+            <rect class="icon-bar1" x="14" y="26" width="7" height="12" rx="1" fill="rgba(200,169,110,0.35)" />
+            <rect class="icon-bar2" x="25" y="14" width="7" height="24" rx="1" fill="rgba(200,169,110,0.65)" />
+            <rect class="icon-bar3" x="36" y="20" width="7" height="18" rx="1" fill="rgba(200,169,110,0.9)" />
+          </svg>
         </div>
-    </section>
+      </div>
 
-    <!-- About / Founder's Note -->
-    <section id="about" class="py-24 bg-brand-black border-t border-white/5 relative overflow-hidden">
-        <div class="absolute -top-20 -left-40 w-[500px] h-[500px] bg-brand-orange/3 blur-[120px] rounded-full"></div>
-        <div class="max-w-6xl mx-auto px-6 lg:px-8 relative z-10">
-            <div class="grid md:grid-cols-5 gap-12 items-center">
-                <!-- Photo -->
-                <div class="md:col-span-2 reveal-left">
-                    <div class="relative">
-                        <div class="rounded-2xl overflow-hidden border border-gray-800 shadow-2xl hover-lift">
-                            <img src="photos/inventory_screenshot.png" alt="Inventory Dashboard Screenshot"
-                                class="w-full aspect-[4/5] object-cover">
-                        </div>
-
-                    </div>
-                </div>
-                <!-- Note -->
-                <div class="md:col-span-3 reveal-right">
-                    <span class="text-brand-orange font-bold tracking-widest uppercase text-sm mb-4 block">Why I Do
-                        This</span>
-                    <h2 class="font-display text-3xl md:text-4xl font-bold mb-6 leading-tight">I started this because
-                        too many brands are buying blind.</h2>
-                    <div class="space-y-4 text-gray-400 leading-relaxed">
-                        <p>I've worked inside multi-million dollar retail and manufacturing operations — the kind with
-                            50+ locations, four warehouses, and thousands of SKUs. And I kept seeing the same thing:
-                            <span class="text-white font-medium">purchasing decisions based on gut feel, not
-                                data.</span>
-                        </p>
-                        <p>Overbuying that trapped cash. Stockouts that lost revenue. Dead inventory sitting on shelves
-                            for months because nobody had the framework to catch it early.</p>
-                        <p>So I built one. A system that turns your sales data, inventory levels, and vendor history
-                            into <span class="text-white font-medium">clear, weekly purchasing recommendations</span> —
-                            with the reasoning behind every line item.</p>
-                        <p class="text-white font-medium">That's what I do now. I plug into your team as your fractional
-                            inventory planner and bring the same rigor that enterprise retailers use — without the
-                            enterprise price tag.</p>
-                    </div>
-                </div>
-            </div>
+      <div class="service-item reveal reveal-delay-1">
+        <div class="service-num">02</div>
+        <div class="service-body">
+          <div class="service-title">Demand Forecasting</div>
+          <p class="service-desc">Projections built from your own sales history using robust statistical methods, giving
+            you forward visibility and confidence in buying decisions before trends shift.</p>
+          <a href="services.html#forecasting" class="service-learn">Learn More →</a>
         </div>
-    </section>
-
-    <!-- Results / Proof Section -->
-    <section id="results" class="py-28 bg-brand-black border-y border-white/5 relative">
-        <div
-            class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-brand-orange/5 blur-[150px] rounded-full">
+        <div class="service-icon">
+          <svg width="72" height="72" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <line x1="10" y1="38" x2="46" y2="38" stroke="rgba(200,169,110,0.18)" stroke-width="1" />
+            <line x1="10" y1="28" x2="46" y2="28" stroke="rgba(200,169,110,0.1)" stroke-width="1"
+              stroke-dasharray="3 3" />
+            <line x1="10" y1="18" x2="46" y2="18" stroke="rgba(200,169,110,0.1)" stroke-width="1"
+              stroke-dasharray="3 3" />
+            <polyline class="icon-trend-line" points="10,36 19,30 27,32 34,20 42,14" stroke="rgba(200,169,110,0.9)"
+              stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+            <circle class="icon-trend-dot" cx="42" cy="14" r="2.5" fill="#c8a96e" />
+            <polyline points="42,14 50,9" stroke="rgba(200,169,110,0.35)" stroke-width="1.5" fill="none"
+              stroke-dasharray="3 2" stroke-linecap="round" />
+          </svg>
         </div>
-        <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
-            <div class="text-center mb-20 reveal-scale">
-                <span class="text-brand-orange font-bold tracking-widest uppercase text-sm mb-2 block">Results</span>
-                <h2 class="font-display text-4xl md:text-5xl font-bold mb-4">What changes when I plug in.</h2>
-                <p class="text-gray-500 text-lg max-w-xl mx-auto">Real outcomes from real engagements.</p>
-            </div>
+      </div>
 
-            <!-- Result 1: Dead Stock -->
-            <div class="max-w-5xl mx-auto mb-10">
-                <div class="bg-brand-card border border-gray-800 rounded-2xl overflow-hidden reveal-left hover-lift">
-                    <div class="grid md:grid-cols-2">
-                        <div class="p-8 md:p-10 flex flex-col justify-center">
-                            <div class="flex items-center gap-3 mb-2">
-                                <span
-                                    class="px-2.5 py-1 bg-white/5 text-gray-400 text-xs font-medium rounded">Multi-location
-                                    retailer · $100M+ revenue</span>
-                            </div>
-                            <h3 class="font-display text-2xl md:text-3xl font-bold text-white mb-4">
-                                Cleared <span class="text-brand-orange">40%</span> of dead inventory.
-                            </h3>
-                            <p class="text-gray-400 leading-relaxed mb-6">A 54-store retailer had millions in unsold
-                                product sitting across 4 warehouses. I ran an ABC analysis to flag every non-moving SKU,
-                                built liquidation priority lists, and freed up cash that was doing nothing.</p>
-                            <p class="text-xs text-gray-600 flex items-center gap-1.5"><i data-lucide="layers"
-                                    class="w-3.5 h-3.5 text-brand-orange"></i> Inventory Health Auditing</p>
-                        </div>
-                        <div
-                            class="bg-brand-black/50 p-8 flex flex-col justify-center border-t md:border-t-0 md:border-l border-white/5">
-                            <div class="flex items-baseline gap-3 mb-2">
-                                <p class="font-display text-5xl font-bold text-white">40<span
-                                        class="text-brand-orange">%</span></p>
-                                <p class="text-gray-500 text-sm">dead stock cleared</p>
-                            </div>
-                            <div class="h-40 w-full mt-4"><canvas id="deadStockChart"></canvas></div>
-                            <p class="text-xs text-gray-600 mt-2 text-center">Dead stock index over 6 months</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Result 2: Fulfillment -->
-            <div class="max-w-5xl mx-auto mb-10">
-                <div class="bg-brand-card border border-gray-800 rounded-2xl overflow-hidden reveal-right hover-lift">
-                    <div class="grid md:grid-cols-2">
-                        <div class="p-8 md:p-10 flex flex-col justify-center">
-                            <div class="flex items-center gap-3 mb-2">
-                                <span
-                                    class="px-2.5 py-1 bg-white/5 text-gray-400 text-xs font-medium rounded">Multi-location
-                                    retailer · 54 stores</span>
-                            </div>
-                            <h3 class="font-display text-2xl md:text-3xl font-bold text-white mb-4">
-                                Top-seller fulfillment hit <span class="text-brand-orange">99%</span>.
-                            </h3>
-                            <p class="text-gray-400 leading-relaxed mb-6">Best-sellers were stocking out regularly —
-                                sitting at 80% availability. I classified every SKU by revenue impact, set dynamic
-                                reorder points for the A-items, and made sure the products driving the most revenue were
-                                always on the shelf.</p>
-                            <p class="text-xs text-gray-600 flex items-center gap-1.5"><i data-lucide="layers"
-                                    class="w-3.5 h-3.5 text-brand-orange"></i> Weekly Buy List + Demand Forecasting</p>
-                        </div>
-                        <div
-                            class="bg-brand-black/50 p-8 flex flex-col justify-center border-t md:border-t-0 md:border-l border-white/5">
-                            <div class="flex items-baseline gap-3 mb-2">
-                                <p class="font-display text-5xl font-bold text-white">80<span
-                                        class="text-gray-500 text-2xl mx-1">→</span>99<span
-                                        class="text-brand-orange">%</span></p>
-                            </div>
-                            <p class="text-gray-500 text-sm mb-4">fulfillment rate on A-items</p>
-                            <div class="h-40 w-full"><canvas id="availabilityChart"></canvas></div>
-                            <p class="text-xs text-gray-600 mt-2 text-center">Fulfillment rate over 12 weeks</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Result 3: Stock Discrepancies -->
-            <div class="max-w-5xl mx-auto mb-10">
-                <div class="bg-brand-card border border-gray-800 rounded-2xl overflow-hidden reveal-left hover-lift">
-                    <div class="grid md:grid-cols-2">
-                        <div class="p-8 md:p-10 flex flex-col justify-center">
-                            <div class="flex items-center gap-3 mb-2">
-                                <span class="px-2.5 py-1 bg-white/5 text-gray-400 text-xs font-medium rounded">Campus
-                                    retailer · $30M revenue</span>
-                            </div>
-                            <h3 class="font-display text-2xl md:text-3xl font-bold text-white mb-4">
-                                Stock discrepancies dropped <span class="text-brand-orange">30%</span>.
-                            </h3>
-                            <p class="text-gray-400 leading-relaxed mb-6">Incoming inventory was riddled with mismatches
-                                — wrong counts, mis-picks, and untracked transfers. I rebuilt the receiving workflows
-                                and standardized how product moved through the system. Accuracy went from inconsistent
-                                to 99%.</p>
-                            <p class="text-xs text-gray-600 flex items-center gap-1.5"><i data-lucide="layers"
-                                    class="w-3.5 h-3.5 text-brand-orange"></i> Inventory Health Auditing</p>
-                        </div>
-                        <div
-                            class="bg-brand-black/50 p-8 flex flex-col justify-center border-t md:border-t-0 md:border-l border-white/5">
-                            <div class="flex items-baseline gap-3 mb-2">
-                                <p class="font-display text-5xl font-bold text-white">30<span
-                                        class="text-brand-orange">%</span></p>
-                                <p class="text-gray-500 text-sm">fewer discrepancies</p>
-                            </div>
-                            <div class="h-40 w-full mt-4"><canvas id="discrepancyChart"></canvas></div>
-                            <p class="text-xs text-gray-600 mt-2 text-center">Monthly discrepancy count</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Result 4: Lead Times -->
-            <div class="max-w-5xl mx-auto mb-16">
-                <div class="bg-brand-card border border-gray-800 rounded-2xl overflow-hidden reveal-right hover-lift">
-                    <div class="grid md:grid-cols-2">
-                        <div class="p-8 md:p-10 flex flex-col justify-center">
-                            <div class="flex items-center gap-3 mb-2">
-                                <span class="px-2.5 py-1 bg-white/5 text-gray-400 text-xs font-medium rounded">Aerospace
-                                    manufacturer · $1.2B revenue</span>
-                            </div>
-                            <h3 class="font-display text-2xl md:text-3xl font-bold text-white mb-4">
-                                Supplier delays cut by <span class="text-brand-orange">15%</span>.
-                            </h3>
-                            <p class="text-gray-400 leading-relaxed mb-6">Aerospace components were delayed because jobs
-                                were scheduled one-off instead of batched. I built a scheduling tool that grouped
-                                similar parts together, reducing setup time and getting orders to the floor faster.</p>
-                            <p class="text-xs text-gray-600 flex items-center gap-1.5"><i data-lucide="layers"
-                                    class="w-3.5 h-3.5 text-brand-orange"></i> Vendor & Logistics Optimization</p>
-                        </div>
-                        <div
-                            class="bg-brand-black/50 p-8 flex flex-col justify-center border-t md:border-t-0 md:border-l border-white/5">
-                            <div class="flex items-baseline gap-3 mb-2">
-                                <p class="font-display text-5xl font-bold text-white">15<span
-                                        class="text-brand-orange">%</span></p>
-                                <p class="text-gray-500 text-sm">fewer late deliveries</p>
-                            </div>
-                            <div class="h-40 w-full mt-4"><canvas id="leadTimeChart"></canvas></div>
-                            <p class="text-xs text-gray-600 mt-2 text-center">Avg. days late per order</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
+      <div class="service-item reveal reveal-delay-2">
+        <div class="service-num">03</div>
+        <div class="service-body">
+          <div class="service-title">Inventory Management</div>
+          <p class="service-desc">I build and maintain buying frameworks and weekly reorder recommendations so you can
+            make informed purchasing decisions with clear visibility into demand, risk, and cash impact.</p>
+          <a href="services.html#inventory" class="service-learn">Learn More →</a>
         </div>
-    </section>
-
-    <!-- How It Works -->
-    <section id="how-it-works" class="py-24 bg-brand-dark border-t border-white/5">
-        <div class="max-w-5xl mx-auto px-6 lg:px-8">
-            <div class="text-center mb-16 reveal-scale">
-                <span class="text-brand-orange font-bold tracking-widest uppercase text-sm mb-2 block">How It
-                    Works</span>
-                <h2 class="font-display text-4xl md:text-5xl font-bold mb-4">Three steps to smarter inventory.</h2>
-            </div>
-            <div class="grid md:grid-cols-3 gap-8 relative">
-                <div
-                    class="hidden md:block absolute top-12 left-[16%] w-[68%] h-0.5 bg-gradient-to-r from-brand-orange/50 via-brand-orange to-brand-orange/50">
-                </div>
-                <!-- Step 1 -->
-                <div
-                    class="relative bg-brand-card p-8 rounded-xl border border-gray-800 text-center hover-lift reveal stagger-1">
-                    <div
-                        class="w-14 h-14 bg-brand-orange rounded-full flex items-center justify-center mx-auto mb-6 text-white font-bold text-xl relative z-10 shadow-[0_0_25px_rgba(255,85,0,.3)]">
-                        1</div>
-                    <h3 class="text-white font-bold text-lg mb-2">Free Audit</h3>
-                    <p class="text-sm text-gray-400">I analyze your data and walk you through where you're overbought,
-                        understocked, and bleeding cash. Completely free.</p>
-                </div>
-                <!-- Step 2 -->
-                <div
-                    class="relative bg-brand-card p-8 rounded-xl border border-gray-800 text-center hover-lift reveal stagger-2">
-                    <div
-                        class="w-14 h-14 bg-brand-orange rounded-full flex items-center justify-center mx-auto mb-6 text-white font-bold text-xl relative z-10 shadow-[0_0_25px_rgba(255,85,0,.3)]">
-                        2</div>
-                    <h3 class="text-white font-bold text-lg mb-2">Custom Contract</h3>
-                    <p class="text-sm text-gray-400">We design a retainer that fits your business — choosing exactly
-                        which services you need from my toolkit.</p>
-                </div>
-                <!-- Step 3 -->
-                <div
-                    class="relative bg-brand-card p-8 rounded-xl border border-gray-800 text-center hover-lift reveal stagger-3">
-                    <div
-                        class="w-14 h-14 bg-brand-orange rounded-full flex items-center justify-center mx-auto mb-6 text-white font-bold text-xl relative z-10 shadow-[0_0_25px_rgba(255,85,0,.3)]">
-                        3</div>
-                    <h3 class="text-white font-bold text-lg mb-2">Ongoing Retainer</h3>
-                    <p class="text-sm text-gray-400">I operate as your fractional inventory planner — delivering weekly
-                        buy lists, forecasts, and strategic recommendations.</p>
-                </div>
-            </div>
+        <div class="service-icon">
+          <svg width="72" height="72" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g class="icon-box-group">
+              <rect x="17" y="18" width="22" height="20" rx="1.5" stroke="rgba(200,169,110,0.8)" stroke-width="1.5"
+                fill="rgba(200,169,110,0.06)" />
+              <line x1="17" y1="25" x2="39" y2="25" stroke="rgba(200,169,110,0.4)" stroke-width="1.2" />
+              <line x1="28" y1="18" x2="28" y2="25" stroke="rgba(200,169,110,0.4)" stroke-width="1.2" />
+            </g>
+            <g class="icon-orbit">
+              <path d="M28 9 A19 19 0 0 1 47 28" stroke="rgba(200,169,110,0.5)" stroke-width="1.3" fill="none"
+                stroke-linecap="round" />
+              <polygon points="47,23 47,28 42,28" fill="rgba(200,169,110,0.7)" />
+            </g>
+          </svg>
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
 
-    <!-- FAQ -->
-    <section id="faq" class="py-20 bg-brand-black border-t border-white/5">
-        <div class="max-w-3xl mx-auto px-6 lg:px-8 reveal-scale">
-            <h2 class="font-display text-3xl font-bold mb-10 text-center">FAQ</h2>
-            <div class="space-y-6">
-                <div class="border-b border-gray-800 pb-6 reveal stagger-1 hover-scale">
-                    <h3 class="text-lg font-bold text-white mb-2">What does "fractional" mean?</h3>
-                    <p class="text-gray-400">I work as a part-time, embedded inventory planner for your team. You get
-                        expert-level planning without paying a full-time salary.</p>
-                </div>
-                <div class="border-b border-gray-800 pb-6 reveal stagger-2 hover-scale">
-                    <h3 class="text-lg font-bold text-white mb-2">What's included in the free audit?</h3>
-                    <p class="text-gray-400">I'll analyze your sales data, current stock levels, and purchasing
-                        patterns. You'll get a report showing exactly where you're losing money — overbought SKUs,
-                        stockout risks, and cash trapped in dead stock. No obligation.</p>
-                </div>
-                <div class="border-b border-gray-800 pb-6 reveal stagger-3 hover-scale">
-                    <h3 class="text-lg font-bold text-white mb-2">Why not just hire a Demand Planner?</h3>
-                    <p class="text-gray-400">A good one costs $80k+ plus benefits. I provide the same output — weekly
-                        buy lists, demand forecasts, inventory audits — for a fraction of that cost on a monthly
-                        retainer.</p>
-                </div>
-                <div class="border-b border-gray-800 pb-6 reveal stagger-4 hover-scale">
-                    <h3 class="text-lg font-bold text-white mb-2">What if your recommendation is wrong?</h3>
-                    <p class="text-gray-400">You always approve orders. My role is to prevent blind spots — not replace
-                        your control. Every recommendation comes with quantified reasoning.</p>
-                </div>
-                <div class="border-b border-gray-800 pb-6 reveal stagger-5 hover-scale">
-                    <h3 class="text-lg font-bold text-white mb-2">Do you replace my inventory software?</h3>
-                    <p class="text-gray-400">No. I build the decision layer on top of it. I pull data from your current
-                        tools, run the logic, and give you the answers.</p>
-                </div>
-                <div class="border-b border-gray-800 pb-6 reveal stagger-1 hover-scale">
-                    <h3 class="text-lg font-bold text-white mb-2">How long do clients typically stay?</h3>
-                    <p class="text-gray-400">Most clients stay 6–18 months. Inventory planning is ongoing, not a
-                        one-time fix. But there's no lock-in — you retain everything built during setup.</p>
-                </div>
-            </div>
+  <div class="rule"></div>
+
+  <!-- HOW IT WORKS -->
+  <section id="how">
+    <div class="section-label reveal">How Does This Work</div>
+    <h2 class="big-text reveal reveal-delay-1">Three simple steps.</h2>
+    <div class="steps">
+      <div class="step reveal">
+        <div class="step-number">01</div>
+        <div class="step-content">
+          <div class="step-label">Step One</div>
+          <div class="step-title">Free Consultation</div>
+          <p class="step-desc">We start with a short call to understand your inventory process, challenges, and whether
+            my services are a good fit.</p>
         </div>
-    </section>
-
-    <!-- Free Audit CTA -->
-    <section id="audit" class="py-24 relative overflow-hidden">
-        <div class="absolute inset-0 bg-brand-orange opacity-5"></div>
-        <div
-            class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-brand-orange/10 blur-[150px] rounded-full">
+      </div>
+      <div class="step reveal reveal-delay-1">
+        <div class="step-number">02</div>
+        <div class="step-content">
+          <div class="step-label">Step Two</div>
+          <div class="step-title">Contract</div>
+          <p class="step-desc">We agree on scope, cadence, and responsibilities in a written contract tailored to your
+            business.</p>
         </div>
-        <div class="max-w-3xl mx-auto px-6 relative z-10 text-center reveal-scale">
-            <div
-                class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-card border border-brand-orange/30 mb-8">
-                <i data-lucide="gift" class="w-4 h-4 text-brand-orange"></i>
-                <span class="text-sm font-medium text-white">Completely free — no strings attached</span>
-            </div>
-            <h2 class="font-display text-4xl md:text-5xl font-bold mb-6 text-white">Get your free inventory audit.</h2>
-            <p class="text-xl text-gray-400 mb-4 max-w-2xl mx-auto">I'll dig into your data and show you exactly where
-                you're overbought, what's about to stock out, and how much cash is trapped in slow movers.</p>
-            <p class="text-gray-500 mb-10 max-w-xl mx-auto">No pitch. No obligation. You walk away with actionable
-                suggestions whether we work together or not.</p>
-            <a href="javascript:void(0);" data-cal-link="aedan-keller-ijsvjv/15min" data-cal-namespace="15min"
-                data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true"}'
-                class="inline-block px-10 py-5 bg-brand-orange text-white text-lg font-bold rounded-lg hover:bg-brand-orangeHover hover:scale-105 transition-all shadow-[0_0_40px_rgba(255,85,0,.3)] hover-glow">
-                Book Your Free Audit
-            </a>
-            <p class="text-xs text-gray-600 mt-4">Takes 30 minutes. I just need read-only access to your sales &
-                inventory data.</p>
+      </div>
+      <div class="step reveal reveal-delay-2">
+        <div class="step-number">03</div>
+        <div class="step-content">
+          <div class="step-label">Step Three</div>
+          <div class="step-title">Kickoff</div>
+          <p class="step-desc">Once signed, we begin working under the agreed plan and reporting schedule.</p>
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
 
-    <!-- Footer -->
-    <footer class="bg-black border-t border-gray-900 py-12">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
-            <div class="text-center md:text-left">
-                <span class="font-display font-bold text-xl text-white">AEDAN KELLER<span
-                        class="text-brand-orange">.</span></span>
-                <p class="text-gray-500 text-sm mt-2">Fractional Inventory Planner.</p>
-            </div>
-            <div class="flex gap-6">
-                <a href="#" class="text-gray-500 hover:text-brand-orange transition-colors hover-scale"><i
-                        data-lucide="linkedin" class="w-5 h-5"></i></a>
-                <a href="#" class="text-gray-500 hover:text-brand-orange transition-colors hover-scale"><i
-                        data-lucide="mail" class="w-5 h-5"></i></a>
-            </div>
-            <div class="text-gray-600 text-sm">&copy;
-                <script>document.write(new Date().getFullYear())</script> Aedan Keller. All rights reserved.
-            </div>
+  <div class="rule"></div>
+
+  <!-- COMPARISON -->
+  <section id="comparison">
+    <div class="section-label reveal">Why Me</div>
+    <p class="comparison-intro reveal reveal-delay-1">
+      You have three options.<br>Only one is built for where <em>you're going.</em>
+    </p>
+    <div class="comp-grid">
+      <div class="comp-col reveal">
+        <div class="comp-tag">Option 01</div>
+        <div class="comp-title">Inventory Software</div>
+        <div class="comp-points">
+          <div class="comp-point">
+            <svg class="comp-point-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+            <span>Rigid algorithms that can't read your market or adapt to seasonal nuance</span>
+          </div>
+          <div class="comp-point">
+            <svg class="comp-point-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+            <span>Inaccurate outputs without human oversight to catch what the model misses</span>
+          </div>
+          <div class="comp-point">
+            <svg class="comp-point-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+            <span>Gets expensive fast — licensing scales with your growth, not your margin</span>
+          </div>
         </div>
-    </footer>
+        <div class="comp-verdict">Works for steady-state businesses.<br>Not for ones that are scaling.</div>
+      </div>
 
-    <script>
-            (function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; let d = C.document; C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if (typeof namespace === "string") { cal.ns[namespace] = cal.ns[namespace] || api; p(cal.ns[namespace], ar); p(cal, ["initNamespace", namespace]); } else p(cal, ar); return; } p(cal, ar); }; })(window, "https://app.cal.com/embed/embed.js", "init");
-        Cal("init", "15min", { origin: "https://app.cal.com" });
-        Cal.ns["15min"]("ui", { "hideEventTypeDetails": false, "layout": "month_view" });
-    </script>
-    <script>
-        lucide.createIcons();
-        const menuBtn = document.getElementById('mobile-menu-btn'), mobileMenu = document.getElementById('mobile-menu');
-        menuBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+      <div class="comp-col featured reveal reveal-delay-1">
+        <div class="comp-tag">Option 02 <span class="comp-badge">Recommended</span></div>
+        <div class="comp-title">Aedan Keller</div>
+        <div class="comp-points">
+          <div class="comp-point">
+            <svg class="comp-point-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+            <span>Human-driven analysis that adapts to your market, your trends, your business</span>
+          </div>
+          <div class="comp-point">
+            <svg class="comp-point-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+            <span>Senior-level accuracy and reporting at a fraction of a full-time salary</span>
+          </div>
+          <div class="comp-point">
+            <svg class="comp-point-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+            <span>Flexible scope — scales with your growth, no headcount commitment required</span>
+          </div>
+        </div>
+        <div class="comp-verdict">The perfect middle ground.<br>Accuracy + flexibility, built for scale.</div>
+      </div>
 
-        Chart.defaults.color = '#888'; Chart.defaults.font.family = 'Inter';
-        const sparkOpts = { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { display: false } }, elements: { point: { radius: 0 }, line: { tension: .4, borderWidth: 2 } }, animation: { duration: 1500 } };
+      <div class="comp-col reveal reveal-delay-2">
+        <div class="comp-tag">Option 03</div>
+        <div class="comp-title">Full-Time Inventory Manager</div>
+        <div class="comp-points">
+          <div class="comp-point">
+            <svg class="comp-point-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+            <span>$80,000+ salary before benefits, payroll tax, and onboarding costs</span>
+          </div>
+          <div class="comp-point">
+            <svg class="comp-point-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+            <span>Months of hiring, onboarding, and ramp-up before you see results</span>
+          </div>
+          <div class="comp-point">
+            <svg class="comp-point-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+            <span>A fixed headcount commitment when you need flexibility to scale</span>
+          </div>
+        </div>
+        <div class="comp-verdict">Right solution — wrong stage.<br>Come back when you're bigger.</div>
+      </div>
+    </div>
+  </section>
 
-        // Sparkline: Buy List (bar)
-        new Chart(document.getElementById('sparkBuyList'), { type: 'bar', data: { labels: ['W1', 'W2', 'W3', 'W4', 'W5', 'W6'], datasets: [{ data: [12, 8, 15, 6, 18, 10], backgroundColor: 'rgba(255,85,0,.4)', borderRadius: 3, barThickness: 8 }] }, options: sparkOpts });
-        // Sparkline: Forecast (line)
-        new Chart(document.getElementById('sparkForecast'), { type: 'line', data: { labels: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A'], datasets: [{ data: [120, 135, 128, 160, 210, 280, 310, 245], borderColor: '#FF5500', backgroundColor: 'rgba(255,85,0,.1)', fill: true }] }, options: sparkOpts });
-        // Sparkline: ABC (doughnut)
-        new Chart(document.getElementById('sparkABC'), { type: 'doughnut', data: { labels: ['A Items', 'B Items', 'C Items'], datasets: [{ data: [80, 15, 5], backgroundColor: ['#FF5500', '#FF8800', '#333'] }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, cutout: '65%', animation: { duration: 1500 } } });
-        // Sparkline: OTB (bar)
-        new Chart(document.getElementById('sparkOTB'), { type: 'bar', data: { labels: ['Budget', 'Need', 'Funded'], datasets: [{ data: [50, 70, 50], backgroundColor: ['#333', '#FF5500', '#FF8800'], borderRadius: 3, barThickness: 10 }] }, options: sparkOpts });
-        // Sparkline: EOQ (line)
-        new Chart(document.getElementById('sparkEOQ'), { type: 'line', data: { labels: ['1x', '2x', '5x', '10x'], datasets: [{ label: 'Cost/Unit', data: [8.5, 6.2, 4.1, 3.8], borderColor: '#FF5500', backgroundColor: 'rgba(255,85,0,.1)', fill: true }] }, options: sparkOpts });
+  <div class="rule"></div>
 
-        // Result panel charts
-        const resultOpts = { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false }, ticks: { color: '#555', font: { size: 10 } } }, y: { display: false } }, elements: { point: { radius: 0 }, line: { tension: .4, borderWidth: 2.5 } }, animation: { duration: 1500 } };
-        new Chart(document.getElementById('deadStockChart'), { type: 'bar', data: { labels: ['Month 1', 'Month 2', 'Month 3', 'Month 4', 'Month 5', 'Month 6'], datasets: [{ data: [100, 88, 78, 72, 64, 60], backgroundColor: (ctx) => ctx.dataIndex === 5 ? '#FF5500' : '#333', borderRadius: 4, barThickness: 18 }] }, options: resultOpts });
-        new Chart(document.getElementById('availabilityChart'), { type: 'line', data: { labels: ['Week 1', 'Week 4', 'Week 8', 'Week 12'], datasets: [{ data: [80, 87, 94, 99], borderColor: '#FF5500', backgroundColor: 'rgba(255,85,0,.1)', fill: true, pointRadius: 4, pointBackgroundColor: '#FF5500' }] }, options: resultOpts });
-        new Chart(document.getElementById('discrepancyChart'), { type: 'bar', data: { labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'], datasets: [{ data: [340, 290, 260, 245, 230, 238], backgroundColor: (ctx) => ctx.dataIndex === 5 ? '#FF5500' : '#333', borderRadius: 4, barThickness: 18 }] }, options: resultOpts });
-        new Chart(document.getElementById('leadTimeChart'), { type: 'bar', data: { labels: ['Before', 'Month 1', 'Month 2', 'Month 3'], datasets: [{ data: [8.2, 7.4, 6.8, 7.0], backgroundColor: (ctx) => ctx.dataIndex === 0 ? '#333' : '#FF5500', borderRadius: 4, barThickness: 22 }] }, options: resultOpts });
+  <section id="cta">
+    <p class="cta-eyebrow reveal">Ready?</p>
+    <h2 class="cta-headline reveal reveal-delay-1">
+      Start taking your<br>inventory <em>back.</em>
+    </h2>
+    <button class="cta-btn reveal reveal-delay-2" data-cal-namespace="15min" data-cal-link="aedan-keller-ijsvjv/15min"
+      data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true"}'>Let's Connect</button>
+  </section>
 
-        // Reveal on scroll
-        function reveal() { document.querySelectorAll('.reveal,.reveal-scale,.reveal-left,.reveal-right,.reveal-highlight').forEach(el => { if (el.getBoundingClientRect().top < window.innerHeight - 100) el.classList.add('active') }) }
-        function parallax() { const s = window.pageYOffset; document.querySelectorAll('.parallax-slow').forEach(el => { el.style.transform = `translateY(${s * .5}px)` }) }
-        window.addEventListener('scroll', () => { reveal(); parallax() });
-        reveal();
+  <footer>
+    <div class="footer-name">Aedan Keller</div>
+    <div class="footer-links">
+      <a href="/cdn-cgi/l/email-protection#2e4f4b4a4f40454b42424b5c6e4f4b4a4f40454b42424b5c004d4143"
+        class="footer-link">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+          stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="4" width="20" height="16" rx="2" />
+          <path d="m2 7 10 7 10-7" />
+        </svg>
+        <span class="__cf_email__"
+          data-cfemail="5736323336393c323b3b32251736323336393c323b3b32257934383a">[email&#160;protected]</span>
+      </a>
+      <a href="https://www.linkedin.com/in/aedan-keller/" target="_blank" rel="noopener" class="footer-link">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+          <rect x="2" y="9" width="4" height="12" />
+          <circle cx="4" cy="4" r="2" />
+        </svg>
+        LinkedIn
+      </a>
+    </div>
+  </footer>
 
-        // Smooth scroll
-        document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener('click', function (e) { e.preventDefault(); const t = document.querySelector(this.getAttribute('href')); if (t) t.scrollIntoView({ behavior: 'smooth' }); if (!mobileMenu.classList.contains('hidden')) mobileMenu.classList.add('hidden') }));
-    </script>
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+  <script>
+    /* ── CURSOR ── */
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursor-ring');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+    function animCursor() {
+      cursor.style.left = mx + 'px'; cursor.style.top = my + 'px';
+      rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
+      ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+      requestAnimationFrame(animCursor);
+    }
+    animCursor();
+    document.querySelectorAll('a, button').forEach(el => {
+      el.addEventListener('mouseenter', () => { ring.style.width = '60px'; ring.style.height = '60px'; });
+      el.addEventListener('mouseleave', () => { ring.style.width = '36px'; ring.style.height = '36px'; });
+    });
+
+    document.addEventListener('mouseleave', () => {
+      cursor.style.opacity = '0'; ring.style.opacity = '0';
+    });
+    document.addEventListener('mouseenter', () => {
+      cursor.style.opacity = '1'; ring.style.opacity = '1';
+    });
+
+    /* ── SCROLL REVEAL ── */
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+    }, { threshold: 0.05, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    window.addEventListener('load', () => {
+      document.querySelectorAll('.reveal').forEach(el => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight) el.classList.add('visible');
+      });
+    });
+
+    /* ── STAMP SLAM — fires after user scrolls ~120px ── */
+    const stamp = document.getElementById('hero-stamp');
+    let stampFired = false;
+    function checkStamp() {
+      if (!stampFired && window.scrollY > 40) {
+        stampFired = true;
+        stamp.classList.add('slammed');
+        window.removeEventListener('scroll', checkStamp);
+      }
+    }
+    window.addEventListener('scroll', checkStamp, { passive: true });
+
+    /* ── CHART 1: Dead Stock Reduction ── */
+    const ctx1 = document.getElementById('chart1').getContext('2d');
+    new Chart(ctx1, {
+      type: 'bar',
+      data: {
+        labels: ['Before Framework', 'After Framework'],
+        datasets: [{
+          data: [100, 70],
+          backgroundColor: ['rgba(200,169,110,0.18)', 'rgba(200,169,110,0.85)'],
+          borderColor: ['rgba(200,169,110,0.4)', 'rgba(200,169,110,1)'],
+          borderWidth: 1, borderRadius: 2,
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: { label: ctx => ctx.parsed.y === 100 ? ' Baseline dead stock' : ' Dead stock after (-30%)' },
+            backgroundColor: '#1a1a18', titleColor: '#c8a96e', bodyColor: '#f0ead8',
+            borderColor: 'rgba(200,169,110,0.3)', borderWidth: 1, padding: 12,
+          }
+        },
+        scales: {
+          x: { grid: { display: false }, ticks: { color: '#9a968e', font: { family: 'DM Mono', size: 11 } }, border: { color: 'rgba(240,234,216,0.08)' } },
+          y: { grid: { color: 'rgba(240,234,216,0.05)' }, ticks: { color: '#9a968e', font: { family: 'DM Mono', size: 11 }, callback: v => v + '%' }, border: { color: 'rgba(240,234,216,0.08)' }, max: 120 }
+        }
+      }
+    });
+
+    /* ── CHART 2: Time Reduction Doughnut ── */
+    const ctx2 = document.getElementById('chart2').getContext('2d');
+    const centerTextPlugin = {
+      id: 'centerText',
+      afterDraw(chart) {
+        const { ctx, chartArea: { left, top, right, bottom } } = chart;
+        const cx = (left + right) / 2, cy = (top + bottom) / 2;
+        ctx.save();
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.font = "800 42px 'Syne', sans-serif"; ctx.fillStyle = '#c8a96e';
+        ctx.fillText('97.2%', cx, cy - 14);
+        ctx.font = "300 13px 'DM Mono', monospace"; ctx.fillStyle = '#9a968e';
+        ctx.fillText('TIME SAVED', cx, cy + 22);
+        ctx.restore();
+      }
+    };
+    new Chart(ctx2, {
+      type: 'doughnut',
+      plugins: [centerTextPlugin],
+      data: {
+        labels: ['Time Saved', 'Remaining'],
+        datasets: [{
+          data: [97.2, 2.8],
+          backgroundColor: ['rgba(200,169,110,0.85)', 'rgba(200,169,110,0.08)'],
+          borderColor: ['rgba(200,169,110,1)', 'rgba(200,169,110,0.15)'],
+          borderWidth: 1, hoverOffset: 4,
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false, cutout: '74%',
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: { label: ctx => ctx.dataIndex === 0 ? ' 350 min saved (97.2%)' : ' 10 min remaining' },
+            backgroundColor: '#1a1a18', titleColor: '#c8a96e', bodyColor: '#f0ead8',
+            borderColor: 'rgba(200,169,110,0.3)', borderWidth: 1, padding: 12,
+          }
+        }
+      }
+    });
+  </script>
 </body>
 
 </html>

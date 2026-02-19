@@ -1,584 +1,1487 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Services | Aedan Keller — Fractional Inventory Planner</title>
-    <link rel="icon" type="image/png" href="favicon.png">
-    <meta name="description"
-        content="Full-service fractional inventory management: weekly buy lists, demand forecasting, inventory health audits, cash flow management, and vendor optimization.">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap"
-        rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: { brand: { black: '#0a0a0a', dark: '#121212', card: '#1c1c1c', orange: '#FF5500', orangeHover: '#CC4400', gray: '#888888', light: '#e5e5e5' } },
-                    fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Space Grotesk', 'sans-serif'] }
-                }
-            }
-        }
-    </script>
-    <style>
-        body {
-            background: #0a0a0a;
-            color: #e5e5e5;
-            overflow-x: hidden
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Services — Aedan Keller</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syne:wght@400;500;700;800&family=DM+Mono:wght@300;400&display=swap"
+    rel="stylesheet" />
 
-        .glass-nav {
-            background: rgba(10, 10, 10, .8);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255, 255, 255, .05)
-        }
+  <script type="text/javascript">
+    (function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; let d = C.document; C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if (typeof namespace === "string") { cal.ns[namespace] = cal.ns[namespace] || api; p(cal.ns[namespace], ar); p(cal, ["initNamespace", namespace]); } else p(cal, ar); return; } p(cal, ar); }; })(window, "https://app.cal.com/embed/embed.js", "init");
+    Cal("init", "15min", { origin: "https://app.cal.com" });
+    Cal.ns["15min"]("ui", { "hideEventTypeDetails": false, "layout": "month_view" });
+  </script>
 
-        .orange-glow {
-            box-shadow: 0 0 20px rgba(255, 85, 0, .15)
-        }
+  <style>
+    html {
+      cursor: none !important;
+    }
 
-        .reveal {
-            opacity: 0;
-            transform: translateY(50px);
-            transition: all .8s cubic-bezier(.4, 0, .2, 1)
-        }
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      cursor: none !important;
+    }
 
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0)
-        }
+    :root {
+      --bg: #0c0c0b;
+      --bg2: #111110;
+      --cream: #f0ead8;
+      --gold: #c8a96e;
+      --muted: #9a968e;
+      --line: rgba(240, 234, 216, 0.08);
+      --white: #faf8f2;
+    }
 
-        .reveal-scale {
-            opacity: 0;
-            transform: scale(.9);
-            transition: all .8s cubic-bezier(.4, 0, .2, 1)
-        }
+    html {
+      scroll-behavior: smooth;
+    }
 
-        .reveal-scale.active {
-            opacity: 1;
-            transform: scale(1)
-        }
+    body {
+      background: var(--bg);
+      color: var(--cream);
+      font-family: 'Cormorant Garamond', serif;
+      overflow-x: hidden;
+      cursor: none;
+    }
 
-        .reveal-left {
-            opacity: 0;
-            transform: translateX(-50px);
-            transition: all .8s cubic-bezier(.4, 0, .2, 1)
-        }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 10000;
+      opacity: 0.35;
+    }
 
-        .reveal-left.active {
-            opacity: 1;
-            transform: translateX(0)
-        }
+    .cursor {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 8px;
+      height: 8px;
+      background: var(--gold);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+    }
 
-        .reveal-right {
-            opacity: 0;
-            transform: translateX(50px);
-            transition: all .8s cubic-bezier(.4, 0, .2, 1)
-        }
+    .cursor-ring {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 36px;
+      height: 36px;
+      border: 1px solid rgba(200, 169, 110, 0.4);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: width 0.3s, height 0.3s;
+    }
 
-        .reveal-right.active {
-            opacity: 1;
-            transform: translateX(0)
-        }
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1), transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+    }
 
-        .hover-lift {
-            transition: all .3s cubic-bezier(.4, 0, .2, 1)
-        }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
 
-        .hover-lift:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(255, 85, 0, .15)
-        }
+    .reveal-delay-1 {
+      transition-delay: 0.1s;
+    }
 
-        .hover-glow:hover {
-            box-shadow: 0 0 30px rgba(255, 85, 0, .3)
-        }
+    .reveal-delay-2 {
+      transition-delay: 0.22s;
+    }
 
-        .hover-scale {
-            transition: all .3s cubic-bezier(.4, 0, .2, 1)
-        }
+    .reveal-delay-3 {
+      transition-delay: 0.38s;
+    }
 
-        .hover-scale:hover {
-            transform: scale(1.02)
-        }
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 28px 60px;
+      background: linear-gradient(to bottom, rgba(12, 12, 11, 0.95) 0%, transparent 100%);
+    }
 
-        .stagger-1 {
-            transition-delay: .1s
-        }
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--cream);
+      text-decoration: none;
+    }
 
-        .stagger-2 {
-            transition-delay: .2s
-        }
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
 
-        .stagger-3 {
-            transition-delay: .3s
-        }
+    .nav-link {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold);
+      text-decoration: none;
+      transition: opacity 0.25s;
+    }
 
-        ::-webkit-scrollbar {
-            width: 8px
-        }
+    .nav-link:hover {
+      opacity: 0.7;
+    }
 
-        ::-webkit-scrollbar-track {
-            background: #0a0a0a
-        }
+    .nav-link.back {
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
 
-        ::-webkit-scrollbar-thumb {
-            background: #333;
-            border-radius: 4px
-        }
+    .nav-link.back:hover {
+      color: var(--cream);
+    }
 
-        ::-webkit-scrollbar-thumb:hover {
-            background: #FF5500
-        }
+    .nav-cta {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold);
+      border: 1px solid rgba(200, 169, 110, 0.4);
+      padding: 10px 22px;
+      transition: background 0.3s, color 0.3s;
+      background: transparent;
+      cursor: none;
+    }
 
-        .service-section:nth-child(even) {
-            background: #121212
-        }
+    .nav-cta:hover {
+      background: var(--gold);
+      color: var(--bg);
+    }
 
-        .deliverable-item {
-            position: relative;
-            padding-left: 1.5rem
-        }
+    .rule {
+      width: 100%;
+      height: 1px;
+      background: var(--line);
+    }
 
-        .deliverable-item::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: .6rem;
-            width: 8px;
-            height: 8px;
-            background: #FF5500;
-            border-radius: 50%
-        }
-    </style>
+    #hero {
+      min-height: 70vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 160px 60px 100px;
+    }
+
+    .hero-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 32px;
+    }
+
+    .hero-title {
+      font-size: clamp(3.5rem, 7vw, 7rem);
+      font-weight: 300;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      color: var(--white);
+      max-width: 900px;
+      margin-bottom: 40px;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--gold);
+    }
+
+    .hero-sub {
+      font-size: clamp(1.1rem, 1.8vw, 1.5rem);
+      font-weight: 300;
+      line-height: 1.65;
+      color: #a8a49c;
+      max-width: 680px;
+    }
+
+    section {
+      padding: 120px 60px;
+      position: relative;
+    }
+
+    .section-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.82rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 48px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--line);
+      max-width: 120px;
+    }
+
+    .service-detail {
+      padding: 120px 60px;
+    }
+
+    .service-detail.alt {
+      background: var(--bg2);
+    }
+
+    .sd-header {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: start;
+      margin-bottom: 100px;
+    }
+
+    .sd-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(6rem, 12vw, 12rem);
+      font-weight: 300;
+      font-style: italic;
+      color: rgba(200, 169, 110, 0.35);
+      line-height: 1;
+      margin-bottom: -20px;
+    }
+
+    .sd-title {
+      font-size: clamp(2.2rem, 4vw, 4.5rem);
+      font-weight: 300;
+      line-height: 1.1;
+      color: var(--white);
+      margin-bottom: 28px;
+      letter-spacing: -0.01em;
+    }
+
+    .sd-title em {
+      font-style: italic;
+      color: var(--gold);
+    }
+
+    .sd-summary {
+      font-size: clamp(1.1rem, 1.6vw, 1.35rem);
+      font-weight: 300;
+      line-height: 1.75;
+      color: #b8b4a8;
+      max-width: 560px;
+      margin-bottom: 48px;
+    }
+
+    /* Visual box — no fixed aspect ratio, height auto for mock content */
+    .sd-visual {
+      width: 100%;
+      position: relative;
+      border: 1px solid rgba(200, 169, 110, 0.18);
+      overflow: hidden;
+      background: var(--bg2);
+    }
+
+    .service-detail.alt .sd-visual {
+      background: var(--bg);
+    }
+
+    .sd-visual-corner {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      border-color: rgba(200, 169, 110, 0.35);
+      border-style: solid;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .sd-visual-corner.tl {
+      top: 0;
+      left: 0;
+      border-width: 1px 0 0 1px;
+    }
+
+    .sd-visual-corner.tr {
+      top: 0;
+      right: 0;
+      border-width: 1px 1px 0 0;
+    }
+
+    .sd-visual-corner.bl {
+      bottom: 0;
+      left: 0;
+      border-width: 0 0 1px 1px;
+    }
+
+    .sd-visual-corner.br {
+      bottom: 0;
+      right: 0;
+      border-width: 0 1px 1px 0;
+    }
+
+    .sd-includes-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 32px;
+    }
+
+    .sd-includes {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .sd-item {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+      padding: 22px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .sd-item:last-child {
+      border-bottom: 1px solid var(--line);
+    }
+
+    .sd-item-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--gold);
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 8px;
+      opacity: 0.6;
+    }
+
+    .sd-item-text {
+      font-size: clamp(1rem, 1.4vw, 1.2rem);
+      font-weight: 300;
+      line-height: 1.6;
+      color: #b0aca4;
+    }
+
+    .sd-item-text strong {
+      color: var(--white);
+      font-weight: 400;
+    }
+
+    .sd-outcome {
+      margin-top: 64px;
+      padding: 40px 44px;
+      border: 1px solid rgba(200, 169, 110, 0.25);
+      background: rgba(200, 169, 110, 0.04);
+      position: relative;
+    }
+
+    .sd-outcome::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--gold);
+    }
+
+    .sd-outcome-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 14px;
+    }
+
+    .sd-outcome-text {
+      font-size: clamp(1.1rem, 1.6vw, 1.4rem);
+      font-weight: 300;
+      line-height: 1.65;
+      color: var(--cream);
+    }
+
+    .process-strip {
+      background: var(--bg2);
+      padding: 100px 60px;
+    }
+
+    .process-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+      margin-top: 60px;
+    }
+
+    .process-step {
+      padding: 44px 36px;
+      border: 1px solid var(--line);
+      position: relative;
+    }
+
+    .process-step-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      color: var(--gold);
+      margin-bottom: 20px;
+    }
+
+    .process-step-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--white);
+      margin-bottom: 12px;
+    }
+
+    .process-step-desc {
+      font-size: 1rem;
+      font-weight: 300;
+      line-height: 1.6;
+      color: var(--muted);
+    }
+
+    .cta-strip {
+      background: var(--bg);
+      padding: 140px 60px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .cta-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 40px;
+    }
+
+    .cta-headline {
+      font-size: clamp(2.5rem, 5vw, 5.5rem);
+      font-weight: 300;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: var(--white);
+      max-width: 800px;
+      margin-bottom: 56px;
+    }
+
+    .cta-headline em {
+      font-style: italic;
+      color: var(--gold);
+    }
+
+    .cta-btn {
+      display: inline-block;
+      font-family: 'Syne', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--bg);
+      background: var(--gold);
+      padding: 22px 56px;
+      border: none;
+      cursor: none;
+      transition: opacity 0.3s, transform 0.3s;
+    }
+
+    .cta-btn:hover {
+      opacity: 0.88;
+      transform: translateY(-2px);
+    }
+
+    footer {
+      padding: 40px 60px;
+      border-top: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .footer-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
+
+    .footer-link {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.25s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .footer-link:hover {
+      color: var(--gold);
+    }
+
+    @keyframes bar1 {
+
+      0%,
+      100% {
+        height: 10px;
+        y: 26px
+      }
+
+      50% {
+        height: 20px;
+        y: 16px
+      }
+    }
+
+    @keyframes bar2 {
+
+      0%,
+      100% {
+        height: 22px;
+        y: 14px
+      }
+
+      50% {
+        height: 12px;
+        y: 24px
+      }
+    }
+
+    @keyframes bar3 {
+
+      0%,
+      100% {
+        height: 16px;
+        y: 20px
+      }
+
+      33% {
+        height: 28px;
+        y: 8px
+      }
+
+      66% {
+        height: 10px;
+        y: 26px
+      }
+    }
+
+    .icon-bar1 {
+      animation: bar1 2.4s ease-in-out infinite;
+    }
+
+    .icon-bar2 {
+      animation: bar2 2.4s ease-in-out infinite 0.3s;
+    }
+
+    .icon-bar3 {
+      animation: bar3 2.4s ease-in-out infinite 0.6s;
+    }
+
+    @keyframes dash-draw {
+      0% {
+        stroke-dashoffset: 120
+      }
+
+      60% {
+        stroke-dashoffset: 0
+      }
+
+      100% {
+        stroke-dashoffset: 0
+      }
+    }
+
+    @keyframes dot-pulse {
+
+      0%,
+      100% {
+        r: 2.5;
+        opacity: .5
+      }
+
+      50% {
+        r: 4;
+        opacity: 1
+      }
+    }
+
+    .icon-trend-line {
+      stroke-dasharray: 120;
+      stroke-dashoffset: 120;
+      animation: dash-draw 2.8s ease-out infinite;
+    }
+
+    .icon-trend-dot {
+      animation: dot-pulse 2.8s ease-in-out infinite;
+    }
+
+    @keyframes box-float {
+
+      0%,
+      100% {
+        transform: translateY(0)
+      }
+
+      50% {
+        transform: translateY(-3px)
+      }
+    }
+
+    @keyframes arrow-spin {
+      0% {
+        transform: rotate(0deg)
+      }
+
+      100% {
+        transform: rotate(360deg)
+      }
+    }
+
+    .icon-box-group {
+      animation: box-float 2.6s ease-in-out infinite;
+      transform-origin: 28px 26px;
+    }
+
+    .icon-orbit {
+      animation: arrow-spin 3s linear infinite;
+      transform-origin: 28px 28px;
+    }
+
+    .sd-icon-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100px;
+      height: 100px;
+      border: 1px solid rgba(200, 169, 110, 0.2);
+      background: rgba(200, 169, 110, 0.03);
+      margin-bottom: 36px;
+    }
+
+    @media (max-width: 900px) {
+      nav {
+        padding: 24px 28px;
+      }
+
+      section,
+      .service-detail,
+      .process-strip,
+      .cta-strip {
+        padding: 80px 28px;
+      }
+
+      #hero {
+        padding: 140px 28px 80px;
+      }
+
+      .sd-header {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        margin-bottom: 60px;
+      }
+
+      .process-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      footer {
+        flex-direction: column;
+        gap: 16px;
+        padding: 32px 28px;
+      }
+    }
+  </style>
 </head>
 
-<body class="antialiased selection:bg-brand-orange selection:text-white">
+<body>
 
-    <!-- Navigation -->
-    <nav class="fixed w-full z-50 glass-nav transition-all duration-300">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8">
-            <div class="flex items-center justify-between h-20">
-                <a href="index.html"
-                    class="font-display font-bold text-xl tracking-tight text-white hover:text-brand-orange transition-colors">AEDAN
-                    KELLER<span class="text-brand-orange">.</span></a>
-                <div class="hidden md:flex items-center space-x-8">
-                    <a href="index.html"
-                        class="text-sm font-medium text-gray-400 hover:text-white transition-colors">Home</a>
-                    <a href="#buy-list" class="text-sm font-medium text-gray-400 hover:text-white transition-colors">Buy
-                        List</a>
-                    <a href="#forecasting"
-                        class="text-sm font-medium text-gray-400 hover:text-white transition-colors">Forecasting</a>
-                    <a href="#health-audit"
-                        class="text-sm font-medium text-gray-400 hover:text-white transition-colors">Health Audit</a>
-                    <a href="#cash-flow"
-                        class="text-sm font-medium text-gray-400 hover:text-white transition-colors">Cash Flow</a>
-                    <a href="#vendor"
-                        class="text-sm font-medium text-gray-400 hover:text-white transition-colors">Vendor</a>
-                    <a href="javascript:void(0);" data-cal-link="aedan-keller-ijsvjv/15min" data-cal-namespace="15min"
-                        data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true"}'
-                        class="px-5 py-2.5 bg-brand-orange text-white text-sm font-bold rounded hover:bg-brand-orangeHover transition-all orange-glow hover-scale">Free
-                        Inventory Audit</a>
-                </div>
-                <div class="md:hidden">
-                    <button id="mobile-menu-btn" class="text-white focus:outline-none"><i data-lucide="menu"
-                            class="w-6 h-6"></i></button>
-                </div>
-            </div>
-        </div>
-        <div id="mobile-menu" class="hidden md:hidden bg-brand-card border-b border-gray-800">
-            <div class="px-6 py-4 space-y-4">
-                <a href="index.html" class="block text-gray-400 hover:text-white">Home</a>
-                <a href="#buy-list" class="block text-gray-400 hover:text-white">Buy List</a>
-                <a href="#forecasting" class="block text-gray-400 hover:text-white">Forecasting</a>
-                <a href="#health-audit" class="block text-gray-400 hover:text-white">Health Audit</a>
-                <a href="#cash-flow" class="block text-gray-400 hover:text-white">Cash Flow</a>
-                <a href="#vendor" class="block text-gray-400 hover:text-white">Vendor</a>
-                <a href="javascript:void(0);" data-cal-link="aedan-keller-ijsvjv/15min" data-cal-namespace="15min"
-                    data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true"}'
-                    class="block w-full text-center px-5 py-3 bg-brand-orange text-white font-bold rounded">Free
-                    Audit</a>
-            </div>
-        </div>
-    </nav>
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursor-ring"></div>
 
-    <!-- Hero -->
-    <section class="pt-32 pb-16 lg:pt-44 lg:pb-24 relative overflow-hidden">
-        <div class="absolute top-0 right-0 w-96 h-96 bg-brand-orange opacity-10 blur-[120px] rounded-full"></div>
-        <div class="max-w-5xl mx-auto px-6 lg:px-8 text-center relative z-10">
-            <span
-                class="inline-block px-3 py-1 bg-brand-orange/10 text-brand-orange text-xs font-bold rounded-full uppercase tracking-widest mb-6 border border-brand-orange/20">Services</span>
-            <h1 class="font-display text-4xl md:text-6xl font-bold mb-6">Everything your inventory<br>needs. <span
-                    class="text-brand-orange">Nothing it doesn't.</span></h1>
-            <p class="text-lg text-gray-400 max-w-2xl mx-auto mb-8">Each service below is available as part of your
-                custom retainer. Pick what you need — I'll handle the rest.</p>
-            <div class="flex justify-center gap-4 flex-wrap">
-                <a href="#buy-list"
-                    class="px-4 py-2 bg-brand-card border border-gray-700 text-sm text-white rounded-lg hover:border-brand-orange/50 transition-all hover-scale">Buy
-                    List</a>
-                <a href="#forecasting"
-                    class="px-4 py-2 bg-brand-card border border-gray-700 text-sm text-white rounded-lg hover:border-brand-orange/50 transition-all hover-scale">Forecasting</a>
-                <a href="#health-audit"
-                    class="px-4 py-2 bg-brand-card border border-gray-700 text-sm text-white rounded-lg hover:border-brand-orange/50 transition-all hover-scale">Health
-                    Audit</a>
-                <a href="#cash-flow"
-                    class="px-4 py-2 bg-brand-card border border-gray-700 text-sm text-white rounded-lg hover:border-brand-orange/50 transition-all hover-scale">Cash
-                    Flow</a>
-                <a href="#vendor"
-                    class="px-4 py-2 bg-brand-card border border-gray-700 text-sm text-white rounded-lg hover:border-brand-orange/50 transition-all hover-scale">Vendor</a>
-            </div>
-        </div>
-    </section>
+  <nav>
+    <a href="index.html" class="nav-logo">Aedan Keller</a>
+    <div class="nav-right">
+      <a href="index.html" class="nav-link back">← Back</a>
+      <button class="nav-cta" data-cal-namespace="15min" data-cal-link="aedan-keller-ijsvjv/15min"
+        data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true"}'>Let's Connect</button>
+    </div>
+  </nav>
 
-    <!-- Service 1: Weekly Buy List -->
-    <section id="buy-list" class="service-section py-24 bg-brand-black border-t border-white/5">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8">
-            <div class="grid lg:grid-cols-2 gap-16 items-center">
-                <div class="reveal-left">
-                    <div class="flex items-center gap-3 mb-6">
-                        <div class="w-14 h-14 bg-brand-orange/10 rounded-xl flex items-center justify-center"><i
-                                data-lucide="clipboard-list" class="w-7 h-7 text-brand-orange"></i></div>
-                        <div>
-                            <span class="text-brand-orange text-xs font-bold uppercase tracking-widest">01 — Primary
-                                Execution</span>
-                            <h2 class="font-display text-3xl md:text-4xl font-bold text-white">The Weekly Buy List</h2>
-                        </div>
-                    </div>
-                    <p class="text-gray-400 text-lg leading-relaxed mb-8">Every week, I deliver a complete list of
-                        exactly what needs to be ordered from every vendor — calculated, justified, and ready for your
-                        sign-off.</p>
-                    <div class="space-y-4 mb-8">
-                        <div class="deliverable-item text-gray-300"><strong class="text-white">Reorder Point
-                                Calculation</strong> — I determine the trigger level for every SKU based on lead times
-                            and sales velocity.</div>
-                        <div class="deliverable-item text-gray-300"><strong class="text-white">Statistical Order
-                                Sizing</strong> — Using demand models to size each order so you don't stock out before
-                            the next shipment.</div>
-                        <div class="deliverable-item text-gray-300"><strong class="text-white">PO Generation</strong> —
-                            Formatted purchase orders ready for you or your warehouse manager to approve.</div>
-                    </div>
-                    <div
-                        class="inline-flex items-center gap-2 px-4 py-2 bg-brand-card border border-gray-700 rounded-lg text-sm text-gray-300">
-                        <i data-lucide="clock" class="w-4 h-4 text-brand-orange"></i> Delivered every Monday by 9am
-                    </div>
-                </div>
-                <div class="reveal-right">
-                    <!-- Sample Buy List Table -->
-                    <div
-                        class="bg-gray-900 border border-gray-800 rounded-lg overflow-hidden font-mono text-xs shadow-2xl hover-lift">
-                        <div class="bg-gray-800 px-4 py-3 border-b border-gray-700 flex items-center gap-2">
-                            <i data-lucide="file-spreadsheet" class="w-4 h-4 text-green-500"></i>
-                            <span class="text-white font-bold">Buy_List_Week_42.xlsx</span>
-                        </div>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left text-gray-400">
-                                <thead class="bg-gray-800/50 text-gray-200">
-                                    <tr>
-                                        <th class="p-3">SKU</th>
-                                        <th class="p-3">Velocity</th>
-                                        <th class="p-3">On Hand</th>
-                                        <th class="p-3 text-brand-orange">Order</th>
-                                        <th class="p-3">Reason</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-gray-800">
-                                    <tr>
-                                        <td class="p-3 text-white">BLK-TEE-M</td>
-                                        <td class="p-3">142/wk</td>
-                                        <td class="p-3">405</td>
-                                        <td class="p-3 text-brand-orange font-bold">850</td>
-                                        <td class="p-3">Below ROP</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="p-3 text-white">WHT-HOOD-L</td>
-                                        <td class="p-3">89/wk</td>
-                                        <td class="p-3">120</td>
-                                        <td class="p-3 text-brand-orange font-bold">400</td>
-                                        <td class="p-3 text-red-400">Urgent</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="p-3 text-white">GRY-JOGGER</td>
-                                        <td class="p-3">67/wk</td>
-                                        <td class="p-3">580</td>
-                                        <td class="p-3 text-gray-600">0</td>
-                                        <td class="p-3 text-gray-500">Sufficient</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+  <section id="hero">
+    <p class="hero-eyebrow reveal">What I Do</p>
+    <h1 class="hero-title reveal reveal-delay-1">
+      Three services.<br>One <em>unfair advantage.</em>
+    </h1>
+    <p class="hero-sub reveal reveal-delay-2">
+      Every engagement is built around your data, your business model, and where you want to go. Here's exactly what
+      that looks like in practice.
+    </p>
+  </section>
 
-    <!-- Service 2: Demand Forecasting -->
-    <section id="forecasting" class="service-section py-24 bg-brand-dark border-t border-white/5">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8">
-            <div class="grid lg:grid-cols-2 gap-16 items-center">
-                <div class="order-2 lg:order-1 reveal-left">
-                    <div class="h-72 w-full bg-brand-black/50 rounded-xl p-6 border border-white/5 hover-lift"><canvas
-                            id="forecastChart"></canvas></div>
-                </div>
-                <div class="order-1 lg:order-2 reveal-right">
-                    <div class="flex items-center gap-3 mb-6">
-                        <div class="w-14 h-14 bg-brand-orange/10 rounded-xl flex items-center justify-center"><i
-                                data-lucide="trending-up" class="w-7 h-7 text-brand-orange"></i></div>
-                        <div>
-                            <span class="text-brand-orange text-xs font-bold uppercase tracking-widest">02 —
-                                Intelligence</span>
-                            <h2 class="font-display text-3xl md:text-4xl font-bold text-white">Demand Forecasting</h2>
-                        </div>
-                    </div>
-                    <p class="text-gray-400 text-lg leading-relaxed mb-8">I act as the meteorologist for your sales —
-                        predicting demand 3–6 months out so you order the right inventory before peaks hit.</p>
-                    <div class="space-y-4">
-                        <div class="deliverable-item text-gray-300"><strong class="text-white">Seasonality
-                                Adjustments</strong> — Predicting spikes like Black Friday and summer peaks so you order
-                            months in advance.</div>
-                        <div class="deliverable-item text-gray-300"><strong class="text-white">Trend Detection</strong>
-                            — Identifying which products are growing and which are dying so you lean in or cut losses
-                            early.</div>
-                        <div class="deliverable-item text-gray-300"><strong class="text-white">Promotional
-                                Planning</strong> — Coordinating with your marketing team so inventory is in the
-                            warehouse before ads launch.</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+  <div class="rule"></div>
 
-    <!-- Service 3: Inventory Health Audit -->
-    <section id="health-audit" class="service-section py-24 bg-brand-black border-t border-white/5">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8">
-            <div class="grid lg:grid-cols-2 gap-16 items-center">
-                <div class="reveal-left">
-                    <div class="flex items-center gap-3 mb-6">
-                        <div class="w-14 h-14 bg-brand-orange/10 rounded-xl flex items-center justify-center"><i
-                                data-lucide="heart-pulse" class="w-7 h-7 text-brand-orange"></i></div>
-                        <div>
-                            <span class="text-brand-orange text-xs font-bold uppercase tracking-widest">03 —
-                                Optimization</span>
-                            <h2 class="font-display text-3xl md:text-4xl font-bold text-white">Inventory Health Auditing
-                            </h2>
-                        </div>
-                    </div>
-                    <p class="text-gray-400 text-lg leading-relaxed mb-8">I find the hidden cash trapped in your
-                        warehouse and turn it into working capital.</p>
-                    <div class="space-y-4">
-                        <div class="deliverable-item text-gray-300"><strong class="text-white">ABC Analysis</strong> —
-                            Categorizing products into A (80% of revenue), B, and C tiers. I ensure your A-items never
-                            stock out while minimizing C-item bloat.</div>
-                        <div class="deliverable-item text-gray-300"><strong class="text-white">Dead Stock
-                                Identification</strong> — Flagging items that haven't sold in 90+ days with liquidation
-                            or discount recommendations.</div>
-                        <div class="deliverable-item text-gray-300"><strong class="text-white">Stockout
-                                Analysis</strong> — Calculating exactly how much revenue was lost from out-of-stocks —
-                            justifying smarter purchasing.</div>
-                    </div>
-                </div>
-                <div class="reveal-right">
-                    <div class="h-72 w-full bg-brand-black/50 rounded-xl p-6 border border-white/5 hover-lift"><canvas
-                            id="abcChart"></canvas></div>
-                    <div class="grid grid-cols-3 gap-4 mt-4">
-                        <div class="text-center p-3 bg-brand-card rounded-lg border border-white/5">
-                            <p class="text-brand-orange font-bold text-lg">A</p>
-                            <p class="text-xs text-gray-400">80% Revenue</p>
-                        </div>
-                        <div class="text-center p-3 bg-brand-card rounded-lg border border-white/5">
-                            <p class="text-yellow-500 font-bold text-lg">B</p>
-                            <p class="text-xs text-gray-400">15% Revenue</p>
-                        </div>
-                        <div class="text-center p-3 bg-brand-card rounded-lg border border-white/5">
-                            <p class="text-gray-500 font-bold text-lg">C</p>
-                            <p class="text-xs text-gray-400">5% Revenue</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+  <!-- SERVICE 01 — REPORTING & ANALYSIS -->
+  <div id="reporting" class="service-detail">
+    <div class="sd-header">
+      <div>
+        <div class="sd-num reveal">01</div>
+        <h2 class="sd-title reveal reveal-delay-1">Reporting &amp;<br><em>Analysis</em></h2>
+        <p class="sd-summary reveal reveal-delay-2">
+          Most DTC businesses are flying blind — they have data but no clarity. I build you the intelligence layer that
+          turns raw numbers into decisions you can act on with confidence.
+        </p>
 
-    <!-- Service 4: Cash Flow & OTB -->
-    <section id="cash-flow" class="service-section py-24 bg-brand-dark border-t border-white/5">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8">
-            <div class="grid lg:grid-cols-2 gap-16 items-center">
-                <div class="order-2 lg:order-1 reveal-left">
-                    <div class="h-72 w-full bg-brand-black/50 rounded-xl p-6 border border-white/5 hover-lift"><canvas
-                            id="otbChart"></canvas></div>
-                </div>
-                <div class="order-1 lg:order-2 reveal-right">
-                    <div class="flex items-center gap-3 mb-6">
-                        <div class="w-14 h-14 bg-brand-orange/10 rounded-xl flex items-center justify-center"><i
-                                data-lucide="wallet" class="w-7 h-7 text-brand-orange"></i></div>
-                        <div>
-                            <span class="text-brand-orange text-xs font-bold uppercase tracking-widest">04 — Financial
-                                Guardrail</span>
-                            <h2 class="font-display text-3xl md:text-4xl font-bold text-white">Cash Flow & OTB
-                                Management</h2>
-                        </div>
-                    </div>
-                    <p class="text-gray-400 text-lg leading-relaxed mb-8">When your budget can't fund everything, I
-                        decide which products get top priority — so every dollar works as hard as possible.</p>
-                    <div class="space-y-4">
-                        <div class="deliverable-item text-gray-300"><strong class="text-white">Open-to-Buy
-                                Budgeting</strong> — If you have $50K for inventory but need $70K, I prioritize the
-                            highest-impact purchases.</div>
-                        <div class="deliverable-item text-gray-300"><strong class="text-white">Lead Time
-                                Monitoring</strong> — Tracking actual vendor delivery times and adjusting safety stock
-                            buffers so delays don't catch you off guard.</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Service 5: Vendor & Logistics -->
-    <section id="vendor" class="service-section py-24 bg-brand-black border-t border-white/5">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8">
-            <div class="grid lg:grid-cols-2 gap-16 items-center">
-                <div class="reveal-left">
-                    <div class="flex items-center gap-3 mb-6">
-                        <div class="w-14 h-14 bg-brand-orange/10 rounded-xl flex items-center justify-center"><i
-                                data-lucide="ship" class="w-7 h-7 text-brand-orange"></i></div>
-                        <div>
-                            <span class="text-brand-orange text-xs font-bold uppercase tracking-widest">05 —
-                                Efficiency</span>
-                            <h2 class="font-display text-3xl md:text-4xl font-bold text-white">Vendor & Logistics
-                                Optimization</h2>
-                        </div>
-                    </div>
-                    <p class="text-gray-400 text-lg leading-relaxed mb-8">I optimize how you buy and ship — grouping
-                        orders, calculating economic order quantities, and cutting your per-unit freight costs.</p>
-                    <div class="space-y-4">
-                        <div class="deliverable-item text-gray-300"><strong class="text-white">Container
-                                Building</strong> — Grouping multiple small orders into consolidated shipments to
-                            maximize container utilization and save freight.</div>
-                        <div class="deliverable-item text-gray-300"><strong class="text-white">EOQ Analysis</strong> —
-                            Calculating whether it's cheaper to buy 1,000 units once or 100 units ten times, factoring
-                            shipping vs. holding costs.</div>
-                    </div>
-                </div>
-                <div class="reveal-right">
-                    <div class="h-72 w-full bg-brand-black/50 rounded-xl p-6 border border-white/5 hover-lift"><canvas
-                            id="eoqChart"></canvas></div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- CTA -->
-    <section class="py-24 relative overflow-hidden">
-        <div class="absolute inset-0 bg-brand-orange opacity-5"></div>
-        <div
-            class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-brand-orange/10 blur-[150px] rounded-full">
-        </div>
-        <div class="max-w-3xl mx-auto px-6 relative z-10 text-center reveal-scale">
+        <!-- MOCK VISUAL 1: SKU Performance Dashboard -->
+        <div class="sd-visual reveal reveal-delay-3">
+          <div style="padding:24px 28px;background:var(--bg2);font-family:'DM Mono',monospace;font-size:0.7rem;">
             <div
-                class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-card border border-brand-orange/30 mb-8">
-                <i data-lucide="gift" class="w-4 h-4 text-brand-orange"></i>
-                <span class="text-sm font-medium text-white">Completely free — no strings attached</span>
+              style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid rgba(200,169,110,0.2);">
+              <div>
+                <div
+                  style="color:var(--gold);letter-spacing:0.18em;text-transform:uppercase;font-size:0.6rem;margin-bottom:4px;">
+                  Weekly Report · Wk 07</div>
+                <div
+                  style="color:var(--white);font-size:0.8rem;font-family:'Syne',sans-serif;font-weight:700;letter-spacing:0.04em;">
+                  SKU Performance Dashboard</div>
+              </div>
+              <div style="text-align:right;">
+                <div style="color:var(--muted);font-size:0.58rem;letter-spacing:0.12em;">GENERATED BY</div>
+                <div style="color:var(--gold);font-size:0.6rem;letter-spacing:0.14em;">AEDAN KELLER</div>
+              </div>
             </div>
-            <h2 class="font-display text-4xl md:text-5xl font-bold mb-6 text-white">See where your inventory stands.
-            </h2>
-            <p class="text-xl text-gray-400 mb-4 max-w-2xl mx-auto">Book a free audit and I'll walk you through your
-                biggest inventory risks, opportunities, and exactly how much cash you can unlock.</p>
-            <p class="text-gray-500 mb-10">No pitch. No obligation. Actionable suggestions you keep either way.</p>
-            <a href="javascript:void(0);" data-cal-link="aedan-keller-ijsvjv/15min" data-cal-namespace="15min"
-                data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true"}'
-                class="inline-block px-10 py-5 bg-brand-orange text-white text-lg font-bold rounded-lg hover:bg-brand-orangeHover hover:scale-105 transition-all shadow-[0_0_40px_rgba(255,85,0,.3)] hover-glow">Book
-                Your Free Audit</a>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px;">
+              <div style="background:rgba(200,169,110,0.06);border:1px solid rgba(200,169,110,0.15);padding:12px 14px;">
+                <div
+                  style="color:var(--muted);font-size:0.55rem;letter-spacing:0.16em;text-transform:uppercase;margin-bottom:6px;">
+                  Dead Stock Value</div>
+                <div style="color:#e07070;font-size:1.1rem;font-family:'Syne',sans-serif;font-weight:800;">$48,320</div>
+                <div style="color:var(--muted);font-size:0.55rem;margin-top:3px;">↓ 30% vs prior period</div>
+              </div>
+              <div style="background:rgba(200,169,110,0.06);border:1px solid rgba(200,169,110,0.15);padding:12px 14px;">
+                <div
+                  style="color:var(--muted);font-size:0.55rem;letter-spacing:0.16em;text-transform:uppercase;margin-bottom:6px;">
+                  Avg Sell-Through</div>
+                <div style="color:var(--gold);font-size:1.1rem;font-family:'Syne',sans-serif;font-weight:800;">73.4%
+                </div>
+                <div style="color:var(--muted);font-size:0.55rem;margin-top:3px;">↑ 8.2pp vs prior period</div>
+              </div>
+              <div style="background:rgba(200,169,110,0.06);border:1px solid rgba(200,169,110,0.15);padding:12px 14px;">
+                <div
+                  style="color:var(--muted);font-size:0.55rem;letter-spacing:0.16em;text-transform:uppercase;margin-bottom:6px;">
+                  Cash at Risk</div>
+                <div style="color:#e8c06a;font-size:1.1rem;font-family:'Syne',sans-serif;font-weight:800;">$12,140</div>
+                <div style="color:var(--muted);font-size:0.55rem;margin-top:3px;">3 SKUs flagged WATCH</div>
+              </div>
+            </div>
+            <table style="width:100%;border-collapse:collapse;">
+              <thead>
+                <tr style="border-bottom:1px solid rgba(200,169,110,0.25);">
+                  <th
+                    style="text-align:left;color:var(--gold);font-size:0.55rem;letter-spacing:0.16em;text-transform:uppercase;padding:0 8px 10px 0;font-weight:400;">
+                    SKU</th>
+                  <th
+                    style="text-align:right;color:var(--gold);font-size:0.55rem;letter-spacing:0.16em;text-transform:uppercase;padding:0 8px 10px;font-weight:400;">
+                    Sell-Thru</th>
+                  <th
+                    style="text-align:right;color:var(--gold);font-size:0.55rem;letter-spacing:0.16em;text-transform:uppercase;padding:0 8px 10px;font-weight:400;">
+                    Days Supply</th>
+                  <th
+                    style="text-align:right;color:var(--gold);font-size:0.55rem;letter-spacing:0.16em;text-transform:uppercase;padding:0 8px 10px;font-weight:400;">
+                    Turnover</th>
+                  <th
+                    style="text-align:center;color:var(--gold);font-size:0.55rem;letter-spacing:0.16em;text-transform:uppercase;padding:0 0 10px 8px;font-weight:400;">
+                    Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="border-bottom:1px solid rgba(240,234,216,0.05);">
+                  <td style="padding:9px 8px 9px 0;color:var(--cream);font-size:0.65rem;">WBT-001-BLK</td>
+                  <td style="padding:9px 8px;text-align:right;color:var(--white);">91.2%</td>
+                  <td style="padding:9px 8px;text-align:right;color:var(--white);">18</td>
+                  <td style="padding:9px 8px;text-align:right;color:var(--white);">6.4×</td>
+                  <td style="padding:9px 0 9px 8px;text-align:center;"><span
+                      style="background:rgba(80,180,100,0.15);color:#6dcf85;font-size:0.52rem;letter-spacing:0.12em;padding:3px 8px;border:1px solid rgba(80,180,100,0.3);">HEALTHY</span>
+                  </td>
+                </tr>
+                <tr style="border-bottom:1px solid rgba(240,234,216,0.05);">
+                  <td style="padding:9px 8px 9px 0;color:var(--cream);font-size:0.65rem;">CRS-204-NVY</td>
+                  <td style="padding:9px 8px;text-align:right;color:var(--white);">84.7%</td>
+                  <td style="padding:9px 8px;text-align:right;color:var(--white);">24</td>
+                  <td style="padding:9px 8px;text-align:right;color:var(--white);">5.1×</td>
+                  <td style="padding:9px 0 9px 8px;text-align:center;"><span
+                      style="background:rgba(80,180,100,0.15);color:#6dcf85;font-size:0.52rem;letter-spacing:0.12em;padding:3px 8px;border:1px solid rgba(80,180,100,0.3);">HEALTHY</span>
+                  </td>
+                </tr>
+                <tr style="border-bottom:1px solid rgba(240,234,216,0.05);background:rgba(232,110,80,0.04);">
+                  <td style="padding:9px 8px 9px 0;color:var(--cream);font-size:0.65rem;">PLD-089-GRY</td>
+                  <td style="padding:9px 8px;text-align:right;color:#e07070;">31.4%</td>
+                  <td style="padding:9px 8px;text-align:right;color:#e07070;">142</td>
+                  <td style="padding:9px 8px;text-align:right;color:#e07070;">0.9×</td>
+                  <td style="padding:9px 0 9px 8px;text-align:center;"><span
+                      style="background:rgba(220,80,60,0.15);color:#e07070;font-size:0.52rem;letter-spacing:0.12em;padding:3px 8px;border:1px solid rgba(220,80,60,0.3);">DEAD
+                      STOCK</span></td>
+                </tr>
+                <tr style="border-bottom:1px solid rgba(240,234,216,0.05);background:rgba(232,190,80,0.03);">
+                  <td style="padding:9px 8px 9px 0;color:var(--cream);font-size:0.65rem;">TKR-112-WHT</td>
+                  <td style="padding:9px 8px;text-align:right;color:#e8c06a;">58.1%</td>
+                  <td style="padding:9px 8px;text-align:right;color:#e8c06a;">61</td>
+                  <td style="padding:9px 8px;text-align:right;color:#e8c06a;">2.6×</td>
+                  <td style="padding:9px 0 9px 8px;text-align:center;"><span
+                      style="background:rgba(200,169,110,0.12);color:#e8c06a;font-size:0.52rem;letter-spacing:0.12em;padding:3px 8px;border:1px solid rgba(200,169,110,0.35);">WATCH</span>
+                  </td>
+                </tr>
+                <tr style="border-bottom:1px solid rgba(240,234,216,0.05);">
+                  <td style="padding:9px 8px 9px 0;color:var(--cream);font-size:0.65rem;">WBT-003-TAN</td>
+                  <td style="padding:9px 8px;text-align:right;color:var(--white);">78.9%</td>
+                  <td style="padding:9px 8px;text-align:right;color:var(--white);">29</td>
+                  <td style="padding:9px 8px;text-align:right;color:var(--white);">4.8×</td>
+                  <td style="padding:9px 0 9px 8px;text-align:center;"><span
+                      style="background:rgba(80,180,100,0.15);color:#6dcf85;font-size:0.52rem;letter-spacing:0.12em;padding:3px 8px;border:1px solid rgba(80,180,100,0.3);">HEALTHY</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:9px 8px 9px 0;color:var(--cream);font-size:0.65rem;">CRS-301-OLV</td>
+                  <td style="padding:9px 8px;text-align:right;color:#e8c06a;">52.3%</td>
+                  <td style="padding:9px 8px;text-align:right;color:#e8c06a;">74</td>
+                  <td style="padding:9px 8px;text-align:right;color:#e8c06a;">2.2×</td>
+                  <td style="padding:9px 0 9px 8px;text-align:center;"><span
+                      style="background:rgba(200,169,110,0.12);color:#e8c06a;font-size:0.52rem;letter-spacing:0.12em;padding:3px 8px;border:1px solid rgba(200,169,110,0.35);">WATCH</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div
+              style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(200,169,110,0.12);color:var(--muted);font-size:0.55rem;letter-spacing:0.1em;">
+              DEAD STOCK threshold: &gt;90 days supply · WATCH: 45–90 days · Data as of Feb 16, 2026</div>
+          </div>
+          <div class="sd-visual-corner tl"></div>
+          <div class="sd-visual-corner tr"></div>
+          <div class="sd-visual-corner bl"></div>
+          <div class="sd-visual-corner br"></div>
         </div>
-    </section>
+        <p
+          style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;color:var(--muted);margin-top:12px;opacity:0.6;">
+          * Sample report — representative of actual deliverables</p>
 
-    <!-- Footer -->
-    <footer class="bg-black border-t border-gray-900 py-12">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
-            <div class="text-center md:text-left">
-                <span class="font-display font-bold text-xl text-white">AEDAN KELLER<span
-                        class="text-brand-orange">.</span></span>
-                <p class="text-gray-500 text-sm mt-2">Fractional Inventory Planner.</p>
-            </div>
-            <div class="flex gap-6">
-                <a href="#" class="text-gray-500 hover:text-brand-orange transition-colors hover-scale"><i
-                        data-lucide="linkedin" class="w-5 h-5"></i></a>
-                <a href="#" class="text-gray-500 hover:text-brand-orange transition-colors hover-scale"><i
-                        data-lucide="mail" class="w-5 h-5"></i></a>
-            </div>
-            <div class="text-gray-600 text-sm">&copy;
-                <script>document.write(new Date().getFullYear())</script> Aedan Keller. All rights reserved.
-            </div>
+      </div>
+      <div class="sd-right reveal reveal-delay-2">
+        <div class="sd-icon-wrap">
+          <svg width="64" height="64" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <line x1="10" y1="38" x2="46" y2="38" stroke="rgba(200,169,110,0.25)" stroke-width="1.2" />
+            <rect class="icon-bar1" x="14" y="26" width="7" height="12" rx="1" fill="rgba(200,169,110,0.35)" />
+            <rect class="icon-bar2" x="25" y="14" width="7" height="24" rx="1" fill="rgba(200,169,110,0.65)" />
+            <rect class="icon-bar3" x="36" y="20" width="7" height="18" rx="1" fill="rgba(200,169,110,0.9)" />
+          </svg>
         </div>
-    </footer>
+        <div class="sd-includes-label">What's Included</div>
+        <div class="sd-includes">
+          <div class="sd-item reveal">
+            <div class="sd-item-dot"></div>
+            <div class="sd-item-text"><strong>Performance dashboards</strong> built around your KPIs — sell-through
+              rate, days of supply, inventory turnover, and contribution margin by SKU</div>
+          </div>
+          <div class="sd-item reveal reveal-delay-1">
+            <div class="sd-item-dot"></div>
+            <div class="sd-item-text"><strong>Dead stock identification</strong> — flagging inventory that's tying up
+              cash and quantifying the exact dollar exposure</div>
+          </div>
+          <div class="sd-item reveal reveal-delay-2">
+            <div class="sd-item-dot"></div>
+            <div class="sd-item-text"><strong>Top performer analysis</strong> — spotlighting which products are driving
+              margin, which are dragging it, and why</div>
+          </div>
+          <div class="sd-item reveal reveal-delay-3">
+            <div class="sd-item-dot"></div>
+            <div class="sd-item-text"><strong>Cash flow visibility</strong> — mapping how inventory decisions translate
+              directly to working capital and cash position</div>
+          </div>
+          <div class="sd-item reveal">
+            <div class="sd-item-dot"></div>
+            <div class="sd-item-text"><strong>Recurring reporting cadence</strong> — weekly or monthly delivery in the
+              format that fits your team</div>
+          </div>
+        </div>
+        <div class="sd-outcome reveal">
+          <div class="sd-outcome-label">The Outcome</div>
+          <div class="sd-outcome-text">You stop reacting to inventory problems after they cost you money, and start
+            seeing them coming weeks in advance.</div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-    <script>
-        lucide.createIcons();
-        const menuBtn = document.getElementById('mobile-menu-btn'), mobileMenu = document.getElementById('mobile-menu');
-        menuBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+  <div class="rule"></div>
 
-        (function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; let d = C.document; C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if (typeof namespace === "string") { cal.ns[namespace] = cal.ns[namespace] || api; p(cal.ns[namespace], ar); p(cal, ["initNamespace", namespace]); } else p(cal, ar); return; } p(cal, ar); }; })(window, "https://app.cal.com/embed/embed.js", "init");
-        Cal("init", "15min", { origin: "https://app.cal.com" });
-        Cal.ns["15min"]("ui", { "hideEventTypeDetails": false, "layout": "month_view" });
+  <!-- SERVICE 02 — DEMAND FORECASTING -->
+  <div id="forecasting" class="service-detail alt">
+    <div class="sd-header">
+      <div>
+        <div class="sd-num reveal">02</div>
+        <h2 class="sd-title reveal reveal-delay-1">Demand<br><em>Forecasting</em></h2>
+        <p class="sd-summary reveal reveal-delay-2">
+          Gut feeling isn't a buying strategy. I build forward-looking projections from your actual sales history using
+          statistical methods that account for seasonality, trend, and velocity shifts — so you buy with precision, not
+          hope.
+        </p>
 
-        Chart.defaults.color = '#888'; Chart.defaults.font.family = 'Inter';
+        <!-- MOCK VISUAL 2: Demand Forecast Report -->
+        <div class="sd-visual reveal reveal-delay-3">
+          <div style="padding:24px 28px;background:var(--bg);font-family:'DM Mono',monospace;font-size:0.7rem;">
+            <div
+              style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid rgba(200,169,110,0.2);">
+              <div>
+                <div
+                  style="color:var(--gold);letter-spacing:0.18em;text-transform:uppercase;font-size:0.6rem;margin-bottom:4px;">
+                  Q2 Forecast · SKU WBT-001-BLK</div>
+                <div
+                  style="color:var(--white);font-size:0.8rem;font-family:'Syne',sans-serif;font-weight:700;letter-spacing:0.04em;">
+                  Demand Forecast Report</div>
+              </div>
+              <div style="text-align:right;">
+                <div style="color:var(--muted);font-size:0.58rem;letter-spacing:0.12em;">MODEL</div>
+                <div style="color:var(--gold);font-size:0.6rem;letter-spacing:0.14em;">HOLT-WINTERS</div>
+              </div>
+            </div>
+            <div style="margin-bottom:18px;">
+              <div
+                style="color:var(--muted);font-size:0.55rem;letter-spacing:0.14em;text-transform:uppercase;margin-bottom:10px;">
+                Units Sold / Projected by Week</div>
+              <div style="display:flex;align-items:flex-end;gap:4px;height:52px;">
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;">
+                  <div style="width:100%;background:rgba(200,169,110,0.4);height:28px;"></div>
+                  <div style="font-size:0.48rem;color:var(--muted);">W1</div>
+                </div>
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;">
+                  <div style="width:100%;background:rgba(200,169,110,0.4);height:34px;"></div>
+                  <div style="font-size:0.48rem;color:var(--muted);">W2</div>
+                </div>
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;">
+                  <div style="width:100%;background:rgba(200,169,110,0.4);height:22px;"></div>
+                  <div style="font-size:0.48rem;color:var(--muted);">W3</div>
+                </div>
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;">
+                  <div style="width:100%;background:rgba(200,169,110,0.4);height:38px;"></div>
+                  <div style="font-size:0.48rem;color:var(--muted);">W4</div>
+                </div>
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;">
+                  <div style="width:100%;background:rgba(200,169,110,0.4);height:42px;"></div>
+                  <div style="font-size:0.48rem;color:var(--muted);">W5</div>
+                </div>
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;">
+                  <div style="width:100%;background:rgba(200,169,110,0.4);height:30px;"></div>
+                  <div style="font-size:0.48rem;color:var(--muted);">W6</div>
+                </div>
+                <div style="width:1px;height:52px;background:rgba(200,169,110,0.4);flex-shrink:0;"></div>
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;">
+                  <div
+                    style="width:100%;background:rgba(200,169,110,0.75);height:46px;border-top:2px dashed rgba(200,169,110,0.9);">
+                  </div>
+                  <div style="font-size:0.48rem;color:var(--gold);">W7</div>
+                </div>
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;">
+                  <div
+                    style="width:100%;background:rgba(200,169,110,0.75);height:50px;border-top:2px dashed rgba(200,169,110,0.9);">
+                  </div>
+                  <div style="font-size:0.48rem;color:var(--gold);">W8</div>
+                </div>
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;">
+                  <div
+                    style="width:100%;background:rgba(200,169,110,0.75);height:44px;border-top:2px dashed rgba(200,169,110,0.9);">
+                  </div>
+                  <div style="font-size:0.48rem;color:var(--gold);">W9</div>
+                </div>
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;">
+                  <div
+                    style="width:100%;background:rgba(200,169,110,0.75);height:52px;border-top:2px dashed rgba(200,169,110,0.9);">
+                  </div>
+                  <div style="font-size:0.48rem;color:var(--gold);">W10</div>
+                </div>
+              </div>
+              <div style="display:flex;gap:16px;margin-top:8px;">
+                <div style="display:flex;align-items:center;gap:5px;font-size:0.52rem;color:var(--muted);">
+                  <div style="width:10px;height:8px;background:rgba(200,169,110,0.4);"></div>Actual
+                </div>
+                <div style="display:flex;align-items:center;gap:5px;font-size:0.52rem;color:var(--gold);">
+                  <div
+                    style="width:10px;height:8px;background:rgba(200,169,110,0.75);border-top:2px dashed rgba(200,169,110,0.9);">
+                  </div>Forecast
+                </div>
+              </div>
+            </div>
+            <table style="width:100%;border-collapse:collapse;">
+              <thead>
+                <tr style="border-bottom:1px solid rgba(200,169,110,0.25);">
+                  <th
+                    style="text-align:left;color:var(--gold);font-size:0.55rem;letter-spacing:0.16em;text-transform:uppercase;padding:0 8px 10px 0;font-weight:400;">
+                    Period</th>
+                  <th
+                    style="text-align:right;color:var(--gold);font-size:0.55rem;letter-spacing:0.16em;text-transform:uppercase;padding:0 8px 10px;font-weight:400;">
+                    Actual</th>
+                  <th
+                    style="text-align:right;color:var(--gold);font-size:0.55rem;letter-spacing:0.16em;text-transform:uppercase;padding:0 8px 10px;font-weight:400;">
+                    Forecast</th>
+                  <th
+                    style="text-align:right;color:var(--gold);font-size:0.55rem;letter-spacing:0.16em;text-transform:uppercase;padding:0 8px 10px;font-weight:400;">
+                    Low</th>
+                  <th
+                    style="text-align:right;color:var(--gold);font-size:0.55rem;letter-spacing:0.16em;text-transform:uppercase;padding:0 0 10px 8px;font-weight:400;">
+                    High</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="border-bottom:1px solid rgba(240,234,216,0.05);">
+                  <td style="padding:8px 8px 8px 0;color:var(--muted);font-size:0.62rem;">Wk 4 (Actual)</td>
+                  <td style="padding:8px;text-align:right;color:var(--white);">214</td>
+                  <td style="padding:8px;text-align:right;color:var(--muted);">208</td>
+                  <td style="padding:8px;text-align:right;color:var(--muted);">—</td>
+                  <td style="padding:8px 0 8px 8px;text-align:right;color:var(--muted);">—</td>
+                </tr>
+                <tr style="border-bottom:1px solid rgba(240,234,216,0.05);">
+                  <td style="padding:8px 8px 8px 0;color:var(--muted);font-size:0.62rem;">Wk 5 (Actual)</td>
+                  <td style="padding:8px;text-align:right;color:var(--white);">241</td>
+                  <td style="padding:8px;text-align:right;color:var(--muted);">235</td>
+                  <td style="padding:8px;text-align:right;color:var(--muted);">—</td>
+                  <td style="padding:8px 0 8px 8px;text-align:right;color:var(--muted);">—</td>
+                </tr>
+                <tr style="border-bottom:1px solid rgba(240,234,216,0.05);">
+                  <td style="padding:8px 8px 8px 0;color:var(--muted);font-size:0.62rem;">Wk 6 (Actual)</td>
+                  <td style="padding:8px;text-align:right;color:var(--white);">178</td>
+                  <td style="padding:8px;text-align:right;color:var(--muted);">190</td>
+                  <td style="padding:8px;text-align:right;color:var(--muted);">—</td>
+                  <td style="padding:8px 0 8px 8px;text-align:right;color:var(--muted);">—</td>
+                </tr>
+                <tr style="border-bottom:1px solid rgba(240,234,216,0.05);background:rgba(200,169,110,0.03);">
+                  <td style="padding:8px 8px 8px 0;color:var(--gold);font-size:0.62rem;">Wk 7 ↗ Proj.</td>
+                  <td style="padding:8px;text-align:right;color:var(--muted);">—</td>
+                  <td style="padding:8px;text-align:right;color:var(--gold);font-weight:700;">263</td>
+                  <td style="padding:8px;text-align:right;color:var(--muted);">241</td>
+                  <td style="padding:8px 0 8px 8px;text-align:right;color:var(--muted);">285</td>
+                </tr>
+                <tr style="border-bottom:1px solid rgba(240,234,216,0.05);background:rgba(200,169,110,0.03);">
+                  <td style="padding:8px 8px 8px 0;color:var(--gold);font-size:0.62rem;">Wk 8 ↗ Proj.</td>
+                  <td style="padding:8px;text-align:right;color:var(--muted);">—</td>
+                  <td style="padding:8px;text-align:right;color:var(--gold);font-weight:700;">288</td>
+                  <td style="padding:8px;text-align:right;color:var(--muted);">261</td>
+                  <td style="padding:8px 0 8px 8px;text-align:right;color:var(--muted);">315</td>
+                </tr>
+                <tr style="background:rgba(200,169,110,0.03);">
+                  <td style="padding:8px 8px 8px 0;color:var(--gold);font-size:0.62rem;">Wk 9 ↗ Proj.</td>
+                  <td style="padding:8px;text-align:right;color:var(--muted);">—</td>
+                  <td style="padding:8px;text-align:right;color:var(--gold);font-weight:700;">251</td>
+                  <td style="padding:8px;text-align:right;color:var(--muted);">224</td>
+                  <td style="padding:8px 0 8px 8px;text-align:right;color:var(--muted);">278</td>
+                </tr>
+              </tbody>
+            </table>
+            <div
+              style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(200,169,110,0.12);color:var(--muted);font-size:0.55rem;letter-spacing:0.1em;">
+              90% confidence interval shown · Seasonal index applied: +18% spring uplift · MAPE 6.2%</div>
+          </div>
+          <div class="sd-visual-corner tl"></div>
+          <div class="sd-visual-corner tr"></div>
+          <div class="sd-visual-corner bl"></div>
+          <div class="sd-visual-corner br"></div>
+        </div>
+        <p
+          style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;color:var(--muted);margin-top:12px;opacity:0.6;">
+          * Sample report — representative of actual deliverables</p>
 
-        // Forecast Chart — line with forecast vs actual
-        new Chart(document.getElementById('forecastChart'), {
-            type: 'line', data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-                datasets: [
-                    { label: 'Actual Sales', data: [120, 135, 128, 160, 210, 280, 310, 245, 190, 220, 350, 480], borderColor: '#FF5500', backgroundColor: 'rgba(255,85,0,.1)', fill: true, tension: .4, pointRadius: 3, pointBackgroundColor: '#FF5500' },
-                    { label: 'Forecast', data: [115, 140, 130, 155, 200, 270, 300, 250, 200, 230, 360, 500], borderColor: '#FF8800', borderDash: [5, 5], backgroundColor: 'transparent', tension: .4, pointRadius: 0 }
-                ]
-            }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, padding: 20 } } }, scales: { y: { grid: { color: '#222' }, ticks: { callback: v => v + 'u' } }, x: { grid: { display: false } } } }
-        });
+      </div>
+      <div class="sd-right reveal reveal-delay-2">
+        <div class="sd-icon-wrap">
+          <svg width="64" height="64" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <line x1="10" y1="38" x2="46" y2="38" stroke="rgba(200,169,110,0.18)" stroke-width="1" />
+            <line x1="10" y1="28" x2="46" y2="28" stroke="rgba(200,169,110,0.1)" stroke-width="1"
+              stroke-dasharray="3 3" />
+            <line x1="10" y1="18" x2="46" y2="18" stroke="rgba(200,169,110,0.1)" stroke-width="1"
+              stroke-dasharray="3 3" />
+            <polyline class="icon-trend-line" points="10,36 19,30 27,32 34,20 42,14" stroke="rgba(200,169,110,0.9)"
+              stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+            <circle class="icon-trend-dot" cx="42" cy="14" r="2.5" fill="#c8a96e" />
+            <polyline points="42,14 50,9" stroke="rgba(200,169,110,0.35)" stroke-width="1.5" fill="none"
+              stroke-dasharray="3 2" stroke-linecap="round" />
+          </svg>
+        </div>
+        <div class="sd-includes-label">What's Included</div>
+        <div class="sd-includes">
+          <div class="sd-item reveal">
+            <div class="sd-item-dot"></div>
+            <div class="sd-item-text"><strong>Historical sales analysis</strong> — decomposing your data into trend,
+              seasonality, and noise to build a reliable demand baseline</div>
+          </div>
+          <div class="sd-item reveal reveal-delay-1">
+            <div class="sd-item-dot"></div>
+            <div class="sd-item-text"><strong>SKU-level demand projections</strong> — forward-looking estimates by
+              product with confidence ranges, not just point estimates</div>
+          </div>
+          <div class="sd-item reveal reveal-delay-2">
+            <div class="sd-item-dot"></div>
+            <div class="sd-item-text"><strong>Seasonality mapping</strong> — identifying your demand peaks and troughs
+              so you're buying ahead of volume, not scrambling during it</div>
+          </div>
+          <div class="sd-item reveal reveal-delay-3">
+            <div class="sd-item-dot"></div>
+            <div class="sd-item-text"><strong>New product ramp models</strong> — projecting velocity curves for launches
+              when you have limited historical data to work with</div>
+          </div>
+          <div class="sd-item reveal">
+            <div class="sd-item-dot"></div>
+            <div class="sd-item-text"><strong>Forecast vs. actuals tracking</strong> — continuously refining accuracy as
+              new sales data comes in each period</div>
+          </div>
+        </div>
+        <div class="sd-outcome reveal">
+          <div class="sd-outcome-label">The Outcome</div>
+          <div class="sd-outcome-text">You enter every buying cycle with a data-backed view of what demand will look
+            like — so you stop over-ordering slow SKUs and under-ordering your best sellers.</div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-        // ABC Doughnut
-        new Chart(document.getElementById('abcChart'), {
-            type: 'doughnut', data: {
-                labels: ['A Items (80% Revenue)', 'B Items (15%)', 'C Items (5%)'],
-                datasets: [{ data: [80, 15, 5], backgroundColor: ['#FF5500', '#FF8800', '#333'], borderWidth: 0, hoverOffset: 8 }]
-            }, options: { responsive: true, maintainAspectRatio: false, cutout: '60%', plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, padding: 16, color: '#ccc' } } } }
-        });
+  <div class="rule"></div>
 
-        // OTB Budget Chart
-        new Chart(document.getElementById('otbChart'), {
-            type: 'bar', data: {
-                labels: ['Category A', 'Category B', 'Category C', 'Category D', 'Category E'],
-                datasets: [
-                    { label: 'Budget Available', data: [15, 12, 8, 10, 5], backgroundColor: 'rgba(255,85,0,.3)', borderRadius: 4, barPercentage: .6 },
-                    { label: 'Optimal Spend', data: [18, 10, 12, 8, 7], backgroundColor: '#FF5500', borderRadius: 4, barPercentage: .6 }
-                ]
-            }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, padding: 20 } } }, scales: { y: { grid: { color: '#222' }, ticks: { callback: v => '$' + v + 'K' } }, x: { grid: { display: false } } } }
-        });
+  <!-- SERVICE 03 — INVENTORY MANAGEMENT -->
+  <div id="inventory" class="service-detail">
+    <div class="sd-header">
+      <div>
+        <div class="sd-num reveal">03</div>
+        <h2 class="sd-title reveal reveal-delay-1">Inventory<br><em>Management</em></h2>
+        <p class="sd-summary reveal reveal-delay-2">
+          Knowing what demand will look like is one thing. Having a system that translates it into precise weekly buying
+          decisions — with full visibility into risk and cash impact — is another. That's what I build and maintain for
+          you.
+        </p>
 
-        // EOQ Chart
-        new Chart(document.getElementById('eoqChart'), {
-            type: 'line', data: {
-                labels: ['100', '250', '500', '750', '1000', '1500', '2000'],
-                datasets: [
-                    { label: 'Total Cost', data: [9.2, 7.1, 5.4, 4.8, 4.2, 3.9, 3.8], borderColor: '#FF5500', backgroundColor: 'rgba(255,85,0,.1)', fill: true, tension: .3, pointRadius: 4, pointBackgroundColor: '#FF5500' },
-                    { label: 'Holding Cost', data: [1, 2, 3.5, 4.5, 5.5, 7, 9], borderColor: '#FF8800', borderDash: [5, 5], backgroundColor: 'transparent', tension: .3, pointRadius: 0 },
-                    { label: 'Order Cost', data: [8.2, 5.1, 1.9, 0.3, 0.2, 0.15, 0.1], borderColor: '#666', borderDash: [3, 3], backgroundColor: 'transparent', tension: .3, pointRadius: 0 }
-                ]
-            }, options: {
-                responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, padding: 20 } } }, scales: { y: { grid: { color: '#222' }, ticks: { callback: v => '$' + v } }, x: { grid: { display: false }, title: { display: true, text: 'Order Quantity', color: '#888' } } }
-            }
-        });
+        <!-- MOCK VISUAL 3: Weekly Reorder Recommendations -->
+        <div class="sd-visual reveal reveal-delay-3">
+          <div style="padding:24px 28px;background:var(--bg2);font-family:'DM Mono',monospace;font-size:0.7rem;">
+            <div
+              style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid rgba(200,169,110,0.2);">
+              <div>
+                <div
+                  style="color:var(--gold);letter-spacing:0.18em;text-transform:uppercase;font-size:0.6rem;margin-bottom:4px;">
+                  Week of Feb 17, 2026</div>
+                <div
+                  style="color:var(--white);font-size:0.8rem;font-family:'Syne',sans-serif;font-weight:700;letter-spacing:0.04em;">
+                  Weekly Reorder Recommendations</div>
+              </div>
+              <div style="text-align:right;">
+                <div style="color:var(--muted);font-size:0.55rem;letter-spacing:0.1em;margin-bottom:2px;">Total PO Value
+                </div>
+                <div style="color:var(--gold);font-size:0.9rem;font-family:'Syne',sans-serif;font-weight:800;">$31,480
+                </div>
+              </div>
+            </div>
+            <div style="display:flex;gap:16px;margin-bottom:14px;">
+              <div style="display:flex;align-items:center;gap:5px;font-size:0.52rem;color:var(--muted);">
+                <div style="width:8px;height:8px;background:rgba(80,180,100,0.7);border-radius:50%;"></div>ORDER NOW
+              </div>
+              <div style="display:flex;align-items:center;gap:5px;font-size:0.52rem;color:var(--muted);">
+                <div style="width:8px;height:8px;background:rgba(200,169,110,0.7);border-radius:50%;"></div>QUEUE
+              </div>
+              <div style="display:flex;align-items:center;gap:5px;font-size:0.52rem;color:var(--muted);">
+                <div style="width:8px;height:8px;background:rgba(150,150,150,0.35);border-radius:50%;"></div>HOLD
+              </div>
+            </div>
+            <table style="width:100%;border-collapse:collapse;">
+              <thead>
+                <tr style="border-bottom:1px solid rgba(200,169,110,0.25);">
+                  <th
+                    style="text-align:left;color:var(--gold);font-size:0.55rem;letter-spacing:0.16em;text-transform:uppercase;padding:0 6px 10px 0;font-weight:400;">
+                    SKU</th>
+                  <th
+                    style="text-align:right;color:var(--gold);font-size:0.55rem;letter-spacing:0.16em;text-transform:uppercase;padding:0 6px 10px;font-weight:400;">
+                    On Hand</th>
+                  <th
+                    style="text-align:right;color:var(--gold);font-size:0.55rem;letter-spacing:0.16em;text-transform:uppercase;padding:0 6px 10px;font-weight:400;">
+                    Reorder Qty</th>
+                  <th
+                    style="text-align:right;color:var(--gold);font-size:0.55rem;letter-spacing:0.16em;text-transform:uppercase;padding:0 6px 10px;font-weight:400;">
+                    Lead Time</th>
+                  <th
+                    style="text-align:right;color:var(--gold);font-size:0.55rem;letter-spacing:0.16em;text-transform:uppercase;padding:0 6px 10px;font-weight:400;">
+                    Cash Impact</th>
+                  <th
+                    style="text-align:center;color:var(--gold);font-size:0.55rem;letter-spacing:0.16em;text-transform:uppercase;padding:0 0 10px 6px;font-weight:400;">
+                    Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="border-bottom:1px solid rgba(240,234,216,0.05);background:rgba(80,180,100,0.04);">
+                  <td style="padding:8px 6px 8px 0;color:var(--cream);font-size:0.62rem;">WBT-001-BLK</td>
+                  <td style="padding:8px 6px;text-align:right;color:var(--white);">38</td>
+                  <td style="padding:8px 6px;text-align:right;color:var(--white);font-weight:700;">240</td>
+                  <td style="padding:8px 6px;text-align:right;color:var(--muted);">14 days</td>
+                  <td style="padding:8px 6px;text-align:right;color:#6dcf85;">+$8,640</td>
+                  <td style="padding:8px 0 8px 6px;text-align:center;"><span
+                      style="background:rgba(80,180,100,0.15);color:#6dcf85;font-size:0.5rem;letter-spacing:0.1em;padding:3px 7px;border:1px solid rgba(80,180,100,0.3);">ORDER
+                      NOW</span></td>
+                </tr>
+                <tr style="border-bottom:1px solid rgba(240,234,216,0.05);background:rgba(80,180,100,0.04);">
+                  <td style="padding:8px 6px 8px 0;color:var(--cream);font-size:0.62rem;">CRS-204-NVY</td>
+                  <td style="padding:8px 6px;text-align:right;color:var(--white);">52</td>
+                  <td style="padding:8px 6px;text-align:right;color:var(--white);font-weight:700;">180</td>
+                  <td style="padding:8px 6px;text-align:right;color:var(--muted);">21 days</td>
+                  <td style="padding:8px 6px;text-align:right;color:#6dcf85;">+$6,300</td>
+                  <td style="padding:8px 0 8px 6px;text-align:center;"><span
+                      style="background:rgba(80,180,100,0.15);color:#6dcf85;font-size:0.5rem;letter-spacing:0.1em;padding:3px 7px;border:1px solid rgba(80,180,100,0.3);">ORDER
+                      NOW</span></td>
+                </tr>
+                <tr style="border-bottom:1px solid rgba(240,234,216,0.05);">
+                  <td style="padding:8px 6px 8px 0;color:var(--cream);font-size:0.62rem;">WBT-003-TAN</td>
+                  <td style="padding:8px 6px;text-align:right;color:var(--white);">117</td>
+                  <td style="padding:8px 6px;text-align:right;color:var(--white);font-weight:700;">120</td>
+                  <td style="padding:8px 6px;text-align:right;color:var(--muted);">14 days</td>
+                  <td style="padding:8px 6px;text-align:right;color:#e8c06a;">+$4,320</td>
+                  <td style="padding:8px 0 8px 6px;text-align:center;"><span
+                      style="background:rgba(200,169,110,0.12);color:#e8c06a;font-size:0.5rem;letter-spacing:0.1em;padding:3px 7px;border:1px solid rgba(200,169,110,0.35);">QUEUE</span>
+                  </td>
+                </tr>
+                <tr style="border-bottom:1px solid rgba(240,234,216,0.05);">
+                  <td style="padding:8px 6px 8px 0;color:var(--cream);font-size:0.62rem;">TKR-112-WHT</td>
+                  <td style="padding:8px 6px;text-align:right;color:var(--white);">203</td>
+                  <td style="padding:8px 6px;text-align:right;color:var(--muted);">—</td>
+                  <td style="padding:8px 6px;text-align:right;color:var(--muted);">—</td>
+                  <td style="padding:8px 6px;text-align:right;color:var(--muted);">$0</td>
+                  <td style="padding:8px 0 8px 6px;text-align:center;"><span
+                      style="background:rgba(150,150,150,0.1);color:var(--muted);font-size:0.5rem;letter-spacing:0.1em;padding:3px 7px;border:1px solid rgba(150,150,150,0.2);">HOLD</span>
+                  </td>
+                </tr>
+                <tr style="border-bottom:1px solid rgba(240,234,216,0.05);background:rgba(80,180,100,0.04);">
+                  <td style="padding:8px 6px 8px 0;color:var(--cream);font-size:0.62rem;">PLD-055-BLK</td>
+                  <td style="padding:8px 6px;text-align:right;color:var(--white);">24</td>
+                  <td style="padding:8px 6px;text-align:right;color:var(--white);font-weight:700;">300</td>
+                  <td style="padding:8px 6px;text-align:right;color:var(--muted);">28 days</td>
+                  <td style="padding:8px 6px;text-align:right;color:#6dcf85;">+$12,220</td>
+                  <td style="padding:8px 0 8px 6px;text-align:center;"><span
+                      style="background:rgba(80,180,100,0.15);color:#6dcf85;font-size:0.5rem;letter-spacing:0.1em;padding:3px 7px;border:1px solid rgba(80,180,100,0.3);">ORDER
+                      NOW</span></td>
+                </tr>
+              </tbody>
+            </table>
+            <div
+              style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(200,169,110,0.12);display:flex;justify-content:space-between;align-items:center;">
+              <div style="color:var(--muted);font-size:0.55rem;letter-spacing:0.1em;">Safety stock buffer: 14-day demand
+                · Reorder point = avg weekly demand × lead time</div>
+              <div style="color:var(--gold);font-size:0.55rem;letter-spacing:0.1em;">3 ACTIVE ORDERS</div>
+            </div>
+          </div>
+          <div class="sd-visual-corner tl"></div>
+          <div class="sd-visual-corner tr"></div>
+          <div class="sd-visual-corner bl"></div>
+          <div class="sd-visual-corner br"></div>
+        </div>
+        <p
+          style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;color:var(--muted);margin-top:12px;opacity:0.6;">
+          * Sample report — representative of actual deliverables</p>
 
-        // Reveal on scroll
-        function reveal() { document.querySelectorAll('.reveal,.reveal-scale,.reveal-left,.reveal-right').forEach(el => { if (el.getBoundingClientRect().top < window.innerHeight - 100) el.classList.add('active') }) }
-        window.addEventListener('scroll', reveal); reveal();
+      </div>
+      <div class="sd-right reveal reveal-delay-2">
+        <div class="sd-icon-wrap">
+          <svg width="64" height="64" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g class="icon-box-group">
+              <rect x="17" y="18" width="22" height="20" rx="1.5" stroke="rgba(200,169,110,0.8)" stroke-width="1.5"
+                fill="rgba(200,169,110,0.06)" />
+              <line x1="17" y1="25" x2="39" y2="25" stroke="rgba(200,169,110,0.4)" stroke-width="1.2" />
+              <line x1="28" y1="18" x2="28" y2="25" stroke="rgba(200,169,110,0.4)" stroke-width="1.2" />
+            </g>
+            <g class="icon-orbit">
+              <path d="M28 9 A19 19 0 0 1 47 28" stroke="rgba(200,169,110,0.5)" stroke-width="1.3" fill="none"
+                stroke-linecap="round" />
+              <polygon points="47,23 47,28 42,28" fill="rgba(200,169,110,0.7)" />
+            </g>
+          </svg>
+        </div>
+        <div class="sd-includes-label">What's Included</div>
+        <div class="sd-includes">
+          <div class="sd-item reveal">
+            <div class="sd-item-dot"></div>
+            <div class="sd-item-text"><strong>Buying framework design</strong> — a structured, repeatable system for
+              making purchase decisions based on demand, lead time, and target service levels</div>
+          </div>
+          <div class="sd-item reveal reveal-delay-1">
+            <div class="sd-item-dot"></div>
+            <div class="sd-item-text"><strong>Weekly reorder recommendations</strong> — delivered on a set cadence with
+              the quantities, timing, and rationale for each SKU</div>
+          </div>
+          <div class="sd-item reveal reveal-delay-2">
+            <div class="sd-item-dot"></div>
+            <div class="sd-item-text"><strong>Safety stock modeling</strong> — calculating the right buffer levels to
+              protect against stockouts without tying up excess cash</div>
+          </div>
+          <div class="sd-item reveal reveal-delay-3">
+            <div class="sd-item-dot"></div>
+            <div class="sd-item-text"><strong>Cash impact analysis</strong> — translating every buying decision into its
+              working capital implications before you commit</div>
+          </div>
+          <div class="sd-item reveal">
+            <div class="sd-item-dot"></div>
+            <div class="sd-item-text"><strong>Ongoing framework maintenance</strong> — updating assumptions as lead
+              times, demand, and business conditions shift</div>
+          </div>
+        </div>
+        <div class="sd-outcome reveal">
+          <div class="sd-outcome-label">The Outcome</div>
+          <div class="sd-outcome-text">You make informed purchasing decisions every week — with full visibility into
+            what you're buying, why, and exactly what it means for your cash position.</div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-        // Smooth scroll
-        document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener('click', function (e) { e.preventDefault(); const t = document.querySelector(this.getAttribute('href')); if (t) t.scrollIntoView({ behavior: 'smooth' }); if (!mobileMenu.classList.contains('hidden')) mobileMenu.classList.add('hidden') }));
-    </script>
+  <div class="rule"></div>
+
+  <!-- HOW I WORK -->
+  <div class="process-strip">
+    <div class="section-label reveal">How I Work</div>
+    <h2 class="reveal reveal-delay-1"
+      style="font-size:clamp(1.8rem,3vw,3rem);font-weight:300;max-width:600px;line-height:1.3;color:var(--white);">
+      Structured. Consistent.<br>Built around <em style="font-style:italic;color:var(--gold)">your cadence.</em>
+    </h2>
+    <div class="process-grid">
+      <div class="process-step reveal">
+        <div class="process-step-num">Week 01</div>
+        <div class="process-step-title">Data Onboarding</div>
+        <p class="process-step-desc">I connect to your data sources, audit your historical records, and establish the
+          baseline used for all analysis and forecasting going forward.</p>
+      </div>
+      <div class="process-step reveal reveal-delay-1">
+        <div class="process-step-num">Week 02–03</div>
+        <div class="process-step-title">Framework Build</div>
+        <p class="process-step-desc">I build your dashboards, demand models, and buying framework — customized to your
+          lead times, SKU count, and business model.</p>
+      </div>
+      <div class="process-step reveal reveal-delay-2">
+        <div class="process-step-num">Week 04</div>
+        <div class="process-step-title">First Deliverables</div>
+        <p class="process-step-desc">You receive your first full reporting package, demand forecast, and reorder
+          recommendations — along with a walkthrough of the logic behind each output.</p>
+      </div>
+      <div class="process-step reveal reveal-delay-3">
+        <div class="process-step-num">Ongoing</div>
+        <div class="process-step-title">Weekly Cadence</div>
+        <p class="process-step-desc">Deliverables refresh on your agreed schedule. Models improve as new data comes in.
+          I stay close to your business so the work stays relevant as you scale.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="rule"></div>
+
+  <div class="cta-strip">
+    <p class="cta-eyebrow reveal">Ready to Start?</p>
+    <h2 class="cta-headline reveal reveal-delay-1">
+      Let's build the system<br>your inventory <em>deserves.</em>
+    </h2>
+    <button class="cta-btn reveal reveal-delay-2" data-cal-namespace="15min" data-cal-link="aedan-keller-ijsvjv/15min"
+      data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true"}'>Book a Free Consultation</button>
+  </div>
+
+  <footer>
+    <div class="footer-name">Aedan Keller</div>
+    <div class="footer-links">
+      <a href="/cdn-cgi/l/email-protection#68090d0c0906030d04040d1a28090d0c0906030d04040d1a460b0705"
+        class="footer-link">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+          stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="4" width="20" height="16" rx="2" />
+          <path d="m2 7 10 7 10-7" />
+        </svg>
+        <span class="__cf_email__"
+          data-cfemail="6d0c08090c0306080101081f2d0c08090c0306080101081f430e0200">[email&#160;protected]</span>
+      </a>
+      <a href="https://www.linkedin.com/in/aedan-keller/" target="_blank" rel="noopener" class="footer-link">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+          <rect x="2" y="9" width="4" height="12" />
+          <circle cx="4" cy="4" r="2" />
+        </svg>
+        LinkedIn
+      </a>
+    </div>
+  </footer>
+
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+  <script>
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursor-ring');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+    (function animCursor() {
+      cursor.style.left = mx + 'px'; cursor.style.top = my + 'px';
+      rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
+      ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+      requestAnimationFrame(animCursor);
+    })();
+    document.querySelectorAll('a, button').forEach(el => {
+      el.addEventListener('mouseenter', () => { ring.style.width = '60px'; ring.style.height = '60px'; });
+      el.addEventListener('mouseleave', () => { ring.style.width = '36px'; ring.style.height = '36px'; });
+    });
+
+    document.addEventListener('mouseleave', () => {
+      cursor.style.opacity = '0'; ring.style.opacity = '0';
+    });
+    document.addEventListener('mouseenter', () => {
+      cursor.style.opacity = '1'; ring.style.opacity = '1';
+    });
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
 </body>
 
 </html>
